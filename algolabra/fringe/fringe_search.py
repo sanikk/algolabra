@@ -1,64 +1,40 @@
+from fringe.doublelinkedlist import DoubleLinkedList
+
+
 def fringe_search(start: int, goal: int, children:list):
-    fringe = [start]
+    fringe = DoubleLinkedList(data=start)
     cache = [None for i in children]
     cache[start] = (0, None)
     flimit = heuristics(start, goal)
-    print(f"initial {flimit=}")
     found = False
 
-    node_count = 0
-    nodes_visited = 0
-    nodes_expanded = 0
-
-    while not found and fringe:
+    while not found and fringe.head:
         # for state:
-        times_visited = 0
-        turn_visited = []
-        times_expanded = 0
-        turn_expanded = []
         fmin = 1000000
         for node in fringe:
-            node_count += 1
-            times_visited += 1
-            turn_visited.append(node)
-            g, parent = cache[node]
-            f = g + heuristics(node, goal)
+            g, parent = cache[node.data]
+            f = g + heuristics(node.data, goal)
             if f > flimit:
-                nodes_visited += 1
                 fmin = min(f, fmin)
                 continue
-            if node == goal:
+            if node.data == goal:
                 print(f"found route with cost {g}")
-                print(f"{node_count=}, {nodes_visited=}, {nodes_expanded=}")
-                # TODO gives out a faulty value.
                 found = True
                 break
 
-            # käsitellään lapset joten expanded
-            nodes_expanded += 1
-            times_expanded += 1
-            turn_expanded.append(node)
-
-            for child, cost in children[node]:
-                nodes_visited += 1
-                times_visited += 1
-                turn_visited.append(child)
+            for child, cost in children[node.data]:
                 g_child = g + cost
                 if cache[child]:
                     g_cached, parent = cache[child]
                     if g_child >= g_cached:
-                        # nodes_visited += 1
                         continue
                 if child in fringe:
-                    fringe.remove(child)
-                fringe.append(child)
-                cache[child] = (g_child, node)
-            fringe.remove(node)
+                    # tää pitää ratkasta kohta
+                    fringe.remove_data(child)
+                fringe.add_data_after_node(data=child, node=node)
+                cache[child] = (g_child, node.data)
+            fringe.remove_node(node)
         flimit = fmin
-        print(f"{flimit=}")
-        print(f"{times_visited=}, {turn_visited=}")
-        print(f"{times_expanded=}, {turn_expanded=}")
-        print(f"{fringe=}")
     if found:
         route = [goal]
         while route[-1] != start:
