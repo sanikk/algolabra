@@ -1,0 +1,3 @@
+[run]
+source = algolabra
+omit = algolabra/tests/**, */__init__.py, */bakup/**, algolabra/maps/**
