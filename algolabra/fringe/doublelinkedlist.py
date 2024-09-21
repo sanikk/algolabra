@@ -4,11 +4,6 @@ class Node:
         self.next = next
         self.data = data
 
-    def remove(self):
-        if self.prev:
-            self.prev.next = self.next
-        if self.next:
-            self.next.prev = self.prev
 
 class DLLIterator:
     def __init__(self, node: Node):
@@ -53,7 +48,10 @@ class DoubleLinkedList:
             self.tail = new_node
 
     def remove_node(self, node):
-        node.remove()
+        if node.prev:
+            node.prev.next = node.next
+        if node.next:
+            node.next.prev = node.prev
         if node == self.head:
             self.head = node.next
         if node == self.tail:
