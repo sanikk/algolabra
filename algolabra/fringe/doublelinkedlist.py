@@ -7,13 +7,19 @@ class Node:
 
 class DLLIterator:
     def __init__(self, node: Node):
+        self.previous = None
         self.current = node
 
     def __next__(self):
         if self.current:
-            node = self.current
+            self.previous = self.current
             self.current = self.current.next
-            return node
+            return self.previous
+        if self.previous and self.previous.next:
+            # this happens when handling tail and moving to first of it's children
+            self.previous = self.previous.next
+            self.current = self.previous.next
+            return self.previous
         raise StopIteration
 
     def __iter__(self):
