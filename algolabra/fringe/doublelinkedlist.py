@@ -33,18 +33,6 @@ class DoubleLinkedList:
         self.head = node
         self.tail = self.head
 
-    def add_to_begin(self, node):
-        if self.head:
-            self.head.prev = node
-        node.next = self.head
-        self.head = node
-        if not self.tail:
-            self.tail = node
-
-    def add_data_to_begin(self, data):
-        node = Node(data)
-        self.add_to_begin(node)
-
     def add_data_after_node(self, data, node):
         new_node = Node(prev=node, next=node.next, data=data)
         if node.next:
