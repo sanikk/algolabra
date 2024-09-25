@@ -17,6 +17,8 @@ Testing needed!
 
 Started late. Catching up.
 
+The doublelinked list required needs to know next in line at the time it is popped. This required some modifications.
+
 ## Usage of LLMs
 
 ChatGPT is assisting me to consider possible grids faster. Elevation map of Helsinki to

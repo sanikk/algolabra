@@ -1,15 +1,23 @@
 from fringe.doublelinkedlist import DoubleLinkedList
 
 
-def fringe_search(start: int, goal: int, children:list):
+def fringe_search(start: int, goal: int, children:list, preset_flimit=None):
+    """
+    Version with no comments for now.
+
+    :param start:
+    :param goal:
+    :param children:
+    :param preset_flimit:
+    :return:
+    """
     fringe = DoubleLinkedList(data=start)
     cache = [None for i in children]
     cache[start] = (0, None)
-    flimit = heuristics(start, goal)
+    flimit = preset_flimit or heuristics(start, goal)
     found = False
 
     while not found and fringe.head:
-        # for state:
         fmin = 1000000
         for node in fringe:
             g, parent = cache[node.data]
@@ -21,19 +29,21 @@ def fringe_search(start: int, goal: int, children:list):
                 print(f"found route with cost {g}")
                 found = True
                 break
-
-            for child, cost in children[node.data]:
+            for child, cost in reversed(children[node.data]):
                 g_child = g + cost
                 if cache[child]:
                     g_cached, parent = cache[child]
                     if g_child >= g_cached:
                         continue
                 if child in fringe:
-                    # tää pitää ratkasta kohta
                     fringe.remove_data(child)
                 fringe.add_data_after_node(data=child, node=node)
                 cache[child] = (g_child, node.data)
+                if child == goal:
+                    print(f"{child=}: {g_child=}, {node.data=}")
+                    print(f"fringe: {[node.data for node in fringe]}")
             fringe.remove_node(node)
+
         flimit = fmin
     if found:
         route = [goal]
@@ -45,6 +55,8 @@ def fringe_search(start: int, goal: int, children:list):
 
 
 def heuristics(node, goal):
+    if node == goal:
+        return 0
     # distance * something ideal
     # ohkay this needs small values.
     # that mabbe grow the closer you get?
