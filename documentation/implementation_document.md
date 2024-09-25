@@ -15,9 +15,10 @@ Testing needed!
 
 ## Possible shortcomings and suggestions for improvement
 
-Started late. Catching up.
-
-The doublelinked list required needs to know next in line at the time it is popped. This required some modifications.
+The doublelinked list required by the fringe search algorithm needs to know next in line at the time it is popped. This required some modifications.
+In the end a mock starter node in the iterator seemed the path of spending least effort and least resources.
+Since iterators are single-use components in python the starter node containing next:head gets expended first and there
+remain no references to it, so the cost in memory and developer time should be minimal.
 
 ## Usage of LLMs
 
