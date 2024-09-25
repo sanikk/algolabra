@@ -2,7 +2,7 @@ from invoke import task
 
 @task
 def start(c):
-    c.run('python algolabra/main.py', pty=True)
+    c.run('python main.py', pty=True)
 
 @task
 def test(c):

@@ -1,6 +1,6 @@
-from maps.tiny_graph_from_fringe_pdf import tinygraph
-from astar.astar import astar
-from fringe.fringe_search import fringe_search
+from algolabra.maps.tiny_graph_from_fringe_pdf import tinygraph
+from algolabra.astar.astar import astar
+from algolabra.fringe.fringe_search import fringe_search
 
 
 
