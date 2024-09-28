@@ -16,6 +16,9 @@
 
 [Testing report](documentation/testing_report.md)
 
+[User manual](./documentation/user_manual.md)
+
 ### Weekly progress
 - [week3](documentation/progress_report_week_3.md)
+- [week4](./documentation/progress_report_week_4.md)
 
