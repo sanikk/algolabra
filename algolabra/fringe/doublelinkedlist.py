@@ -1,11 +1,13 @@
 class Node:
-    def __init__(self, prev=None, next=None, x=None, y=None):
-        self.prev = prev
-        self.next = next
-
+    def __init__(self, x=None, y=None, prev=None, next=None):
         self.x = x
         self.y = y
 
+        self.prev = prev
+        self.next = next
+
+    def __repr__(self):
+        return f"{self.x=}, {self.y=}"
 
 class DLLIterator:
     def __init__(self, node: Node):
