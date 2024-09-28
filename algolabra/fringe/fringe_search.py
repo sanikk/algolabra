@@ -1,5 +1,5 @@
-# from algolabra.fringe.doublelinkedlist import DoubleLinkedList, Node
-from doublelinkedlist import DoubleLinkedList, Node
+from algolabra.fringe.doublelinkedlist import DoubleLinkedList, Node
+# from doublelinkedlist import DoubleLinkedList, Node
 
 
 def fringe_search(start, goal, citymap):

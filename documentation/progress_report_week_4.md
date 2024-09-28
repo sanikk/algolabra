@@ -6,6 +6,7 @@ Skeletons of functions to read the maps and scenarios.
 
 Adapted fringe search to use the new map. Still missing corners, and heuristics ~~is~~ was giving
 some very strange results. (1,1) => (0,0) cost: 1.414....(1,1) => (2,2) cost 0.5858.
-Silly bug(tm).
+Silly bug(tm), now squashed.
 
-I now want to do two different directed versions of fringe search, if time permits.
+I now want to do two different directed versions of fringe search, if time permits. I will do those before map-fitting 
+A* for next week.
