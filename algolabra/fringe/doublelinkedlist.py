@@ -6,6 +6,8 @@ class Node:
         self.prev = prev
         self.next = next
 
+
+    # TODO for debug purposes, remove this
     def __repr__(self):
         return f"{self.x=}, {self.y=}"
 
@@ -54,9 +56,6 @@ class DoubleLinkedList:
         for node in iter(self):
             if node.x == x and node.y == y:
                 return node
-    def removal_version(self, x, y):
-        # TODO replace this with a doublelinkedlist function. do a search for (x,y), rm if found.
-        pass
 
     def __iter__(self):
         return DLLIterator(self.head)
