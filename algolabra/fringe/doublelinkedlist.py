@@ -1,5 +1,16 @@
 class Node:
+    """
+    Simple Node class for filling Doublelinked List.
+    """
     def __init__(self, x=None, y=None, prev=None, next=None):
+        """
+        Coordinates of this Node
+        :param x:
+        :param y:
+        Links of this Node
+        :param prev: previous node on list
+        :param next: next node on list
+        """
         self.x = x
         self.y = y
 
@@ -12,6 +23,10 @@ class Node:
         return f"{self.x=}, {self.y=}"
 
 class DLLIterator:
+    """
+    Modified iterator for Doublelinked List.
+    We point at previous node, resolve pointer only when asked for next, and then return next.
+    """
     def __init__(self, node: Node):
         self.previous = Node(next=node)
 
@@ -25,12 +40,28 @@ class DLLIterator:
         return self
 
 class DoubleLinkedList:
+    """
+    Simple Doublelinked List structure for Fringe.
+    """
     def __init__(self, x=None, y=None, node=None):
+        """
+        Constructor takes node OR x,y
+        :param x:
+        :param y:
+        :param node:
+        """
         if x and y:
             node = Node(x=x, y=y)
         self.head = node
 
     def add_node(self, x, y, node):
+        """
+        Add node on list placing it after the node provided at parameter.
+        :param x: for new node
+        :param y: for new node
+        :param node: parent node the new node will be placed under.
+        :return: None
+        """
         new_node = Node(prev=node, next=node.next, x=x, y=y)
         if node.next:
             next_node = node.next
@@ -38,6 +69,11 @@ class DoubleLinkedList:
         node.next = new_node
 
     def remove_node(self, node):
+        """
+        Removes the provided node from list. next should still point at next node if it gets popped.
+        :param node: Node to remove
+        :return: None
+        """
         # so the iterator points at node n. we remove n. we get next from iterator.
         # as long as we don't alter the next of n we should be good.
         if node.prev:
@@ -48,17 +84,36 @@ class DoubleLinkedList:
             self.head = node.next
 
     def remove_at_xy(self, x, y):
+        """
+        Removes node with given x,y coordinates from list.
+        Fails silently, but should never fail.
+
+        :param x:
+        :param y:
+        :return:
+        """
         node = self.find_node_at_xy(x, y)
         if node:
             self.remove_node(node)
 
     def find_node_at_xy(self, x, y):
+        """
+        Find and return the Node with given x,y coordinates.
+        :param x:
+        :param y:
+        :return:
+        """
         for node in iter(self):
             if node.x == x and node.y == y:
                 return node
 
     def __iter__(self):
+        """
+        Returns iterator and duck types this as iterable.
+        :return:
+        """
         return DLLIterator(self.head)
 
 if __name__=='__main__':
-    dll = DoubleLinkedList(data=1)
+    # dll = DoubleLinkedList(data=1)
+    pass

@@ -1,8 +1,16 @@
 from algolabra.fringe.doublelinkedlist import DoubleLinkedList, Node
-# from doublelinkedlist import DoubleLinkedList, Node
 
 
 def fringe_search(start, goal, citymap):
+    """
+    Implementation for octile maps.
+    Lightly printing to give some data.
+
+    :param start:
+    :param goal:
+    :param citymap:
+    :return:
+    """
     print(f"{start=}")
     print(f"{goal=}")
 
@@ -15,6 +23,7 @@ def fringe_search(start, goal, citymap):
     cache[start_node.y][start_node.x] = 0, None
     flimit = heuristics(start_node, *goal)
     found = False
+
     print(f"initial {flimit=}")
 
     while not found and fringe.head:
@@ -49,7 +58,7 @@ def fringe_search(start, goal, citymap):
             fringe.remove_node(node)
 
         flimit = fmin
-        print(f"updated {flimit=}")
+        print(f"finished round. updated {flimit=}")
     if found:
         route = [goal]
         while route[-1] != start:
@@ -60,6 +69,14 @@ def fringe_search(start, goal, citymap):
 
 
 def heuristics(node, goalx, goaly):
+    """
+    Octile distance function for heuristics. Should work for both algorithms.
+
+    :param node:
+    :param goalx:
+    :param goaly:
+    :return:
+    """
     # undirected heuristics and cache for now
     delta_x = node.x - goalx
     delta_y = node.y - goaly
@@ -68,11 +85,13 @@ def heuristics(node, goalx, goaly):
 def children(node, citymap):
     """
     Gives the valid neighbors of node in map.
+    No reordering yet.
+
     :param node: Node
     :param citymap: list[y][x]
     :return: [(x,y),(x,y),...]
     """
-    # we could just order the masks in the direction of goal node.
+
     diag_cost = 2**0.5
     masks = [(-1, -1, diag_cost), (-1, 0, 1), (-1, 1, diag_cost), (0, -1, 1), (0, 1, 1), (1, -1, diag_cost), (1, 0, 1), (1, 1, diag_cost)]
     applied = [(mask[0] + node.x, mask[1] + node.y, mask[2]) for mask in masks]
@@ -81,9 +100,7 @@ def children(node, citymap):
                0 <= child[1] < len(citymap) and
                0 <= child[0] < len(citymap[0])]
     open_spaces = [loc for loc in in_area if citymap[loc[1]][loc[0]] == "." or "G"]
-    # and then reverse the dir here before returning.
 
-    # should run heuristics here and sort the children
     return open_spaces[::-1]
 
 if __name__=='__main__':

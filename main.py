@@ -5,7 +5,7 @@ from algolabra.bostonmaps.map_component import read_map
 
 
 # [0, 'Boston_0_512.map', 512, 512, 344, 85, 343, 85, 1.0]
-height, width, bm = read_map("algolabra/bostonmaps/Boston_0_512.map")
+bm = read_map("algolabra/bostonmaps/Boston_0_512.map")
 # bm = [line for line in bm if line]
 # print("Using graph")
 # print(f"{tinygraph=}")
@@ -15,3 +15,7 @@ height, width, bm = read_map("algolabra/bostonmaps/Boston_0_512.map")
 print("Running Fringe search")
 # print(fringe_search(1, 14, tinygraph, preset_flimit=3))
 print(fringe_search((344,85), (343, 85), bm))
+
+# 0	Boston_0_512.map	512	512	121	317	120	320	3.41421356
+print("*"*30)
+print(fringe_search((121, 317), (120, 320), bm))
