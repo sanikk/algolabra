@@ -6,7 +6,7 @@ def read_map(filename):
         lista = f.read().split("\n")
     height = int(lista[1].split(" ")[1])
     width = int(lista[2].split(" ")[1])
-    return height, width, lista[4:]
+    return height, width, [line for line in lista[4:] if line]
 
 def read_scenarios(filename):
     with open(filename) as f:
@@ -17,8 +17,9 @@ def read_scenarios(filename):
     scenarios = {key: list(group) for key, group in itertools.groupby(converted, lambda x: x[0])}
     return scenarios
 
-height, width, lista = read_map("Boston_0_512.map")
-scenarios = read_scenarios("Boston_0_512.map.scen")
+if __name__=='__main__':
+    height, width, lista = read_map("Boston_0_512.map")
+    scenarios = read_scenarios("Boston_0_512.map.scen")
 
 
 
