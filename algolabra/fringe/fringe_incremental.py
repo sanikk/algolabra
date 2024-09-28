@@ -28,6 +28,8 @@ def fringe_search(start, goal, citymap):
                 continue
             if node.x == goal[0] and node.y == goal[1]:
                 print(f"found route with cost {g}")
+                print(f"{g=}, {node.x=}, {node.y=}")
+                print(f"fringe: {[(node.x, node.y) for node in fringe]}")
                 found = True
                 break
 
@@ -44,12 +46,6 @@ def fringe_search(start, goal, citymap):
                 fringe.removal_version(x, y)
                 fringe.add_node(x=x, y=y, node=node)
                 cache[y][x] = g_child, (node.x, node.y)
-                if x == goal[0] and y == goal[1]:
-                    print(f"found route with cost {g_child}")
-                    print(f"{x=},{y=}: {g_child=}, {node.x=}, {node.y=}")
-                    print(f"fringe: {[(node.x,node.y) for node in fringe]}")
-                    found = True
-
             fringe.remove_node(node)
 
         flimit = fmin
@@ -78,7 +74,6 @@ def children(node, citymap):
     :return: [(x,y),(x,y),...]
     """
     # we could just order the masks in the direction of goal node.
-
     diag_cost = 2**0.5
     masks = [(-1, -1, diag_cost), (-1, 0, 1), (-1, 1, diag_cost), (0, -1, 1), (0, 1, 1), (1, -1, diag_cost), (1, 0, 1), (1, 1, diag_cost)]
     applied = [(mask[0] + node.x, mask[1] + node.y, mask[2]) for mask in masks]
@@ -86,7 +81,6 @@ def children(node, citymap):
     in_area = [child for child in applied if
                0 <= child[1] < len(citymap) and
                0 <= child[0] < len(citymap[0])]
-    print(f"{in_area=}")
     open_spaces = [loc for loc in in_area if citymap[loc[1]][loc[0]] == "." or "G"]
     # and then reverse the dir here before returning.
 
