@@ -1,5 +1,5 @@
-from algolabra.fringe.doublelinkedlist import DoubleLinkedList, Node
-from algolabra.bostonmaps.map_component import read_map
+# from algolabra.fringe.doublelinkedlist import DoubleLinkedList, Node
+from doublelinkedlist import DoubleLinkedList, Node
 
 
 def fringe_search(start, goal, citymap):
@@ -43,7 +43,7 @@ def fringe_search(start, goal, citymap):
                 # TODO replace this with a doublelinkedlist function. do a search, rm if found.
                 # if child in fringe:
                 #     fringe.remove_data(child)
-                fringe.removal_version(x, y)
+                fringe.remove_at_xy(x, y)
                 fringe.add_node(x=x, y=y, node=node)
                 cache[y][x] = g_child, (node.x, node.y)
             fringe.remove_node(node)
@@ -63,8 +63,7 @@ def heuristics(node, goalx, goaly):
     # undirected heuristics and cache for now
     delta_x = node.x - goalx
     delta_y = node.y - goaly
-
-    return max(abs(delta_x), abs(delta_y)) + (2**0.5 - 1) * min(delta_x, delta_y)
+    return max(abs(delta_x), abs(delta_y)) + (2**0.5 - 1) * min(abs(delta_x), abs(delta_y))
 
 def children(node, citymap):
     """
@@ -86,3 +85,10 @@ def children(node, citymap):
 
     # should run heuristics here and sort the children
     return open_spaces[::-1]
+
+if __name__=='__main__':
+    node = Node(x=1, y=1)
+    print(f"{node.x=}, {node.y=}")
+    print(heuristics(node, 0, 1))
+    print(heuristics(node, 0, 0))
+    print(heuristics(node, 2, 2))

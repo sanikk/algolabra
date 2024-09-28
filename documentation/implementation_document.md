@@ -4,10 +4,12 @@
 
 Started with the algorithms so not much yet.
 - doublelinkedlist for fringe search
+- heuristics function for grid, should be usable in both
 
 ## Achieved space and time complexities
 
-With non-consistent heuristics some nodes will be expanded multiple times.
+With non-consistent heuristics some nodes will be expanded multiple times. Octile distance is
+used as heuristic.
 
 ## Performance and O-analysis comparisons
 
@@ -15,10 +17,10 @@ Testing needed!
 
 ## Possible shortcomings and suggestions for improvement
 
-The doublelinked list required by the fringe search algorithm needs to know next in line at the time it is popped. This required some modifications.
-In the end a mock starter node in the iterator seemed the path of spending least effort and least resources.
-Since iterators are single-use components in python the starter node containing next:head gets expended first and there
-remain no references to it, so the cost in memory and developer time should be minimal.
+~~Heuristics seem awful at the moment, I need to look into this.~~
+
+Octile distance should give the distance between two points on a grid if there are no obstructions. 
+Seems to work so far.
 
 ## Usage of LLMs
 
@@ -26,7 +28,11 @@ ChatGPT is assisting me to consider possible grids faster. Elevation map of Hels
 avoid going up/downhill while cycling was considered, to give an example. No coding assistants, I
 am still working on search logic which will need troubleshooting so it must be very human-readable.
 
+I abandoned my idea of a Helsinki grid so all LLM assisted data was left unused. LLM was good
+for navigating a foreign api.
+
 ## References
 
-- fringe pdf
-- a* wiki
+- fringe pdf 
+- a* wiki page
+- amit's excellent pages http://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html
