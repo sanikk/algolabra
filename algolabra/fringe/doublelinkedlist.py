@@ -125,7 +125,7 @@ class DoubleLinkedListWithDict:
             parent.next.prev = child
         parent.next = child
 
-        bookkeeping = self.on_fringe.get((child.x, child.y), None)
+        bookkeeping = self.on_fringe.pop((child.x, child.y), None)
         if bookkeeping:
             self.remove_node(bookkeeping)
         self.on_fringe[(child.x, child.y)] = child
@@ -137,8 +137,8 @@ class DoubleLinkedListWithDict:
             node.next.prev = node.prev
         if self.head == node:
             self.head = node.next
-        # onko joku tilanne jossa tämä voi laueta ilman että toi on fringessä?
-        del self.on_fringe[(node.x, node.y)]
+        self.on_fringe.pop((node.x, node.y), None)
+
 
     def find_node(self, x, y):
         return self.on_fringe.get((x,y), None)
