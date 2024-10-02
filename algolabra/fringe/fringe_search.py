@@ -1,4 +1,4 @@
-from algolabra.fringe.doublelinkedlist import DoubleLinkedList, Node
+from algolabra.fringe.doublelinkedlist import DoubleLinkedList, Node, DoubleLinkedListWithDict
 
 
 def fringe_search(start, goal, citymap):
@@ -17,7 +17,8 @@ def fringe_search(start, goal, citymap):
     # let's make nodes
     start_node = Node(*start)
 
-    fringe = DoubleLinkedList(node=start_node)
+    # fringe = DoubleLinkedList(node=start_node)
+    fringe = DoubleLinkedListWithDict(node=start_node)
     cache = [[None for a in line] for line in citymap]
 
     cache[start_node.y][start_node.x] = 0, None
@@ -43,17 +44,14 @@ def fringe_search(start, goal, citymap):
                 break
 
             for x, y, cost in children(node, citymap):
-                print(f"handling child {x=},{y=}, {cost=}")
+                # print(f"handling child {x=},{y=}, {cost=}")
                 g_child = g + cost
                 if cache[y][x]:
                     g_cached, parent = cache[y][x]
                     if g_child >= g_cached:
                         continue
-                # TODO replace this with a doublelinkedlist function. do a search, rm if found.
-                # if child in fringe:
-                #     fringe.remove_data(child)
-                fringe.remove_at_xy(x, y)
-                fringe.add_node(x=x, y=y, node=node)
+
+                fringe.add_child_xy(x, y, node)
                 cache[y][x] = g_child, (node.x, node.y)
             fringe.remove_node(node)
 
