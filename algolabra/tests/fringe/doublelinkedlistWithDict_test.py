@@ -51,6 +51,17 @@ class TestDoubleLinkedListWithDict(unittest.TestCase):
         self.assertIs(self.dll.on_fringe.get((2, 2), None), second)
         self.assertIsNot(self.dll.on_fringe.get((2, 2), None), child)
 
+    def test_add_child_twice_removes_other_child_and_moves_mark(self):
+        child = Node(2, 2)
+        second = Node(3, 3)
+        third = Node(2, 2)
+        self.dll.add_child(child, self.dll.head)
+        self.dll.add_child(second, child)
+        self.assertEqual(travel_list(self.dll), [(1, 1), (2, 2), (3, 3)])
+        self.dll.add_child(third, second)
+        self.assertEqual(travel_list(self.dll), [(1, 1), (3, 3), (2, 2)])
+
+
     def test_add_child_xy_passes_data_right(self):
         self.dll.add_child_xy(3,3, self.dll.head)
         self.assertEqual(travel_list(self.dll), [(1, 1), (3, 3)])
