@@ -3,14 +3,6 @@ class Node:
     Simple Node class for filling Doublelinked List.
     """
     def __init__(self, x=None, y=None, prev=None, next=None):
-        """
-        Coordinates of this Node
-        :param x:
-        :param y:
-        Links of this Node
-        :param prev: previous node on list
-        :param next: next node on list
-        """
         self.x = x
         self.y = y
 
@@ -113,6 +105,51 @@ class DoubleLinkedList:
         :return:
         """
         return DLLIterator(self.head)
+
+class DoubleLinkedListWithDict:
+    def __init__(self, x=None, y=None, node=None):
+        if x and y and not node:
+            node = Node(x, y)
+        self.head = node
+        self.on_fringe = {}
+        if node:
+            self.on_fringe[(node.x, node.y)] = node
+
+    def add_child_xy(self, x, y, parent):
+        child = Node(x, y, parent, parent.next)
+        self.add_child(child, parent)
+
+
+    def add_child(self, child, parent):
+        if parent.next:
+            parent.next.prev = child
+        parent.next = child
+
+        bookkeeping = self.on_fringe.get((child.x, child.y), None)
+        if bookkeeping:
+            self.remove_node(bookkeeping)
+        self.on_fringe[(child.x, child.y)] = child
+
+    def remove_node(self, node):
+        if node.prev:
+            node.prev.next = node.next
+        if node.next:
+            node.next.prev = node.prev
+        if self.head == node:
+            self.head = node.next
+        # onko joku tilanne jossa tämä voi laueta ilman että toi on fringessä?
+        del self.on_fringe[(node.x, node.y)]
+
+    def find_node(self, x, y):
+        return self.on_fringe.get((x,y), None)
+
+    def __iter__(self):
+        """
+        Returns iterator and duck types this as iterable.
+        :return:
+        """
+        return DLLIterator(self.head)
+
 
 if __name__=='__main__':
     # dll = DoubleLinkedList(data=1)
