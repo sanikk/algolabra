@@ -1,7 +1,7 @@
 from algolabra.fringe.fringe_search import fringe_search
 from algolabra.scenarios.map_component import read_map, read_scenarios
 
-def run_scenarios(scenario_file, map_path, bucket=None):
+def run_scenarios(scenario_file, map_path=None, bucket=None):
     map_file, scenario_list = read_scenarios(scenario_file)
     if bucket:
         scenario_list = [a for a in scenario_list if a[0] == bucket]

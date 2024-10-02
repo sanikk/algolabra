@@ -26,22 +26,35 @@ def fringe_search(start, goal, citymap):
     found = False
 
     print(f"initial {flimit=}")
+    visited = 0
+    vlist = []
+    expanded = 0
+    elist = []
 
     while not found and fringe.head:
         fmin = 1000000
         for node in fringe:
+            # counter stuff
+            visited += 1
+            vlist.append(node)
+            #
             g, parent = cache[node.y][node.x]
             f = g + heuristics(node, *goal)
-            print(f"handling {node=}, {g=}, {parent=}, {f=}")
+            # print(f"handling {node=}, {g=}, {parent=}, {f=}")
             if f > flimit:
                 fmin = min(f, fmin)
                 continue
             if node.x == goal[0] and node.y == goal[1]:
                 print(f"found route with cost {g}")
-                print(f"{g=}, {node.x=}, {node.y=}")
-                print(f"fringe: {[(node.x, node.y) for node in fringe]}")
+                print(f"{visited=}, {expanded=}")
+                # print(f"{g=}, {node.x=}, {node.y=}")
+                # print(f"fringe: {[(node.x, node.y) for node in fringe]}")
                 found = True
                 break
+
+            # counter stuff
+            expanded += 1
+            elist.append((node.x, node.y))
 
             for x, y, cost in children(node, citymap):
                 # print(f"handling child {x=},{y=}, {cost=}")
@@ -50,13 +63,14 @@ def fringe_search(start, goal, citymap):
                     g_cached, parent = cache[y][x]
                     if g_child >= g_cached:
                         continue
-
                 fringe.add_child_xy(x, y, node)
                 cache[y][x] = g_child, (node.x, node.y)
             fringe.remove_node(node)
-
-        flimit = fmin
-        print(f"finished round. updated {flimit=}")
+        # TODO remove this, it just bugged me
+        if not found:
+            flimit = fmin
+            print(f"finished round. updated {flimit=}")
+            print(f"{visited=}, {expanded=}")
     if found:
         route = [goal]
         while route[-1] != start:
@@ -103,7 +117,3 @@ def children(node, citymap):
 
 if __name__=='__main__':
     node = Node(x=1, y=1)
-    print(f"{node.x=}, {node.y=}")
-    print(heuristics(node, 0, 1))
-    print(heuristics(node, 0, 0))
-    print(heuristics(node, 2, 2))
