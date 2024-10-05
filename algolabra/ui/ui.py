@@ -10,7 +10,7 @@ class TabWindow(QTabWidget):
 
         intro_tab = IntroTab(search_service=search_service)
         self.addTab(intro_tab, 'intro tab')
-        astar_tab = SearchTab(search_name='A*', search_func=search_service.playbyplay_astar)
+        astar_tab = SearchTab(search_name='A*', search_func=search_service.playbyplay_astar, search_service=search_service)
         self.addTab(astar_tab, 'A* tab')
-        fringe_tab = SearchTab(search_name='Fringe Search', search_func=search_service.playbyplay_fringe)
+        fringe_tab = SearchTab(search_name='Fringe Search', search_func=search_service.playbyplay_fringe, search_service=search_service)
         self.addTab(fringe_tab, 'Fringe search tab')

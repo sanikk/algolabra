@@ -5,10 +5,10 @@ import sys
 from PyQt6.QtWidgets import QApplication
 
 def main():
-    search_service = SearchService()
+    search_service = SearchService(map_path="algolabra/bostonmaps/Boston_0_512.map")
     app = QApplication(sys.argv)
 
-    ui = TabWindow(map_path="algolabra/bostonmaps/Boston_0_512.map", search_service=search_service)
+    ui = TabWindow(search_service=search_service)
 
     ui.resize(800, 600)
 

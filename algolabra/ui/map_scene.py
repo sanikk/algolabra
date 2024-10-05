@@ -12,11 +12,20 @@ class MapScene(QGraphicsScene):
     """
     whole map
     """
-    def __init__(self, map_path, search_service=None, tilesize=8):
+    # def __init__(self, search_service=None, tilesize=8):
+    def __init__(self, citymap, tilesize=8):
         super().__init__()
-        self.search_service = search_service
-        self.rectangles = self.map_to_grid(read_map(map_path), tilesize)
+        self.citymap = citymap
+        # self.search_service = search_service
+        self.tilesize = tilesize
+        # self.rectangles = []
+        self.rectangles = [[self.rectify(x, y, ground, self.tilesize) for x, ground in enumerate(line)] for y, line in
+                           enumerate(citymap)]
 
+
+    def read_map(self):
+        pass
+        # self.rectangles = self.search_service.get_citymap(self.tilesize)
 
     def rectify(self, x: int, y: int, ground: str, tilesize: int):
         if ground == '.':
@@ -25,10 +34,8 @@ class MapScene(QGraphicsScene):
             brush = QBrush(Qt.GlobalColor.red)
         return self.addRect(x * tilesize, y * tilesize, tilesize, tilesize, brush=brush)
 
-
-    def map_to_grid(self, citymap, tilesize):
-        rectangles = [[self.rectify(x,y,ground,tilesize) for x, ground in enumerate(line)] for y, line in enumerate(citymap)]
-        return rectangles
+    # rectangles = [[self.rectify(x, y, ground, self.tilesize) for x, ground in enumerate(line)] for y, line in
+    #                       enumerate(citymap)]
 
 
     def update_state(self, visited: list[tuple[int, int]], expanded: list[tuple[int, int]]):

@@ -10,8 +10,13 @@ class IntroTab(QWidget):
 
         chosen_map_label = QLabel('Chosen map')
         layout.addWidget(chosen_map_label)
-        self.chosen_map_value_label = QLabel(self.search_service.get_chosen_map() or "No map chosen yet")
+        self.chosen_map_value_label = QLabel(self.search_service.get_map_path() or "No map chosen yet")
         layout.addWidget(self.chosen_map_value_label)
+
+        chosen_scenario_label = QLabel('Chosen scenario')
+        layout.addWidget(chosen_scenario_label)
+        self.chosen_scenario_value_label = QLabel(str(self.search_service.get_scenario() or "No scenario chosen yet"))
+        layout.addWidget(self.chosen_scenario_value_label)
 
         astar_time_title_label = QLabel('A* time')
         layout.addWidget(astar_time_title_label)
@@ -36,6 +41,10 @@ class IntroTab(QWidget):
         map_change_dialog_button.clicked.connect(self.set_map)
         buttons_layout.addWidget(map_change_dialog_button)
 
+        scenario_change_button = QPushButton('set scenario')
+        scenario_change_button.clicked.connect(self.set_scenario)
+        buttons_layout.addWidget(scenario_change_button)
+
         run_astar_button = QPushButton('run A* fast')
         run_astar_button.clicked.connect(self.search_service.time_astar)
         buttons_layout.addWidget(run_astar_button)
@@ -54,3 +63,6 @@ class IntroTab(QWidget):
         if filename:
             self.search_service.set_map(filename)
             self.chosen_map_value_label.setText(filename)
+
+    def set_scenario(self):
+        pass

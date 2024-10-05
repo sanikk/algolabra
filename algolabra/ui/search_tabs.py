@@ -1,36 +1,20 @@
-from PyQt6.QtWidgets import QWidget, QGroupBox, QHBoxLayout, QLabel, QPushButton, QVBoxLayout
-from algolabra.service.search_service import SearchService
-
+from PyQt6.QtWidgets import QWidget, QGroupBox, QHBoxLayout, QLabel, QPushButton, QVBoxLayout, QGraphicsView
+from algolabra.ui.map_scene import MapScene
 
 class SearchTab(QWidget):
-    def __init__(self, search_name, search_func, parent=None, search_service=None):
+    def __init__(self, parent=None, search_name=None, search_func=None, search_service=None):
         super().__init__(parent=None)
         self.search_service = search_service
 
         layout = QVBoxLayout()
         control_area = get_control_area(search_name, search_func)
         layout.addWidget(control_area)
+
+        self.scene = MapScene(self.search_service.get_citymap())
+        self.view = QGraphicsView(self.scene)
+        layout.addWidget(self.view)
+
         self.setLayout(layout)
-
-
-class AstarTab(QWidget):
-    def __init__(self, parent=None, search_service=None):
-        super().__init__(parent=None)
-        self.search_service = search_service
-
-        layout = QVBoxLayout()
-        control_area = get_control_area('A*',search_service.playbyplay_astar)
-        layout.addWidget(control_area)
-        self.setLayout(layout)
-
-
-
-class FringeTab(QWidget):
-    def __init__(self, parent=None, search_service=None):
-        super().__init__(parent=None)
-        self.search_service = search_service
-        self.control_area = get_control_area('Fringe', search_service.playbyplay_fringe)
-
 
 def get_control_area(search_name: str, search_runner):
 
