@@ -3,8 +3,9 @@
 ## Project structure
 
 Started with the algorithms so not much yet.
-- doublelinkedlist for fringe search
+- doublelinkedlist with builtin dict for fringe search
 - heuristics function for grid, should be usable in both
+- went with qt6 front, since it looks neat
 
 ## Achieved space and time complexities
 
