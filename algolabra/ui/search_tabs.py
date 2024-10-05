@@ -10,7 +10,7 @@ class SearchTab(QWidget):
         control_area = get_control_area(search_name, search_func)
         layout.addWidget(control_area)
 
-        self.scene = MapScene(self.search_service.get_citymap())
+        self.scene = MapScene(self.search_service.get_citymap(), search_service=search_service)
         self.view = QGraphicsView(self.scene)
         layout.addWidget(self.view)
 
