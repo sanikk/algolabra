@@ -10,8 +10,9 @@ class MapScene(QGraphicsScene):
     """
     whole map
     """
-    def __init__(self, map_path, tilesize=8):
+    def __init__(self, map_path, search_service=None, tilesize=8):
         super().__init__()
+        self.search_service = search_service
         self.rectangles = self.map_to_grid(read_map(map_path), tilesize)
 
 
