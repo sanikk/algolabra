@@ -1,12 +1,18 @@
-from PyQt6.QtWidgets import QApplication, QGraphicsView
+from PyQt6.QtWidgets import QTabWidget, QWidget
+import sys
+
+from algolabra.ui.intro_tab import IntroTab
 from algolabra.ui.map_scene import MapScene
 
 
-class UI(QGraphicsView):
-    def __init__(self, map_path=None, search_service=None, *args):
-        super().__init__(*args)
+class TabWindow(QTabWidget):
+    def __init__(self, parent: QWidget = None, map_path=None, search_service=None):
+        super().__init__(parent=parent)
+        # need this to exit cleanly?
+        self._search_service = search_service
 
-        self.setScene(MapScene(map_path, search_service))
-        self.setWindowTitle("Mapview")
-        self.resize(640, 480)
-        self.show()
+        intro_tab = IntroTab(search_service=search_service)
+        self.addTab(intro_tab, 'intro tab')
+        # map_view_tab = MapScene(map_path, search_service)
+        # self.addTab(map_view_tab, 'map view')
+

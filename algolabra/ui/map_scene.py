@@ -2,9 +2,11 @@ from PyQt6.QtGui import QBrush, QColor
 from PyQt6.QtWidgets import QGraphicsScene, QGraphicsItem, QGraphicsRectItem
 from PyQt6.QtCore import Qt
 
-# from algolabra.scenarios.map_component import read_map
-from map_component import read_map
+from algolabra.scenarios.map_component import read_map
+# from map_component import read_map
 
+class MapViewTab:
+    pass
 
 class MapScene(QGraphicsScene):
     """
