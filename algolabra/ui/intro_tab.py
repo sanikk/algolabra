@@ -8,9 +8,6 @@ class IntroTab(QWidget):
 
         layout = QVBoxLayout()
 
-        # make widget
-        # layout.addWidget(widget)
-
         chosen_map_label = QLabel('Chosen map')
         layout.addWidget(chosen_map_label)
         self.chosen_map_value_label = QLabel(self.search_service.get_chosen_map() or "No map chosen yet")
@@ -25,13 +22,6 @@ class IntroTab(QWidget):
         layout.addWidget(fringe_time_title_label)
         self.fringe_time_result_label = QLabel(self.search_service.get_fringe_time() or "No results yet")
         layout.addWidget(self.fringe_time_result_label)
-
-        # layout.addWidget(self.log_path_value_label)
-
-        # log_path_title_label = QLabel('Log path')
-        # layout.addWidget(log_path_title_label)
-        # self.log_path_value_label = QLabel(self._path_service.get_log_path())
-        # layout.addWidget(self.log_path_value_label)
 
         buttons_group = self.get_buttons_group_box()
         layout.addWidget(buttons_group)
