@@ -5,21 +5,24 @@ class SearchService:
     def __init__(self, map_path=None, scenario_file_path=None, tilesize=8):
         self.tilesize = tilesize
 
-        self.scenario_file_path = scenario_file_path
-        self.scenarios = None
-        if scenario_file_path:
-            self.read_scenarios()
+        self.astar_time = None
+        self.fringe_time = None
 
+        self.scenario_file_path = scenario_file_path
+        self.map_file_path = map_path
+
+        self.scenarios = None
+        self.citymap = None
+
+        # TODO remove this, dev stuph
         # id, start, goal, ideal_solution
         self.chosen_scenario = [26,	(187, 480), (256, 404), 104.58073578]
 
-        self.map_path = map_path
-        self.citymap = None
+        if scenario_file_path:
+            self.read_scenarios()
+
         if map_path:
             self.read_city_map()
-
-        self.astar_time = None
-        self.fringe_time = None
 
     def read_city_map(self):
         if not self.map_path:
