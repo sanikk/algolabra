@@ -1,4 +1,4 @@
-from algolabra.fringe.doublelinkedlist import DoubleLinkedList, Node, DoubleLinkedListWithDict
+from algolabra.fringe.doublelinkedlist import DoubleLinkedList, Node
 
 
 def fringe_search(start, goal, citymap):
@@ -18,7 +18,7 @@ def fringe_search(start, goal, citymap):
     start_node = Node(*start)
 
     # fringe = DoubleLinkedList(node=start_node)
-    fringe = DoubleLinkedListWithDict(node=start_node)
+    fringe = DoubleLinkedList(node=start_node)
     cache = [[None for a in line] for line in citymap]
 
     cache[start_node.y][start_node.x] = 0, None
