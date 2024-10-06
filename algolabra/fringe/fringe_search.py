@@ -1,4 +1,5 @@
 from algolabra.fringe.doublelinkedlist import DoubleLinkedList, Node
+from algolabra.common_search_utils.heuristics import heuristics
 
 
 def fringe_search(start, goal, citymap):
@@ -49,21 +50,6 @@ def fringe_search(start, goal, citymap):
             x,y = route[-1]
             route.append(cache[y][x][1])
         return found_cost, route
-
-
-def heuristics(node, goalx, goaly):
-    """
-    Octile distance function for heuristics. Should work for both algorithms.
-
-    :param node:
-    :param goalx:
-    :param goaly:
-    :return:
-    """
-    # undirected heuristics and cache for now
-    delta_x = node.x - goalx
-    delta_y = node.y - goaly
-    return max(abs(delta_x), abs(delta_y)) + (2**0.5 - 1) * min(abs(delta_x), abs(delta_y))
 
 def children(node, citymap):
     """
