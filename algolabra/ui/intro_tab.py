@@ -1,4 +1,7 @@
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QFileDialog, QGroupBox, QHBoxLayout, QPushButton
+from tokenize import group
+
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QFileDialog, QGroupBox, QHBoxLayout, QPushButton, QFrame, \
+    QComboBox
 
 
 class IntroTab(QWidget):
@@ -6,63 +9,83 @@ class IntroTab(QWidget):
         super().__init__(parent=parent)
         self.search_service = search_service
 
+        self.chosen_map_box = None
+        self.scenario_file_box = None
+        self.scenario_combobox = None
+
         layout = QVBoxLayout()
 
-        chosen_map_label = QLabel('Chosen map')
-        layout.addWidget(chosen_map_label)
-        self.chosen_map_value_label = QLabel(self.search_service.get_map_path() or "No map chosen yet")
-        layout.addWidget(self.chosen_map_value_label)
+        layout.addWidget(self.get_map_box())
+        layout.addWidget(self.get_scenario_box())
 
-        chosen_scenario_label = QLabel('Chosen scenario')
-        layout.addWidget(chosen_scenario_label)
-        self.chosen_scenario_value_label = QLabel(str(self.search_service.get_scenario() or "No scenario chosen yet"))
-        layout.addWidget(self.chosen_scenario_value_label)
-
-        astar_time_title_label = QLabel('A* time')
-        layout.addWidget(astar_time_title_label)
-        self.astar_time_result_label = QLabel(self.search_service.get_astar_time() or "No results yet")
-        layout.addWidget(self.astar_time_result_label)
-
-        fringe_time_title_label = QLabel('Fringe time')
-        layout.addWidget(fringe_time_title_label)
-        self.fringe_time_result_label = QLabel(self.search_service.get_fringe_time() or "No results yet")
-        layout.addWidget(self.fringe_time_result_label)
-
-        buttons_group = self.get_buttons_group_box()
-        layout.addWidget(buttons_group)
+        layout.addWidget(self.get_groupbox("A*", self.search_service.get_astar_time, "Run A* fast"))
+        layout.addWidget(self.get_groupbox("Fringe search", self.search_service.get_fringe_time, "Run Fringe search fast"))
 
         self.setLayout(layout)
 
-    def get_buttons_group_box(self):
-        buttons_group = QGroupBox()
-        buttons_layout = QHBoxLayout()
-
-        map_change_dialog_button = QPushButton('set map')
-        map_change_dialog_button.clicked.connect(self.set_map)
-        buttons_layout.addWidget(map_change_dialog_button)
-
-        scenario_change_button = QPushButton('set scenario')
-        scenario_change_button.clicked.connect(self.set_scenario)
-        buttons_layout.addWidget(scenario_change_button)
-
-        run_astar_button = QPushButton('run A* fast')
-        run_astar_button.clicked.connect(self.search_service.time_astar)
-        buttons_layout.addWidget(run_astar_button)
-
-        run_fringe_button = QPushButton('run Fringe Search fast')
-        run_fringe_button.clicked.connect(self.search_service.time_fringe)
-        buttons_layout.addWidget(run_fringe_button)
-
-        buttons_group.setLayout(buttons_layout)
-        return buttons_group
-
     def set_map(self, map_dir=None):
-        filename = QFileDialog.getOpenFileName(parent=self,
+        ret = QFileDialog.getOpenFileName(parent=self,
                                                    caption='Choose Map file',
                                                    directory=map_dir or '.')
-        if filename:
-            self.search_service.set_map(filename)
-            self.chosen_map_value_label.setText(filename)
+        if ret:
+            self.search_service.set_citymap(ret[0])
+            self.chosen_map_box.setText(ret[0] or "None chosen yet")
 
-    def set_scenario(self):
-        pass
+    def set_scenario_file(self, map_dir=None):
+        ret = QFileDialog.getOpenFileName(parent=self,
+                                          caption='Choose Scenario file',
+                                          directory=map_dir or '.')
+        if ret:
+            self.search_service.set_scenario_file_path(ret[0])
+            self.scenario_file_box.setText(ret[0] or "None chosen yet")
+
+
+    def get_groupbox(self, title, result_getter, button_text):
+        groupbox = QGroupBox(title)
+        layout = QVBoxLayout()
+
+        result_label = QLabel(result_getter() or "No results yet")
+        layout.addWidget(result_label)
+
+        button = QPushButton(button_text)
+        def updater():
+            data = result_getter()
+            result_label.setText(data)
+        button.clicked.connect(updater)
+        layout.addWidget(button)
+
+        groupbox.setLayout(layout)
+        return groupbox
+
+    def get_map_box(self):
+        groupbox = QGroupBox("Map")
+        layout = QVBoxLayout()
+
+        self.chosen_map_box = QLabel(self.search_service.get_map_title() or "None chosen yet")
+
+        button = QPushButton("Change")
+        button.clicked.connect(self.set_map)
+
+        layout.addWidget(self.chosen_map_box)
+        layout.addWidget(button)
+        groupbox.setLayout(layout)
+
+        return groupbox
+
+    def get_scenario_box(self):
+        groupbox = QGroupBox("Scenario")
+        layout = QVBoxLayout()
+
+        self.scenario_file_box = QLabel(self.search_service.get_scenario_file_path() or "None chosen yet")
+        scenario_file_button = QPushButton("Change")
+        scenario_file_button.clicked.connect(self.set_scenario_file)
+
+        layout.addWidget(self.scenario_file_box)
+        layout.addWidget(scenario_file_button)
+        groupbox.setLayout(layout)
+        return groupbox
+
+    def populate_scenario_list(self):
+        print("populate_scenario_list fired!")
+        scenario_list = ['all scenarios'] + self.search_service.get_scenario_list()
+        self.scenario_combobox.addItems(scenario_list)

@@ -1,4 +1,4 @@
-def read_map(filename) -> tuple[int, int, list]:
+def read_map(filename) -> list:
     """
     Read movingai-type map file and preprocess it.
 
@@ -7,9 +7,7 @@ def read_map(filename) -> tuple[int, int, list]:
     """
     with open(filename) as f:
         lista = f.read().split("\n")
-    height = int(lista[1].split(" ")[1])
-    width = int(lista[2].split(" ")[1])
-    return height, width, [line for line in lista[4:] if line]
+    return [line for line in lista[4:] if line]
 
 def read_scenarios(filename) -> tuple[str, list]:
     """
