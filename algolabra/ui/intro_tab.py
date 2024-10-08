@@ -15,7 +15,24 @@ class IntroTab(QWidget):
         layout.addWidget(self.get_groupbox("Fringe search", self.scenario_service.get_fringe_time, self.scenario_service.run_fringe_fast, "Run Fringe search fast"))
 
         self.setLayout(layout)
+    def astar_box(self):
+        groupbox = QGroupBox("A*")
+        layout = QVBoxLayout()
 
+        result_label = QLabel("No results yet")
+        layout.addWidget(result_label)
+
+        button = QPushButton("Run A*")
+
+        def updater():
+            data = self.scenario_service.run_astar_fast()
+            result_label.setText(data)
+
+        button.clicked.connect(updater)
+        layout.addWidget(button)
+
+        groupbox.setLayout(layout)
+        return groupbox
     def get_groupbox(self, title, result_getter, runner_func, button_text):
         groupbox = QGroupBox(title)
         layout = QVBoxLayout()
@@ -64,9 +81,9 @@ class IntroTab(QWidget):
             bucketbox.addItems(self.scenario_service.get_bucket_list())
 
         def update_table():
-            table.clear()
+            table.clearContents()
             data = self.scenario_service.get_bucket(bucketbox.currentIndex())
-
+            # ugly but works for now. we just insert data into the table as strings.
             [[[table.setItem(rownumber, columnnumber, QTableWidgetItem(f"{columndata[0]},{columndata[1]}"))]
              if isinstance(columndata, tuple) else
                 [table.setItem(rownumber, columnnumber, QTableWidgetItem(f"{columndata}"))]
@@ -84,7 +101,10 @@ class IntroTab(QWidget):
     def get_scenario_table(self):
         table = QTableWidget()
         table.setRowCount(10)
-        labels = ["id", "bucket", "start", "goal", "cost"]
+        labels = ["id", "bucket", "start", "goal", "cost"
+        # [time.perf_counter(), time.process_time(), time.thread_time()]
+        , "A* cost", "perf_time", "proc_time", "thread_time",
+        "Fringe cost", "perf_time", "proc_time", "thread_time"]
         table.setColumnCount(len(labels))
         table.setHorizontalHeaderLabels(labels)
         return table
