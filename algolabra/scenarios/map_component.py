@@ -9,13 +9,8 @@ def read_map(filename) -> list:
         lista = f.read().split("\n")
     return [line for line in lista[4:] if line]
 
-def read_scenarios(filename) -> tuple[str, list]:
-    """
-    Read movingai-type map scenario file and preprocess it.
-
-    :param filename: path to scenario file
-    :return: map_title and list of scenarios: [bucket, (start), (goal), ideal_solution]
-    """
+def read_scenarios(filename):
+    product = {}
     with open(filename) as f:
         lista = f.read().split("\n")
     lines = [a.split("\t") for a in lista[1:] if a]
@@ -24,7 +19,14 @@ def read_scenarios(filename) -> tuple[str, list]:
     # bucket, map, (start), (goal), ideal_solution
     converted = [[int(a[0]), (int(a[4]), int(a[5])), (int(a[6]), int(a[7])),
                   float(a[8])] for a in lines]
-    return map_title, converted
+    for i, scenario in enumerate(converted):
+        new_item = [i, *scenario]
+        if scenario[0] in product:
+            product[scenario[0]].append(new_item)
+        else:
+            product[scenario[0]] = [new_item]
+
+    return map_title, product
 
 
 if __name__=='__main__':
