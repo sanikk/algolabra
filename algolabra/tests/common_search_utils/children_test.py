@@ -21,9 +21,12 @@ class TestChildren(unittest.TestCase):
         self.assertEqual(result, [(1, 2, 1), (2, 2, 1.4142135623730951), (2, 1, 1), (2, 0, 1.4142135623730951),
                                   (1, 0, 1), (0, 0, 1.4142135623730951), (0, 1, 1), (0, 2, 1.4142135623730951)])
 
-    def test_children_returns_7_on_one_blocked_corner(self):
+    def test_children_returns_the_right_7_on_one_blocked_corner(self):
         result = children(Node(1, 1), self.le_map2)
         self.assertEqual(len(result), 7)
+        coords = [child[:2] for child in result]
+        self.assertEqual(coords, [(1, 2), (2, 2), (2, 1), (2, 0),
+                                  (1, 0), (0, 1), (0, 2)])
 
     def test_children_return_3_correctly(self):
         result = children(Node(1, 1), self.le_map1)
@@ -44,3 +47,15 @@ class TestChildren(unittest.TestCase):
     def test_children_respects_xy_bounds(self):
         result = children(Node(0, 2), [[".", ".", "."], [".", ".", "."], [".", ".", "."]])
         self.assertEqual(len(result), 3)
+
+    def test_children_straight_obstacle_blocks_corners(self):
+        result = children(Node(1, 1), [[".", "#", "."], [".", ".", "."], [".", ".", "."]])
+        self.assertEqual(len(result), 5)
+        coords = [child[:2] for child in result]
+        self.assertEqual(coords, [(1, 2), (2, 2), (2, 1), (0, 1), (0, 2)])
+
+
+        result = children(Node(1, 1), [[".", ".", "."], [".", ".", "#"], [".", ".", "."]])
+        self.assertEqual(len(result), 5)
+        result = children(Node(1, 1), [[".", ".", "."], [".", ".", "."], [".", "#", "."]])
+        self.assertEqual(len(result), 5)
