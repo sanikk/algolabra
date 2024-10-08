@@ -1,4 +1,5 @@
 from algolabra.fringe.timed_fringe import timed_fringe_search
+from algolabra.astar.astar import astar
 
 
 class SearchService:
@@ -10,10 +11,10 @@ class SearchService:
 
     # SEARCH ALGO METHODS
 
-    def run_timed_fringe(self):
-        cost, timers, route = timed_fringe_search()
-        new_time = None
-        self.fringe_time = new_time
+    def run_timed_fringe(self, start, goal, citymap):
+        cost, timers, route = timed_fringe_search(start, goal, citymap)
+        self.fringe_time = timers
+        return [cost, *timers]
 
     def run_timed_astar(self):
         new_time = "123.456"
