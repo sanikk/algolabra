@@ -47,7 +47,7 @@ class IntroTab(QWidget):
 
         def updater():
             data = self.scenario_service.run_fringe_fast(bucket=self.bucketbox.currentIndex())
-            [[self.table.setItem(i, j + 5, QTableWidgetItem("{:.8f}".format(item))) for j, item in enumerate(line)] for i, line in enumerate(data)]
+            [[self.table.setItem(i, j + 9, QTableWidgetItem("{:.8f}".format(item))) for j, item in enumerate(line)] for i, line in enumerate(data)]
         button.clicked.connect(updater)
         layout.addWidget(button)
 

@@ -67,6 +67,7 @@ class ScenarioService:
         results = []
         for scenario_id, bucket, start, goal, ideal_cost in self.scenarios.get(bucket, []):
             results.append(self.search_service.run_timed_fringe(start, goal, self.map_list))
+            print(f"{scenario_id} done.")
         return results
 
     def playbyplay_fringe(self):
