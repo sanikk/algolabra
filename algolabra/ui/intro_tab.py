@@ -15,8 +15,6 @@ class IntroTab(QWidget):
         layout.addWidget(self.get_scenario_box())
         layout.addWidget(self.astar_box())
         layout.addWidget(self.fringe_box())
-        # layout.addWidget(self.get_groupbox("A*", self.scenario_service.get_astar_time, self.scenario_service.run_astar_fast, "Run A* fast"))
-        # layout.addWidget(self.get_groupbox("Fringe search", self.scenario_service.get_fringe_time, self.scenario_service.run_fringe_fast, "Run Fringe search fast"))
 
         self.setLayout(layout)
     def astar_box(self):
@@ -49,31 +47,7 @@ class IntroTab(QWidget):
 
         def updater():
             data = self.scenario_service.run_fringe_fast(bucket=self.bucketbox.currentIndex())
-            # result_label.setText(data)
-            # [
-            #    (1, [0.00998287700349465, 0.009089730000000018, 0.009089126000000003]),
-            #    (2.8284271247461903, [0.009297609038185328, 0.008531057000000009, 0.00853570299999995]),
-            # ]
-            # "{:.2f}".format(13.949999999999999)
             [[self.table.setItem(i, j + 5, QTableWidgetItem("{:.8f}".format(item))) for j, item in enumerate(line)] for i, line in enumerate(data)]
-
-        button.clicked.connect(updater)
-        layout.addWidget(button)
-
-        groupbox.setLayout(layout)
-        return groupbox
-
-    def get_groupbox(self, title, result_getter, runner_func, button_text):
-        groupbox = QGroupBox(title)
-        layout = QVBoxLayout()
-
-        result_label = QLabel(result_getter() or "No results yet")
-        layout.addWidget(result_label)
-
-        button = QPushButton(button_text)
-        def updater():
-            data = runner_func()
-            result_label.setText(data)
         button.clicked.connect(updater)
         layout.addWidget(button)
 
@@ -131,10 +105,9 @@ class IntroTab(QWidget):
 
     def get_scenario_table(self):
         table = QTableWidget()
-        table.setRowCount(10)
-        labels = ["id", "bucket", "start", "goal", "cost"
-        # [time.perf_counter(), time.process_time(), time.thread_time()]
-        , "A* cost", "perf_time", "proc_time", "thread_time",
+        table.setRowCount(20)
+        labels = ["id", "bucket", "start", "goal", "cost",
+        "A* cost", "perf_time", "proc_time", "thread_time",
         "Fringe cost", "perf_time", "proc_time", "thread_time"]
         table.setColumnCount(len(labels))
         table.setHorizontalHeaderLabels(labels)

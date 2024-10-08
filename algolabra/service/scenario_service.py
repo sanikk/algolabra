@@ -65,12 +65,6 @@ class ScenarioService:
 
     def run_fringe_fast(self, bucket):
         results = []
-        print("scenario service run_fringe_fast prints")
         for scenario_id, bucket, start, goal, ideal_cost in self.scenarios.get(bucket, []):
             results.append(self.search_service.run_timed_fringe(start, goal, self.map_list))
-        print(f"{results=}")
-        # [
-        #    (1, [0.00998287700349465, 0.009089730000000018, 0.009089126000000003]),
-        #    (2.8284271247461903, [0.009297609038185328, 0.008531057000000009, 0.00853570299999995]),
-        # ]
         return results

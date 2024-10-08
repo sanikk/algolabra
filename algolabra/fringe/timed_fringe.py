@@ -75,6 +75,4 @@ def timed_fringe_search(start, goal, citymap) -> tuple[int, list, list]:
     return cost, timers, route
 
 if __name__=='__main__':
-    # [26,	(187, 480), (256, 404), 104.58073578]
     pass
-    # timed_fringe_search((187, 480), (256, 404), read_map("Boston_0_512.map"))
