@@ -12,22 +12,16 @@ class MapScene(QGraphicsScene):
     """
     whole map
     """
-    # def __init__(self, search_service=None, tilesize=8):
-    def __init__(self, citymap, tilesize=8, search_service=None):
-        # TODO out of time so hard coded values for now
+    def __init__(self, citymap, tilesize=8, scenario_service=None):
         super().__init__()
         self.citymap = citymap
-        self.search_service = search_service
+        self.scenario_service = scenario_service
         self.tilesize = tilesize
-        # self.rectangles = []
-        self.rectangles = [[self.rectify(x, y, ground, self.tilesize) for x, ground in enumerate(line)] for y, line in
+        self.rectangles = []
+        if citymap:
+            self.rectangles = [[self.rectify(x, y, ground, self.tilesize) for x, ground in enumerate(line)] for y, line in
                            enumerate(citymap)]
-        self.mark_start_goal()
-
-
-    def read_map(self):
-        pass
-        # self.rectangles = self.search_service.get_citymap(self.tilesize)
+        # self.mark_start_goal()
 
     def rectify(self, x: int, y: int, ground: str, tilesize: int):
         if ground == '.':
@@ -35,10 +29,6 @@ class MapScene(QGraphicsScene):
         else:
             brush = QBrush(Qt.GlobalColor.red)
         return self.addRect(x * tilesize, y * tilesize, tilesize, tilesize, brush=brush)
-
-    # rectangles = [[self.rectify(x, y, ground, self.tilesize) for x, ground in enumerate(line)] for y, line in
-    #                       enumerate(citymap)]
-
 
     def update_state(self, visited: list[tuple[int, int]], expanded: list[tuple[int, int]]):
         for x,y in visited:
@@ -48,13 +38,13 @@ class MapScene(QGraphicsScene):
         # for x, y in pruned:
         #     self.rectangles[y][x].setBrush(QBrush(QColor('red')))
 
-    def mark_start_goal(self):
-        # [26,	(187, 480), (256, 404), 104.58073578]
-        bucket, start, goal, ideal_solution = self.search_service.get_scenario()
-        x, y = start
-        for cords,color in zip([start,goal], ['cyan', 'purple']):
-            x,y = cords
-            self.rectangles[y][x].setBrush(QBrush(QColor(color)))
+    # def mark_start_goal(self):
+    #     # [26,	(187, 480), (256, 404), 104.58073578]
+    #     bucket, start, goal, ideal_solution = self.search_service.get_scenario()
+    #     x, y = start
+    #     for cords,color in zip([start,goal], ['cyan', 'purple']):
+    #         x,y = cords
+    #         self.rectangles[y][x].setBrush(QBrush(QColor(color)))
 
 if __name__=='__main__':
     from PyQt6.QtWidgets import QApplication, QGraphicsView
@@ -75,5 +65,3 @@ if __name__=='__main__':
     view.show()
 
     sys.exit(app.exec())
-
-
