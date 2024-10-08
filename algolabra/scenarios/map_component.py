@@ -1,37 +1,38 @@
-def read_map(filename):
+def read_map(filename) -> list:
     """
     Read movingai-type map file and preprocess it.
 
-    :param filename:
-    :return: map as list of lines
+    :param filename: object to use as path
+    :return: height, width, map as list of lines
     """
     with open(filename) as f:
         lista = f.read().split("\n")
-    # height = int(lista[1].split(" ")[1])
-    # width = int(lista[2].split(" ")[1])
     return [line for line in lista[4:] if line]
 
 def read_scenarios(filename):
-    """
-    Read movingai-type map scenario file and preprocess it.
-
-    :param filename: path to scenario file
-    :return: list of scenarios: [bucket, (start), (goal), ideal_solution]
-    """
+    product = {}
     with open(filename) as f:
         lista = f.read().split("\n")
     lines = [a.split("\t") for a in lista[1:] if a]
-    map_file = lines[0][1]
-    print(f"{map_file=}")
+    map_title = lines[0][1]
+
     # bucket, map, (start), (goal), ideal_solution
     converted = [[int(a[0]), (int(a[4]), int(a[5])), (int(a[6]), int(a[7])),
                   float(a[8])] for a in lines]
-    return map_file, converted
+    for i, scenario in enumerate(converted):
+        new_item = [i, *scenario]
+        if scenario[0] in product:
+            product[scenario[0]].append(new_item)
+        else:
+            product[scenario[0]] = [new_item]
+
+    return map_title, product
 
 
 if __name__=='__main__':
-    height, width, lista = read_map("Boston_0_512.map")
-    scenarios = read_scenarios("Boston_0_512.map.scen")
+    pass
+    # height, width, lista = read_map("Boston_0_512.map")
+    # scenarios = read_scenarios("Boston_0_512.map.scen")
 
 
 

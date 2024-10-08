@@ -1,15 +1,18 @@
 from algolabra.ui.ui import TabWindow
+from algolabra.service.scenario_service import ScenarioService
 from algolabra.service.search_service import SearchService
 
 import sys
 from PyQt6.QtWidgets import QApplication
 
 def main():
-    search_service = SearchService(map_path="algolabra/bostonmaps/Boston_0_512.map")
+
+    search_service = SearchService()
+    scenario_service = ScenarioService(search_service=search_service)
+
     app = QApplication(sys.argv)
 
-    ui = TabWindow(search_service=search_service)
-
+    ui = TabWindow(scenario_service=scenario_service)
     ui.resize(800, 600)
 
     ui.setWindowTitle('Pathfinding on a Grid')
