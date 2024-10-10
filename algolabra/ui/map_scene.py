@@ -1,5 +1,6 @@
 from collections import deque
 
+from PyQt6.QtCore import pyqtSlot
 from PyQt6.QtGui import QColor, QImage, QPixmap
 from PyQt6.QtWidgets import QGraphicsScene
 
@@ -9,6 +10,7 @@ class MapScene(QGraphicsScene):
         super().__init__()
         self.tile_size = tile_size
         self.scenario_service = scenario_service
+        scenario_service.map_changed.connect(self.set_bg_image)
 
     def get_image_from_map(self, map_data: list):
             image = QImage(len(map_data[0]), len(map_data), QImage.Format.Format_RGB32)
@@ -17,7 +19,8 @@ class MapScene(QGraphicsScene):
 
             return image.scaled(len(map_data) * self.tile_size, len(map_data[0]) * self.tile_size)
 
-    def set_bg_image(self):
+    @pyqtSlot(str)
+    def set_bg_image(self, trash):
         map_list = self.scenario_service.get_map_list()
         if not map_list:
             return

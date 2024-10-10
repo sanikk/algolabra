@@ -3,6 +3,7 @@ from PyQt6.QtCore import pyqtSlot, pyqtSignal
 
 from algolabra.ui.intro_tab import IntroTab
 from algolabra.ui.search_tabs import AstarTab, FringeTab
+from algolabra.ui.map_scene import MapScene
 
 class UI(QWidget):
     def __init__(self, scenario_service=None):
@@ -54,7 +55,10 @@ class TabWindow(QTabWidget):
 
         intro_tab = IntroTab(scenario_service=scenario_service)
         self.addTab(intro_tab, 'intro tab')
-        astar_tab = AstarTab(scenario_service=scenario_service)
+
+        scene = MapScene(scenario_service=scenario_service)
+
+        astar_tab = AstarTab(scenario_service=scenario_service, scene=scene)
         self.addTab(astar_tab, 'A* tab')
-        fringe_tab = FringeTab(scenario_service=scenario_service)
+        fringe_tab = FringeTab(scenario_service=scenario_service, scene=scene)
         self.addTab(fringe_tab, 'Fringe search tab')

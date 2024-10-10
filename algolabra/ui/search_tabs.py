@@ -26,17 +26,18 @@ def get_info_area(scenario_service=None):
     # info_group = Q
 
 class AstarTab(QWidget):
-    def __init__(self, scenario_service=None):
+    def __init__(self, scenario_service=None, scene=None):
+        print(f"astartab init {scene=}")
         super().__init__(parent=None)
         self.scenario_service = scenario_service
+        self.scene = scene
 
         layout = QVBoxLayout()
         control_area = get_control_area("A*", self.scenario_service.playbyplay_astar, scenario_service)
         layout.addWidget(control_area)
 
-        self.scene = MapScene(scenario_service=scenario_service)
         self.view = QGraphicsView(self.scene)
-        self.scenario_service.map_changed.connect(self.change_map)
+        # self.scenario_service.map_changed.connect(self.change_map)
         layout.addWidget(self.view)
 
         self.setLayout(layout)
@@ -45,15 +46,15 @@ class AstarTab(QWidget):
         self.scene.set_bg_image()
 
 class FringeTab(QWidget):
-    def __init__(self, scenario_service=None):
+    def __init__(self, scenario_service=None, scene=None):
         super().__init__(parent=None)
         self.scenario_service = scenario_service
+        self.scene = scene
 
         layout = QVBoxLayout()
         control_area = get_control_area("Fringe", self.scenario_service.playbyplay_fringe, scenario_service)
         layout.addWidget(control_area)
 
-        self.scene = MapScene(scenario_service=scenario_service)
         self.view = QGraphicsView(self.scene)
         layout.addWidget(self.view)
 
