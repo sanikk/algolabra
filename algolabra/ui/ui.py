@@ -22,13 +22,12 @@ class UI(QWidget):
         # update_table
 
 class ScenarioControls(QGroupBox):
-    # TODO NEXT !!
-    # signal slot: change scenario file => change bucket list
     def __init__(self, scenario_service=None):
         super().__init__("Scenario")
         self.scenario_service = scenario_service
         self.default_button_text = "Choose a Scenario file"
         self.default_label_text = "Pick a Scenario file first"
+
         layout = QGridLayout()
 
         self.scenario_file_button = QPushButton(scenario_service.get_scenario_file() or self.default_button_text)
@@ -37,10 +36,6 @@ class ScenarioControls(QGroupBox):
 
         self.chosen_map_label = QLabel(scenario_service.get_map_name() or self.default_label_text)
         layout.addWidget(self.chosen_map_label, 0, 1)
-
-        self.bucketbox = QComboBox()
-        layout.addWidget(self.bucketbox, 1, 0, 1, 2)
-        self.scenario_service.map_changed.connect(self.update_bucketbox)
 
         self.setLayout(layout)
 
@@ -52,11 +47,6 @@ class ScenarioControls(QGroupBox):
             self.scenario_service.set_scenario_file(ret[0])
             self.scenario_file_button.setText(ret[0] or "Change file")
             self.chosen_map_label.setText(self.scenario_service.get_map_name() or self.default_label_text)
-
-    @pyqtSlot(str)
-    def update_bucketbox(self, trash):
-        self.bucketbox.clear()
-        self.bucketbox.addItems(self.scenario_service.get_bucket_list())
 
 class TabWindow(QTabWidget):
 

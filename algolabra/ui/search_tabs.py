@@ -1,4 +1,5 @@
-from PyQt6.QtWidgets import QWidget, QGroupBox, QHBoxLayout, QLabel, QPushButton, QVBoxLayout, QGraphicsView
+from PyQt6.QtWidgets import QWidget, QGroupBox, QHBoxLayout, QLabel, QPushButton, QVBoxLayout, QGraphicsView, QComboBox
+from PyQt6.QtCore import pyqtSlot, pyqtSignal
 from algolabra.ui.map_scene import MapScene
 
 
@@ -14,21 +15,37 @@ def get_control_area(search_name: str, scenario_service):
 
     return control_group
 
-def get_info_area(scenario_service=None):
-    pass
-    # info_group = Q
 
 class SearchTab(QWidget):
     def __init__(self, parent=None, scenario_service=None):
         super().__init__(parent=parent)
         self.scenario_service = scenario_service
         self.scene = MapScene(scenario_service=scenario_service)
-        # self.scene = scene
+
+        self.scenario_box = None
 
         self.layout = QVBoxLayout()
-        common_box = QWidget()
+        common_box = self.get_common()
         self.layout.addWidget(common_box)
-        self.setLayout(self.layout)
+
+    def get_common(self):
+        container = QWidget()
+        layout = QVBoxLayout()
+        bucket_box = QComboBox()
+        layout.addWidget(bucket_box)
+        self.scenario_box = QComboBox()
+        layout.addWidget(self.scenario_box)
+        container.setLayout(layout)
+        # connect stuff
+
+
+        @pyqtSlot(str)
+        def update_bucketbox():
+            bucket_box.clear()
+            bucket_box.addItems(self.scenario_service.get_bucket_list())
+
+        self.scenario_service.map_changed.connect(update_bucketbox)
+        return container
 
 class AstarTab(SearchTab):
     def __init__(self, parent=None, scenario_service=None):
@@ -52,3 +69,4 @@ class FringeTab(SearchTab):
         self.view = QGraphicsView(self.scene)
         self.layout.addWidget(self.view)
 
+        self.setLayout(self.layout)
