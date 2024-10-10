@@ -1,14 +1,8 @@
-from PyQt6.QtGui import QBrush, QColor
+from PyQt6.QtGui import QBrush, QColor, QImage, QPixmap
 from PyQt6.QtWidgets import QGraphicsScene, QGraphicsItem, QGraphicsRectItem
 from PyQt6.QtCore import Qt
 
-from algolabra.scenarios.map_component import read_map
-# from map_component import read_map
-
-class MapViewTab:
-    pass
-
-class MapScene(QGraphicsScene):
+class MapScene_old(QGraphicsScene):
     """
     whole map
     """
@@ -46,16 +40,40 @@ class MapScene(QGraphicsScene):
     #         x,y = cords
     #         self.rectangles[y][x].setBrush(QBrush(QColor(color)))
 
+
+def get_image_from_map(map_data: list, cell_size=10):
+        image = QImage(len(map_data[0]), len(map_data), QImage.Format.Format_MonoLSB)
+        image.fill(0)
+        # 255, 0, 0 red
+        # 34, 139, 34 green
+        for y, row in enumerate(map_data):
+            for x, cell in enumerate(row):
+                if cell == '.':
+                    image.setPixel(x, y, 1)
+        return image.scaled(len(map_data) * cell_size, len(map_data[0]) * cell_size)
+
+def paint_cell(x, y, cell_size, color, image):
+    # käytän tätä ehkä myöhemmin
+    # tarviiko tota cell sizea vai voinko vaan zoomata viewissä?
+    for i in range(cell_size):
+        for j in range(cell_size):
+            image.setPixel(x * cell_size + i, y * cell_size + j, color.rgb())
+
+
 if __name__=='__main__':
     from PyQt6.QtWidgets import QApplication, QGraphicsView
     import sys
+    from read_files import read_map
 
     app = QApplication(sys.argv)
 
     # kartta = [['@', '@', '@', '@', '@'], ['@', '@', '.', '.', '.'], ['.', '.', '.', '.', '.']]
 
-    scene = MapScene("Boston_0_512.map")
-    # rects = scene.map_to_grid(kartta)
+
+    scene = QGraphicsScene()
+    pixmap = QPixmap.fromImage(get_image_from_map(read_map("Boston_0_512.map")))
+    scene.addPixmap(pixmap)
+
 
     # tilesize = 8
 
