@@ -1,8 +1,14 @@
 from algolabra.fileIO.read_files import read_map, read_scenarios
 from pathlib import Path
+from PyQt6.QtCore import pyqtSignal, QObject
 
-class ScenarioService:
+
+class ScenarioService(QObject):
+
+    map_changed = pyqtSignal(str)
+
     def __init__(self, search_service=None):
+        super().__init__()
         self.search_service = search_service
 
         self.scenario_file = None
@@ -23,6 +29,7 @@ class ScenarioService:
             return
         self.map_file = map_path
         self.map_list = read_map(self.map_file)
+        self.map_changed.emit(self.map_name)
 
     def get_map_name(self):
         return self.map_name
