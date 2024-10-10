@@ -1,4 +1,5 @@
-from PyQt6.QtWidgets import QTabWidget, QWidget, QVBoxLayout, QGroupBox, QHBoxLayout, QLabel, QPushButton, QFileDialog
+from PyQt6.QtWidgets import QTabWidget, QWidget, QVBoxLayout, QGroupBox, QHBoxLayout, QLabel, QPushButton, QFileDialog, \
+    QGridLayout, QComboBox
 from PyQt6.QtCore import pyqtSlot, pyqtSignal
 
 from algolabra.ui.intro_tab import IntroTab
@@ -15,6 +16,11 @@ class UI(QWidget):
         layout.addWidget(self.tab_window)
         self.setLayout(layout)
 
+        # self.scenario_controls.bucketbox.currentIndexChanged.connect(self.tab_window.intro_tab.update_table)
+        # intro_tab.update_table()
+
+        # update_table
+
 class ScenarioControls(QGroupBox):
     # TODO NEXT !!
     # signal slot: change scenario file => change bucket list
@@ -23,15 +29,18 @@ class ScenarioControls(QGroupBox):
         self.scenario_service = scenario_service
         self.default_button_text = "Choose a Scenario file"
         self.default_label_text = "Pick a Scenario file first"
-
-        layout = QHBoxLayout()
+        layout = QGridLayout()
 
         self.scenario_file_button = QPushButton(scenario_service.get_scenario_file() or self.default_button_text)
         self.scenario_file_button.clicked.connect(self.set_scenario_file)
-        layout.addWidget(self.scenario_file_button)
+        layout.addWidget(self.scenario_file_button, 0,0)
 
         self.chosen_map_label = QLabel(scenario_service.get_map_name() or self.default_label_text)
-        layout.addWidget(self.chosen_map_label)
+        layout.addWidget(self.chosen_map_label, 0, 1)
+
+        self.bucketbox = QComboBox()
+        layout.addWidget(self.bucketbox, 1, 0, 1, 2)
+        self.scenario_service.map_changed.connect(self.update_bucketbox)
 
         self.setLayout(layout)
 
@@ -44,7 +53,10 @@ class ScenarioControls(QGroupBox):
             self.scenario_file_button.setText(ret[0] or "Change file")
             self.chosen_map_label.setText(self.scenario_service.get_map_name() or self.default_label_text)
 
-            # update_bucketbox()
+    @pyqtSlot(str)
+    def update_bucketbox(self, trash):
+        self.bucketbox.clear()
+        self.bucketbox.addItems(self.scenario_service.get_bucket_list())
 
 class TabWindow(QTabWidget):
 
@@ -56,9 +68,7 @@ class TabWindow(QTabWidget):
         intro_tab = IntroTab(scenario_service=scenario_service)
         self.addTab(intro_tab, 'intro tab')
 
-        scene = MapScene(scenario_service=scenario_service)
-
-        astar_tab = AstarTab(scenario_service=scenario_service, scene=scene)
+        astar_tab = AstarTab(scenario_service=scenario_service)
         self.addTab(astar_tab, 'A* tab')
-        fringe_tab = FringeTab(scenario_service=scenario_service, scene=scene)
+        fringe_tab = FringeTab(scenario_service=scenario_service)
         self.addTab(fringe_tab, 'Fringe search tab')
