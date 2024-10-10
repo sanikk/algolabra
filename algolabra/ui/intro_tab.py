@@ -3,6 +3,7 @@ from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QFileDialog, QGroupBox
 
 
 class IntroTab(QWidget):
+    # TODO clean this file
     def __init__(self, parent=None, scenario_service=None):
         super().__init__(parent=parent)
         self.scenario_service = scenario_service
@@ -20,6 +21,14 @@ class IntroTab(QWidget):
         self.scenario_service.map_changed.connect(self.update_table)
         self.scenario_service.map_changed.connect(self.update_bucketbox)
         self.bucketbox.currentIndexChanged.connect(self.update_table)
+
+    @pyqtSlot()
+    def update_table(self):
+        table = self.table
+        table.clearContents()
+        data = self.scenario_service.get_bucket_strings(self.bucketbox.currentIndex())
+        if data:
+            [[table.setItem(y, x, QTableWidgetItem(item)) for x, item in enumerate(line)] for y, line in enumerate(data)]
 
     def astar_box(self):
         groupbox = QGroupBox("A*")
@@ -62,12 +71,10 @@ class IntroTab(QWidget):
         groupbox.setLayout(layout)
         return groupbox
 
-
-    @pyqtSlot(str)
-    def update_bucketbox(self, trash):
+    @pyqtSlot()
+    def update_bucketbox(self):
         self.bucketbox.clear()
         self.bucketbox.addItems(self.scenario_service.get_bucket_list())
-
 
     def get_scenario_table(self):
         table = QTableWidget()
@@ -78,15 +85,6 @@ class IntroTab(QWidget):
         table.setColumnCount(len(labels))
         table.setHorizontalHeaderLabels(labels)
         return table
-
-    @pyqtSlot(int)
-    @pyqtSlot(str)
-    def update_table(self, trash):
-        table = self.table
-        table.clearContents()
-        data = self.scenario_service.get_bucket_strings(self.bucketbox.currentIndex())
-        if data:
-            [[table.setItem(y, x, QTableWidgetItem(item)) for x, item in enumerate(line)] for y, line in enumerate(data)]
 
     def get_scenario_box(self):
         groupbox = QGroupBox("Scenario")

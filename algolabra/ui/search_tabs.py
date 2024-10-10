@@ -4,13 +4,12 @@ from algolabra.ui.map_scene import MapScene
 
 
 def get_control_area(search_name: str, scenario_service):
+    # TODO ok this does not work nicely
     control_group = QGroupBox()
     control_layout = QHBoxLayout()
 
     run_search_button = QPushButton(f"run {search_name} slower")
-
     control_layout.addWidget(run_search_button)
-
     control_group.setLayout(control_layout)
 
     return control_group
@@ -36,24 +35,19 @@ class SearchTab(QWidget):
         scenario_box = QComboBox()
         layout.addWidget(scenario_box)
         container.setLayout(layout)
+
         # connect stuff
 
-
-        @pyqtSlot(str)
+        @pyqtSlot()
         def update_bucket_box():
             bucket_box.clear()
             bucket_box.addItems(self.scenario_service.get_bucket_list())
 
         @pyqtSlot(int)
-        @pyqtSlot(str)
+        @pyqtSlot()
         def update_scenario_box():
             scenario_box.clear()
-            index = bucket_box.currentIndex()
-            print(f"{index=}")
-            strings = self.scenario_service.get_full_strings(index)
-            print(f"{strings=}")
-            scenario_box.addItems(strings)
-
+            scenario_box.addItems(self.scenario_service.get_full_strings(bucket_box.currentIndex()))
 
         self.scenario_service.map_changed.connect(update_bucket_box)
         self.scenario_service.map_changed.connect(update_scenario_box)
