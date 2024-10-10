@@ -5,7 +5,7 @@ from PyQt6.QtCore import pyqtSignal, QObject
 
 class ScenarioService(QObject):
 
-    map_changed = pyqtSignal(str)
+    map_changed = pyqtSignal()
 
     def __init__(self, search_service=None):
         super().__init__()
@@ -24,15 +24,15 @@ class ScenarioService(QObject):
     def get_map_list(self):
         return self.map_list
 
+    def get_map_name(self):
+        return self.map_name
+
     def set_map(self, map_path=None):
         if not map_path:
             return
         self.map_file = map_path
         self.map_list = read_map(self.map_file)
-        self.map_changed.emit(self.map_name)
-
-    def get_map_name(self):
-        return self.map_name
+        self.map_changed.emit()
 
         # SCENARIO METHODS
 
@@ -42,9 +42,15 @@ class ScenarioService(QObject):
 
     def get_bucket_strings(self, bucket: int):
         bucket = self.scenarios.get(bucket, [])
-        # print(bucket)
         if bucket:
             return [[str(a[0]), str(a[1]), f"({a[2][0]}, {a[2][1]})", f"({a[3][0]}, {a[3][1]})", str(a[4])] for a in bucket]
+        return bucket
+
+    def get_full_strings(self, bucket: int):
+        bucket = self.scenarios.get(bucket, [])
+
+        if bucket:
+            return [f"id: {a[0]}, start: ({a[2][0]},{a[2][1]}), goal: ({a[3][0]},{a[3][1]}), ideal: {a[4]}" for a in bucket]
         return bucket
 
     def get_bucket_list(self):
