@@ -18,7 +18,7 @@ class MapScene(QGraphicsScene):
             return image.scaled(len(map_data) * self.tile_size, len(map_data[0]) * self.tile_size)
 
     def set_bg_image(self):
-        map_list = self.scenario_service.get_map_path()
+        map_list = self.scenario_service.get_map_list()
         if not map_list:
             return
         self.clear()
@@ -33,18 +33,19 @@ def paint_cell(x, y, tile_size, color, image):
 
 
 if __name__=='__main__':
-    from PyQt6.QtWidgets import QApplication, QGraphicsView
-    import sys
-    from read_files import read_map
-
-    app = QApplication(sys.argv)
-    # kartta = [['@', '@', '@', '@', '@'], ['@', '@', '.', '.', '.'], ['.', '.', '.', '.', '.']]
-
-    scene = MapScene("Boston_0_512.map")
-
-    view = QGraphicsView(scene)
-    view.setWindowTitle("map_scene")
-    view.resize(640, 480)
-    view.show()
-
-    sys.exit(app.exec())
+    pass
+    # from PyQt6.QtWidgets import QApplication, QGraphicsView
+    # import sys
+    # from read_files import read_map
+    #
+    # app = QApplication(sys.argv)
+    # # kartta = [['@', '@', '@', '@', '@'], ['@', '@', '.', '.', '.'], ['.', '.', '.', '.', '.']]
+    #
+    # scene = MapScene("Boston_0_512.map")
+    #
+    # view = QGraphicsView(scene)
+    # view.setWindowTitle("map_scene")
+    # view.resize(640, 480)
+    # view.show()
+    #
+    # sys.exit(app.exec())

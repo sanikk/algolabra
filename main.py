@@ -10,6 +10,7 @@ def main():
     search_service = SearchService()
     scenario_service = ScenarioService(search_service=search_service)
 
+
     app = QApplication(sys.argv)
 
     # ui = TabWindow(scenario_service=scenario_service)

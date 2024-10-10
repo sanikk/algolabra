@@ -17,6 +17,8 @@ def get_control_area(search_name: str, search_runner, scenario_service):
     control_layout.addWidget(run_search_button)
 
     control_group.setLayout(control_layout)
+
+
     return control_group
 
 def get_info_area(scenario_service=None):
@@ -34,9 +36,13 @@ class AstarTab(QWidget):
 
         self.scene = MapScene(scenario_service=scenario_service)
         self.view = QGraphicsView(self.scene)
+        self.scenario_service.map_changed.connect(self.change_map)
         layout.addWidget(self.view)
 
         self.setLayout(layout)
+
+    def change_map(self):
+        self.scene.set_bg_image()
 
 class FringeTab(QWidget):
     def __init__(self, scenario_service=None):

@@ -1,4 +1,5 @@
 from PyQt6.QtWidgets import QTabWidget, QWidget, QVBoxLayout, QGroupBox, QHBoxLayout, QLabel, QPushButton, QFileDialog
+from PyQt6.QtCore import pyqtSlot, pyqtSignal
 
 from algolabra.ui.intro_tab import IntroTab
 from algolabra.ui.search_tabs import AstarTab, FringeTab
@@ -7,8 +8,10 @@ class UI(QWidget):
     def __init__(self, scenario_service=None):
         super().__init__()
         layout = QVBoxLayout()
-        layout.addWidget(ScenarioControls(scenario_service=scenario_service))
-        layout.addWidget(TabWindow(scenario_service=scenario_service))
+        self.scenario_controls = ScenarioControls(scenario_service=scenario_service)
+        layout.addWidget(self.scenario_controls)
+        self.tab_window = TabWindow(scenario_service=scenario_service)
+        layout.addWidget(self.tab_window)
         self.setLayout(layout)
 
 class ScenarioControls(QGroupBox):
@@ -39,6 +42,7 @@ class ScenarioControls(QGroupBox):
             self.scenario_service.set_scenario_file(ret[0])
             self.scenario_file_button.setText(ret[0] or "Change file")
             self.chosen_map_label.setText(self.scenario_service.get_map_name() or self.default_label_text)
+
             # update_bucketbox()
 
 class TabWindow(QTabWidget):
