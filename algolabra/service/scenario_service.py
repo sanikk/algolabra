@@ -40,8 +40,12 @@ class ScenarioService(QObject):
         if self.scenario_file:
             self.map_name, self.scenarios = read_scenarios(self.scenario_file)
 
-    def get_bucket(self, bucket: int):
-        return self.scenarios.get(bucket, [])
+    def get_bucket_strings(self, bucket: int):
+        bucket = self.scenarios.get(bucket, [])
+        # print(bucket)
+        if bucket:
+            return [[str(a[0]), str(a[1]), f"({a[2][0]}, {a[2][1]})", f"({a[3][0]}, {a[3][1]})", str(a[4])] for a in bucket]
+        return bucket
 
     def get_bucket_list(self):
         return [str(a) for a in self.scenarios.keys()]

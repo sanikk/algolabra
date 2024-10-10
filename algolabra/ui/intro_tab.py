@@ -71,7 +71,7 @@ class IntroTab(QWidget):
 
     def get_scenario_table(self):
         table = QTableWidget()
-        table.setRowCount(20)
+        table.setRowCount(10)
         labels = ["id", "bucket", "start", "goal", "cost",
         "A* cost", "perf_time", "proc_time", "thread_time",
         "Fringe cost", "perf_time", "proc_time", "thread_time"]
@@ -84,20 +84,13 @@ class IntroTab(QWidget):
     def update_table(self, trash):
         table = self.table
         table.clearContents()
-        data = self.scenario_service.get_bucket(self.bucketbox.currentIndex())
-
-        # ugly but works for now. we just insert data into the table as strings.
-
-        # [[[table.setItem(rownumber, columnnumber, QTableWidgetItem(f"{columndata[0]},{columndata[1]}"))]
-        #  if isinstance(columndata, tuple) else
-        #     [table.setItem(rownumber, columnnumber, QTableWidgetItem(f"{columndata}"))]
-        #   for columnnumber, columndata in enumerate(datarow)]
-        #  for rownumber, datarow in enumerate(self.scenario_service.get_bucket(self.bucketbox.currentIndex()))]
+        data = self.scenario_service.get_bucket_strings(self.bucketbox.currentIndex())
+        if data:
+            [[table.setItem(y, x, QTableWidgetItem(item)) for x, item in enumerate(line)] for y, line in enumerate(data)]
 
     def get_scenario_box(self):
         groupbox = QGroupBox("Scenario")
         layout = QVBoxLayout()
-
 
         self.bucketbox = QComboBox()
         layout.addWidget(self.bucketbox)
