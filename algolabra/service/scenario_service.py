@@ -47,6 +47,13 @@ class ScenarioService(QObject):
             return [[str(a[0]), str(a[1]), f"({a[2][0]}, {a[2][1]})", f"({a[3][0]}, {a[3][1]})", str(a[4])] for a in bucket]
         return bucket
 
+    def get_full_strings(self, bucket: int):
+        bucket = self.scenarios.get(bucket, [])
+
+        if bucket:
+            return [f"id: {a[0]}, start: ({a[2][0]},{a[2][1]}), goal: ({a[3][0]},{a[3][1]}), ideal: {a[4]}" for a in bucket]
+        return bucket
+
     def get_bucket_list(self):
         return [str(a) for a in self.scenarios.keys()]
 

@@ -33,18 +33,32 @@ class SearchTab(QWidget):
         layout = QVBoxLayout()
         bucket_box = QComboBox()
         layout.addWidget(bucket_box)
-        self.scenario_box = QComboBox()
-        layout.addWidget(self.scenario_box)
+        scenario_box = QComboBox()
+        layout.addWidget(scenario_box)
         container.setLayout(layout)
         # connect stuff
 
 
         @pyqtSlot(str)
-        def update_bucketbox():
+        def update_bucket_box():
             bucket_box.clear()
             bucket_box.addItems(self.scenario_service.get_bucket_list())
 
-        self.scenario_service.map_changed.connect(update_bucketbox)
+        @pyqtSlot(int)
+        @pyqtSlot(str)
+        def update_scenario_box():
+            scenario_box.clear()
+            index = bucket_box.currentIndex()
+            print(f"{index=}")
+            strings = self.scenario_service.get_full_strings(index)
+            print(f"{strings=}")
+            scenario_box.addItems(strings)
+
+
+        self.scenario_service.map_changed.connect(update_bucket_box)
+        self.scenario_service.map_changed.connect(update_scenario_box)
+        bucket_box.currentIndexChanged.connect(update_scenario_box)
+
         return container
 
 class AstarTab(SearchTab):
