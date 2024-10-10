@@ -15,6 +15,7 @@ def read_scenarios(filename):
         lista = f.read().split("\n")
     lines = [a.split("\t") for a in lista[1:] if a]
     map_title = lines[0][1]
+    # return map_title, lines
 
     # bucket, map, (start), (goal), ideal_solution
     converted = [[int(a[0]), (int(a[4]), int(a[5])), (int(a[6]), int(a[7])),

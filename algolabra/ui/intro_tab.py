@@ -1,5 +1,3 @@
-from tokenize import group
-
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QFileDialog, QGroupBox, QPushButton, QComboBox, QTableWidget, QTableWidgetItem
 
 
@@ -37,6 +35,10 @@ class IntroTab(QWidget):
         return groupbox
 
     def fringe_box(self):
+
+        # TODO add a progress bar while running bucket
+        # https://doc.qt.io/qt-6/qprogressbar.html
+
         groupbox = QGroupBox("Fringe search")
         layout = QVBoxLayout()
 

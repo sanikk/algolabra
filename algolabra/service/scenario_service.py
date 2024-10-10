@@ -1,4 +1,4 @@
-from algolabra.scenarios.map_component import read_map, read_scenarios
+from algolabra.fileIO.read_files import read_map, read_scenarios
 from pathlib import Path
 
 class ScenarioService:
