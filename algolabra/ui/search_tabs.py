@@ -1,5 +1,6 @@
 from PyQt6.QtWidgets import QWidget, QGroupBox, QHBoxLayout, QPushButton, QVBoxLayout, QGraphicsView, QComboBox
 from PyQt6.QtCore import pyqtSlot
+
 from algolabra.ui.map_scene import MapScene
 
 
@@ -70,7 +71,6 @@ class AstarTab(SearchTab):
 
     def run_astar(self):
         self.search_service.playbyplay_astar(self.bucket_box.currentIndex(), self.scenario_box.currentIndex())
-        # self.scenario_service.playbyplay_astar(self.bucket_box.currentIndex(), self.scenario_box.currentIndex())
 
 class FringeTab(SearchTab):
     def __init__(self, parent=None, scenario_service=None, search_service=None):
@@ -87,7 +87,4 @@ class FringeTab(SearchTab):
         self.setLayout(self.layout)
 
     def run_fringe(self):
-        print("search_tabs run_fringe")
-        self.search_service.playbyplay_fringe(self.bucket_box.currentIndex(), self.scenario_box.currentIndex())
-        # self.scenario_service.playbyplay_fringe(self.bucket_box.currentIndex(), self.scenario_box.currentIndex())
-
+        self.search_service.start_fringe_thread(self.bucket_box.currentIndex(), self.scenario_box.currentIndex())

@@ -1,8 +1,8 @@
-from PyQt6.QtCore import QThread, pyqtSignal, QObject, Qt, pyqtSlot
+from PyQt6.QtCore import pyqtSignal, QObject, pyqtSlot
 
 from algolabra.fringe.timed_fringe import timed_fringe_search
-from algolabra.fringe.fringe_with_signals import FringeSearch
 from algolabra.astar.astar import astar
+from algolabra.fringe.fringe_thread import FringeThread
 
 
 class SearchService(QObject):
@@ -16,9 +16,6 @@ class SearchService(QObject):
 
         self.astar_time = None
         self.fringe_time = None
-
-        self.worker_thread = QThread()
-        self.fringe_connections = None
 
     # SEARCH ALGO METHODS
 
@@ -35,15 +32,13 @@ class SearchService(QObject):
             print(f"{scenario_id} done.")
         return results
 
-    def playbyplay_fringe(self, bucket, index):
-        print("playbyplay_fringe")
-
+    def start_fringe_thread(self, bucket, index):
+        # print(f"start_fringe_thread {self.thread()=}")
         start, goal = self.scenario_service.get_scenario_start_and_goal(bucket, index)
-        print(f"playbyplay {start=}, {goal=}")
         map_data = self.scenario_service.get_map_data()
-        self.run_fringe_in_another_thread(start, goal, map_data)
-        # self.search_service.playbyplay_fringe(scenario[2], scenario[3], self.map_list)
-        # self.fringe_search(start, goal, citymap)
+
+        instanced_thread = FringeThread(self, start, goal, map_data)
+        instanced_thread.start()
 
     def run_timed_astar(self, bucket):
         new_time = "123.456"
@@ -59,26 +54,6 @@ class SearchService(QObject):
 
     def get_fringe_time(self):
         return self.fringe_time
-
-    def run_fringe_in_another_thread(self, start, goal, citymap, connections=None):
-        worker = FringeSearch(start, goal, citymap, connections)
-
-        self.worker_thread.finished.connect(worker.deleteLater)
-
-        # self.connect_fringe_worker(worker)
-        self.operate.connect(worker.do_search)
-        worker.result_ready.connect(self.handle_results)
-        # flimit_change, node_visit, node_expansion = self.fringe_connections
-        # worker.flimit_set.connect(flimit_change)
-        # worker.node_visited.connect(node_visit, type=Qt.ConnectionType.BlockingQueuedConnection)
-        # worker.node_visited.connect(node_visit, type=Qt.ConnectionType.QueuedConnection)
-        # worker.node_expanded.connect(node_expansion, type=Qt.ConnectionType.BlockingQueuedConnection)
-        # worker.node_visited.connect(node_visit, type=Qt.ConnectionType.QueuedConnection)
-
-        worker.moveToThread(self.worker_thread)
-        # self.worker_thread.start(QThread.Priority.LowestPriority)
-        self.worker_thread.start()
-        self.operate.emit()
 
     @pyqtSlot()
     def handle_results(self):
