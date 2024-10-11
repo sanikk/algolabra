@@ -1,4 +1,4 @@
-from PyQt6.QtCore import QThread, pyqtSignal, QObject, Qt
+from PyQt6.QtCore import QThread, pyqtSignal, QObject, Qt, pyqtSlot
 
 from algolabra.fringe.timed_fringe import timed_fringe_search
 from algolabra.fringe.fringe_with_signals import FringeSearch
@@ -28,15 +28,27 @@ class SearchService(QObject):
         self.fringe_time = timers
         return [cost, *timers]
 
-    def run_timed_astar(self):
+    def run_fringe_for_bucket(self, bucket: int):
+        results = []
+        for scenario_id, start, goal in self.scenario_service.get_data_from_bucket(bucket):
+            results.append(self.run_timed_fringe(start, goal, self.scenario_service.get_map_list()))
+            print(f"{scenario_id} done.")
+        return results
+
+    def playbyplay_fringe(self, bucket, index):
+        print("playbyplay_fringe")
+
+        start, goal = self.get_scenario_start_and_goal(bucket, index)
+        print(f"playbyplay {start=}, {goal=}")
+        self.search_service.run_fringe_in_another_thread(start, goal, self.map_list)
+        # self.search_service.playbyplay_fringe(scenario[2], scenario[3], self.map_list)
+        # self.fringe_search(start, goal, citymap)
+
+    def run_timed_astar(self, bucket):
         new_time = "123.456"
         self.astar_time = new_time
         return new_time
 
-    def playbyplay_fringe(self, start, goal, citymap):
-
-        self.fringe.fringe_search(start, goal, citymap)
-        pass
 
     def playbyplay_astar(self, start, goal, citymap):
         pass
@@ -69,28 +81,9 @@ class SearchService(QObject):
         # worker.node_expanded.connect(node_expansion, type=Qt.ConnectionType.BlockingQueuedConnection)
         worker.node_visited.connect(node_visit, type=Qt.ConnectionType.QueuedConnection)
 
+    @pyqtSlot()
     def handle_results(self):
         print("handling results...done")
 
-    def get_fringe_connections(self, fringe_connections):
-        print(f"search_service get_fringe_connections {fringe_connections=}")
-        self.fringe_connections = fringe_connections
-
-
-
-    def run_fringe_fast(self, bucket):
-        results = []
-        for scenario_id, bucket, start, goal, ideal_cost in self.scenarios.get(bucket, []):
-            results.append(self.search_service.run_timed_fringe(start, goal, self.map_list))
-            print(f"{scenario_id} done.")
-        return results
-
-    def playbyplay_fringe(self, bucket, index):
-        print("playbyplay_fringe")
-
-        start, goal = self.get_scenario_start_and_goal(bucket, index)
-        print(f"playbyplay {start=}, {goal=}")
-        self.search_service.run_fringe_in_another_thread(start, goal, self.map_list)
-        # self.search_service.playbyplay_fringe(scenario[2], scenario[3], self.map_list)
 
 

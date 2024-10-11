@@ -3,10 +3,11 @@ from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QGroupBox, QPushButton
 
 
 class IntroTab(QWidget):
-    # TODO clean this file
-    def __init__(self, parent=None, scenario_service=None):
+    def __init__(self, parent=None, scenario_service=None, search_service=None):
         super().__init__(parent=parent)
         self.scenario_service = scenario_service
+        self.search_service = search_service
+
         self.bucketbox = None
         self.table = None
 
@@ -40,7 +41,8 @@ class IntroTab(QWidget):
         button = QPushButton("Run A*")
 
         def updater():
-            data = self.scenario_service.run_astar_fast(bucket=self.bucketbox.currentIndex())
+            data = self.search_service.run_timed_astar(bucket=self.bucketbox.currentIndex())
+            # data = self.scenario_service.run_astar_fast(bucket=self.bucketbox.currentIndex())
             result_label.setText(data)
 
         button.clicked.connect(updater)
@@ -50,10 +52,8 @@ class IntroTab(QWidget):
         return groupbox
 
     def fringe_box(self):
-
         # TODO add a progress bar while running bucket
         # https://doc.qt.io/qt-6/qprogressbar.html
-
         groupbox = QGroupBox("Fringe search")
         layout = QVBoxLayout()
 
@@ -63,7 +63,7 @@ class IntroTab(QWidget):
         button = QPushButton("Run Fringe")
 
         def updater():
-            data = self.scenario_service.run_fringe_fast(bucket=self.bucketbox.currentIndex())
+            data = self.search_service.run_fringe_for_bucket(bucket=self.bucketbox.currentIndex())
             [[self.table.setItem(i, j + 9, QTableWidgetItem("{:.8f}".format(item))) for j, item in enumerate(line)] for i, line in enumerate(data)]
         button.clicked.connect(updater)
         layout.addWidget(button)

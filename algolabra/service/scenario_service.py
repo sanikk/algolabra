@@ -14,27 +14,33 @@ class ScenarioService(QObject):
         self.scenarios = {}
 
         self.map_file = None
-        self.map_list = None
-        self.map_name = None
+        self.map_data = None
+        self.map_title = None
 
-    def get_map_list(self):
-        return self.map_list
+    def get_map_data(self):
+        return self.map_data
 
-    def get_map_name(self):
-        return self.map_name
+    def get_map_title(self):
+        return self.map_title
 
     def set_map(self, map_path=None):
         if not map_path:
             return
         self.map_file = map_path
-        self.map_list = read_map(self.map_file)
+        self.map_data = read_map(self.map_file)
         self.map_changed.emit()
 
         # SCENARIO METHODS
 
     def read_scenarios(self):
         if self.scenario_file:
-            self.map_name, self.scenarios = read_scenarios(self.scenario_file)
+            self.map_title, self.scenarios = read_scenarios(self.scenario_file)
+
+    def get_data_from_bucket(self, bucket):
+        """
+        Returns id, start, goal of scenarios in bucket.
+        """
+        return [(a[0], a[2], a[3]) for a in self.scenarios.get(bucket, [])]
 
     def get_bucket_strings(self, bucket: int):
         bucket = self.scenarios.get(bucket, [])
@@ -44,12 +50,14 @@ class ScenarioService(QObject):
 
     def get_full_strings(self, bucket: int):
         bucket = self.scenarios.get(bucket, [])
-
         if bucket:
             return [f"id: {a[0]}, start: ({a[2][0]},{a[2][1]}), goal: ({a[3][0]},{a[3][1]}), ideal: {a[4]}" for a in bucket]
         return bucket
 
     def get_bucket_list(self):
+        """
+        Return list of bucket indexes.
+        """
         return [str(a) for a in self.scenarios.keys()]
 
     def get_scenario_file(self):
@@ -60,8 +68,8 @@ class ScenarioService(QObject):
             self.scenarios.clear()
             self.scenario_file = filepath
             self.read_scenarios()
-            if self.map_name:
-                map_path = Path(filepath).parent / self.map_name
+            if self.map_title:
+                map_path = Path(filepath).parent / self.map_title
                 if Path(map_path).exists():
                     self.set_map(map_path)
 

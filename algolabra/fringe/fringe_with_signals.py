@@ -13,7 +13,6 @@ class FringeSearch(QObject):
 
     def __init__(self, start, goal, citymap, connections):
         super().__init__()
-        self.worker_thread = QThread()
         self.start = start
         self.goal = goal
         self.citymap = citymap
@@ -82,6 +81,7 @@ class FringeSearch(QObject):
                 fringe.remove_node(node)
             flimit = fmin + 0.1
             ############
+            QThread.msleep(1)
             self.flimit_set.emit(flimit)
             print(f"{flimit=}, {expanded=}, {visited=}")
             ############
