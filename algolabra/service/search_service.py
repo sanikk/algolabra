@@ -1,4 +1,4 @@
-from PyQt6.QtCore import QThread, pyqtSignal, QObject
+from PyQt6.QtCore import QThread, pyqtSignal, QObject, Qt, pyqtSlot
 
 from algolabra.fringe.timed_fringe import timed_fringe_search
 from algolabra.fringe.fringe_with_signals import FringeSearch
@@ -9,9 +9,10 @@ class SearchService(QObject):
 
     operate = pyqtSignal()
 
-    def __init__(self, tilesize=8):
+    def __init__(self, scenario_service=None, tilesize=8):
         super().__init__()
         self.tilesize = tilesize
+        self.scenario_service = scenario_service
 
         self.astar_time = None
         self.fringe_time = None
@@ -26,15 +27,29 @@ class SearchService(QObject):
         self.fringe_time = timers
         return [cost, *timers]
 
-    def run_timed_astar(self):
+    def run_fringe_for_bucket(self, bucket: int):
+        results = []
+        map_data = self.scenario_service.get_map_data()
+        for scenario_id, start, goal in self.scenario_service.get_data_from_bucket(bucket):
+            results.append(self.run_timed_fringe(start, goal, map_data))
+            print(f"{scenario_id} done.")
+        return results
+
+    def playbyplay_fringe(self, bucket, index):
+        print("playbyplay_fringe")
+
+        start, goal = self.scenario_service.get_scenario_start_and_goal(bucket, index)
+        print(f"playbyplay {start=}, {goal=}")
+        map_data = self.scenario_service.get_map_data()
+        self.run_fringe_in_another_thread(start, goal, map_data)
+        # self.search_service.playbyplay_fringe(scenario[2], scenario[3], self.map_list)
+        # self.fringe_search(start, goal, citymap)
+
+    def run_timed_astar(self, bucket):
         new_time = "123.456"
         self.astar_time = new_time
         return new_time
 
-    def playbyplay_fringe(self, start, goal, citymap):
-
-        self.fringe.fringe_search(start, goal, citymap)
-        pass
 
     def playbyplay_astar(self, start, goal, citymap):
         pass
@@ -45,64 +60,29 @@ class SearchService(QObject):
     def get_fringe_time(self):
         return self.fringe_time
 
-#################################################################
-# class Worker(QObject):
-#
-#     Q_OBJECT
-# public slots
-#     def doWork(parameter):
-#         result = QString()
-#         /* ... here is the expensive or blocking operation ... */
-#         resultReady.emit(result)
-#
-# signals
-#    def resultReady(result):
-########################################################################
-# class Controller(QObject):
-#
-#     Q_OBJECT
-#     workerThread = QThread()
-# public
-#     Controller() {
-#         worker = Worker()
-#         worker.moveToThread(workerThread)
-#         workerThread.finished.connect(worker.deleteLater)
-#         self.operate.connect(worker.doWork)
-#         worker.resultReady.connect(self.handleResults)
-#         workerThread.start()
     def run_fringe_in_another_thread(self, start, goal, citymap, connections=None):
         worker = FringeSearch(start, goal, citymap, connections)
 
         self.worker_thread.finished.connect(worker.deleteLater)
 
-        self.connect_fringe_worker(worker)
+        # self.connect_fringe_worker(worker)
+        self.operate.connect(worker.do_search)
+        worker.result_ready.connect(self.handle_results)
+        # flimit_change, node_visit, node_expansion = self.fringe_connections
+        # worker.flimit_set.connect(flimit_change)
+        # worker.node_visited.connect(node_visit, type=Qt.ConnectionType.BlockingQueuedConnection)
+        # worker.node_visited.connect(node_visit, type=Qt.ConnectionType.QueuedConnection)
+        # worker.node_expanded.connect(node_expansion, type=Qt.ConnectionType.BlockingQueuedConnection)
+        # worker.node_visited.connect(node_visit, type=Qt.ConnectionType.QueuedConnection)
 
         worker.moveToThread(self.worker_thread)
+        # self.worker_thread.start(QThread.Priority.LowestPriority)
         self.worker_thread.start()
         self.operate.emit()
 
-    def connect_fringe_worker(self, worker):
-        self.operate.connect(worker.do_search)
-        worker.result_ready.connect(self.handle_results)
-        flimit_change, node_visit, node_expansion = self.fringe_connections
-        worker.flimit_set.connect(flimit_change)
-        worker.node_visited.connect(node_visit)
-        worker.node_expanded.connect(node_expansion)
-
-        # self.scenario_service.upload_fringe_connections = [self.flimit_change, self.node_visit, self.node_expansion]
-
-
+    @pyqtSlot()
     def handle_results(self):
         print("handling results...done")
 
-    def get_fringe_connections(self, fringe_connections):
-        print(f"search_service get_fringe_connections {fringe_connections=}")
-        self.fringe_connections = fringe_connections
-#    ~Controller() {
-#        workerThread.quit()
-#        workerThread.wait()
-#
-# public slots
-#    def handleResults():
-# signals
-#    def operate():
+
+
