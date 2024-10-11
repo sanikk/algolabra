@@ -22,11 +22,11 @@ class MapScene(QGraphicsScene):
 
     @pyqtSlot()
     def set_bg_image(self):
-        map_list = self.scenario_service.get_map_list()
-        if not map_list:
+        map_data = self.scenario_service.get_map_data()
+        if not map_data:
             return
         self.clear()
-        pixmap = QPixmap.fromImage(self.get_image_from_map(map_list))
+        pixmap = QPixmap.fromImage(self.get_image_from_map(map_data))
         self.addPixmap(pixmap)
 
     @pyqtSlot(int, int)
