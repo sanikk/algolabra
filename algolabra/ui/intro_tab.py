@@ -1,5 +1,5 @@
 from PyQt6.QtCore import pyqtSlot
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QFileDialog, QGroupBox, QPushButton, QComboBox, QTableWidget, QTableWidgetItem
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QGroupBox, QPushButton, QComboBox, QTableWidget, QTableWidgetItem
 
 
 class IntroTab(QWidget):

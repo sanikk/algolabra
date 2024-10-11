@@ -1,5 +1,5 @@
 from PyQt6.QtCore import pyqtSlot
-from PyQt6.QtGui import QColor, QImage, QPixmap
+from PyQt6.QtGui import QColor, QImage, QPixmap, QBrush
 from PyQt6.QtWidgets import QGraphicsScene
 
 
@@ -9,6 +9,7 @@ class MapScene(QGraphicsScene):
         self.tile_size = tile_size
         self.scenario_service = scenario_service
         scenario_service.map_changed.connect(self.set_bg_image)
+        self.connect_fringe()
 
     def get_image_from_map(self, map_data: list):
         image = QImage(len(map_data[0]), len(map_data), QImage.Format.Format_RGB32)
@@ -27,11 +28,22 @@ class MapScene(QGraphicsScene):
         pixmap = QPixmap.fromImage(self.get_image_from_map(map_list))
         self.addPixmap(pixmap)
 
-def paint_cell(x, y, tile_size, color, image):
-    # käytän tätä ehkä myöhemmin
-    for i in range(tile_size):
-        for j in range(tile_size):
-            image.setPixel(x * tile_size + i, y * tile_size + j, color.rgb())
+    @pyqtSlot(int, int)
+    def node_visit(self, x, y):
+        self.addRect(x * self.tile_size, y * self.tile_size, self.tile_size, self.tile_size, brush= QBrush(QColor(0,255,0)))
+
+    @pyqtSlot(int, int)
+    def node_expansion(self, x, y):
+        self.addRect(x * self.tile_size, y * self.tile_size, self.tile_size, self.tile_size, brush= QBrush(QColor(0, 0, 255)))
+
+    @pyqtSlot(float)
+    # TODO fill this in
+    def flimit_change(self, new_flimit):
+        pass
+
+    def connect_fringe(self):
+        # flimit_connection, node_visited_connection, node_expanded_connection
+        self.scenario_service.connect_fringe(self.flimit_change, self.node_visit, self.node_expansion)
 
 if __name__=='__main__':
     pass

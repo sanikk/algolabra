@@ -1,4 +1,5 @@
 from algolabra.fringe.timed_fringe import timed_fringe_search
+from algolabra.fringe.fringe_with_signals import FringeSearch
 from algolabra.astar.astar import astar
 
 
@@ -8,6 +9,8 @@ class SearchService:
 
         self.astar_time = None
         self.fringe_time = None
+
+        self.fringe = FringeSearch()
 
     # SEARCH ALGO METHODS
 
@@ -21,10 +24,12 @@ class SearchService:
         self.astar_time = new_time
         return new_time
 
-    def playbyplay_fringe(self):
+    def playbyplay_fringe(self, start, goal, citymap):
+
+        self.fringe.fringe_search(start, goal, citymap)
         pass
 
-    def playbyplay_astar(self):
+    def playbyplay_astar(self, start, goal, citymap):
         pass
 
     def get_astar_time(self):
@@ -32,5 +37,3 @@ class SearchService:
 
     def get_fringe_time(self):
         return self.fringe_time
-
-

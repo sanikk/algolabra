@@ -12,27 +12,25 @@ def get_control_area(search_name: str, scenario_service):
     control_layout.addWidget(run_search_button)
     control_group.setLayout(control_layout)
 
-    return control_group
+    return run_search_button, control_group
 
 
 class SearchTab(QWidget):
     def __init__(self, parent=None, scenario_service=None):
         super().__init__(parent=parent)
         self.scenario_service = scenario_service
-        self.scene = MapScene(scenario_service=scenario_service)
-
+        self.bucket_box = None
         self.scenario_box = None
 
-        self.layout = QVBoxLayout()
-        common_box = self.get_common()
-        self.layout.addWidget(common_box)
+        self.layout = layout = QVBoxLayout()
+        layout.addWidget(self.get_common())
 
     def get_common(self):
         container = QWidget()
         layout = QVBoxLayout()
-        bucket_box = QComboBox()
+        self.bucket_box = bucket_box = QComboBox()
         layout.addWidget(bucket_box)
-        scenario_box = QComboBox()
+        self.scenario_box = scenario_box = QComboBox()
         layout.addWidget(scenario_box)
         container.setLayout(layout)
 
@@ -59,22 +57,34 @@ class AstarTab(SearchTab):
     def __init__(self, parent=None, scenario_service=None):
         super().__init__(parent=parent, scenario_service=scenario_service)
 
-        control_area = get_control_area("A*", scenario_service)
+        run_button, control_area = get_control_area("A*", scenario_service)
         self.layout.addWidget(control_area)
+        run_button.clicked.connect(self.run_astar)
 
+        self.scene = MapScene(scenario_service=scenario_service)
         self.view = QGraphicsView(self.scene)
         self.layout.addWidget(self.view)
 
         self.setLayout(self.layout)
+
+    def run_astar(self):
+        self.scenario_service.playbyplay_astar(self.bucket_box.currentIndex(), self.scenario_box.currentIndex())
 
 class FringeTab(SearchTab):
     def __init__(self, parent=None, scenario_service=None):
         super().__init__(parent=parent, scenario_service=scenario_service)
 
-        control_area = get_control_area("Fringe", scenario_service)
+        run_button, control_area = get_control_area("Fringe", scenario_service)
         self.layout.addWidget(control_area)
+        run_button.clicked.connect(self.run_fringe)
 
+        self.scene = MapScene(scenario_service=scenario_service)
         self.view = QGraphicsView(self.scene)
         self.layout.addWidget(self.view)
 
         self.setLayout(self.layout)
+
+    def run_fringe(self):
+        print("search_tabs run_fringe")
+        self.scenario_service.playbyplay_fringe(self.bucket_box.currentIndex(), self.scenario_box.currentIndex())
+

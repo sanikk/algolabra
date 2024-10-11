@@ -7,6 +7,9 @@ class ScenarioService(QObject):
 
     map_changed = pyqtSignal()
 
+    # TODO self.search_service => self.service.
+    # we link with self.search.playbyplay....
+    # this is way too crowded
     def __init__(self, search_service=None):
         super().__init__()
         self.search_service = search_service
@@ -17,9 +20,6 @@ class ScenarioService(QObject):
         self.map_file = None
         self.map_list = None
         self.map_name = None
-
-    def get_map_file(self):
-        return self.map_file
 
     def get_map_list(self):
         return self.map_list
@@ -61,14 +61,12 @@ class ScenarioService(QObject):
 
     def set_scenario_file(self, filepath):
         if filepath:
+            self.scenarios.clear()
             self.scenario_file = filepath
             self.read_scenarios()
             if self.map_name:
                 map_path = Path(filepath).parent / self.map_name
                 self.set_map(map_path)
-
-    def get_scenarios(self):
-        return self.scenarios
 
     # PASSTHRU FOR TIME DATA for now
     def get_astar_time(self):
@@ -87,8 +85,19 @@ class ScenarioService(QObject):
             print(f"{scenario_id} done.")
         return results
 
-    def playbyplay_fringe(self):
-        return self.search_service.playbyplay_fringe()
+    def playbyplay_fringe(self, bucket, index):
+        print("playbyplay_fringe")
+        scenario = self.scenarios[bucket][index]
+        if scenario:
+            self.search_service.playbyplay_fringe(scenario[2], scenario[3], self.map_list)
 
-    def playbyplay_astar(self):
-        return self.search_service.playbyplay_astar()
+    def playbyplay_astar(self, bucket, index):
+        scenario = self.scenarios[bucket][index]
+        if scenario:
+            return self.search_service.playbyplay_astar()
+
+    # Connecting ppl
+    def connect_fringe(self, flimit_connection, node_visited_connection, node_expanded_connection):
+        self.search_service.fringe.flimit_set.connect(flimit_connection)
+        self.search_service.fringe.node_visited.connect(node_visited_connection)
+        self.search_service.fringe.node_expanded.connect(node_expanded_connection)
