@@ -1,10 +1,8 @@
 from PyQt6.QtWidgets import QTabWidget, QWidget, QVBoxLayout, QGroupBox, QHBoxLayout, QLabel, QPushButton, QFileDialog, \
-    QGridLayout, QComboBox
-from PyQt6.QtCore import pyqtSlot, pyqtSignal
-
+    QGridLayout
 from algolabra.ui.intro_tab import IntroTab
 from algolabra.ui.search_tabs import AstarTab, FringeTab
-from algolabra.ui.map_scene import MapScene
+
 
 class UI(QWidget):
     def __init__(self, scenario_service=None):
@@ -15,11 +13,6 @@ class UI(QWidget):
         self.tab_window = TabWindow(scenario_service=scenario_service)
         layout.addWidget(self.tab_window)
         self.setLayout(layout)
-
-        # self.scenario_controls.bucketbox.currentIndexChanged.connect(self.tab_window.intro_tab.update_table)
-        # intro_tab.update_table()
-
-        # update_table
 
 class ScenarioControls(QGroupBox):
     def __init__(self, scenario_service=None):
@@ -57,7 +50,6 @@ class TabWindow(QTabWidget):
 
         intro_tab = IntroTab(scenario_service=scenario_service)
         self.addTab(intro_tab, 'intro tab')
-
         astar_tab = AstarTab(scenario_service=scenario_service)
         self.addTab(astar_tab, 'A* tab')
         fringe_tab = FringeTab(scenario_service=scenario_service)

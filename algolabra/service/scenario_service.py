@@ -87,9 +87,11 @@ class ScenarioService(QObject):
 
     def playbyplay_fringe(self, bucket, index):
         print("playbyplay_fringe")
-        scenario = self.scenarios[bucket][index]
-        if scenario:
-            self.search_service.playbyplay_fringe(scenario[2], scenario[3], self.map_list)
+
+        start, goal = self.get_scenario_start_and_goal(bucket, index)
+        print(f"playbyplay {start=}, {goal=}")
+        self.search_service.run_fringe_in_another_thread(start, goal, self.map_list)
+        # self.search_service.playbyplay_fringe(scenario[2], scenario[3], self.map_list)
 
     def playbyplay_astar(self, bucket, index):
         scenario = self.scenarios[bucket][index]
@@ -101,3 +103,11 @@ class ScenarioService(QObject):
         self.search_service.fringe.flimit_set.connect(flimit_connection)
         self.search_service.fringe.node_visited.connect(node_visited_connection)
         self.search_service.fringe.node_expanded.connect(node_expanded_connection)
+
+    def upload_fringe_connections(self, fringe_connections):
+        self.search_service.get_fringe_connections(fringe_connections)
+
+
+    def get_scenario_start_and_goal(self, bucket, index):
+        scenario = self.scenarios[bucket][index]
+        return scenario[2], scenario[3]
