@@ -32,12 +32,11 @@ class SearchService(QObject):
             print(f"{scenario_id} done.")
         return results
 
-    def start_fringe_thread(self, bucket, index):
-        # print(f"start_fringe_thread {self.thread()=}")
+    def start_fringe_thread(self, bucket, index, slot_list):
         start, goal = self.scenario_service.get_scenario_start_and_goal(bucket, index)
         map_data = self.scenario_service.get_map_data()
 
-        instanced_thread = FringeThread(self, start, goal, map_data)
+        instanced_thread = FringeThread(self, start, goal, map_data, slot_list)
         instanced_thread.start()
 
     def run_timed_astar(self, bucket):

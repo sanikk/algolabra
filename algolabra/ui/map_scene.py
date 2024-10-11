@@ -10,7 +10,6 @@ class MapScene(QGraphicsScene):
         self.scenario_service = scenario_service
         self.search_service = search_service
         scenario_service.map_changed.connect(self.set_bg_image)
-        # self.upload_fringe_connections()
 
     def get_image_from_map(self, map_data: list):
         image = QImage(len(map_data[0]), len(map_data), QImage.Format.Format_RGB32)
@@ -42,11 +41,8 @@ class MapScene(QGraphicsScene):
     def flimit_change(self, new_flimit):
         pass
 
-    def upload_fringe_connections(self):
-        # flimit_connection, node_visited_connection, node_expanded_connection
-        # self.scenario_service.connect_fringe(self.flimit_change, self.node_visit, self.node_expansion)
-        # self.scenario_service.upload_fringe_connections([self.flimit_change, self.node_visit, self.node_expansion])
-        print(f"map_scene upload_fringe_connections {[self.flimit_change, self.node_visit, self.node_expansion]}")
+    def get_slots(self):
+        return self.node_visit, self.node_expansion, self.flimit_change
 
 if __name__=='__main__':
     pass

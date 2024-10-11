@@ -87,4 +87,4 @@ class FringeTab(SearchTab):
         self.setLayout(self.layout)
 
     def run_fringe(self):
-        self.search_service.start_fringe_thread(self.bucket_box.currentIndex(), self.scenario_box.currentIndex())
+        self.search_service.start_fringe_thread(self.bucket_box.currentIndex(), self.scenario_box.currentIndex(), self.scene.get_slots())

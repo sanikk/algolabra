@@ -7,25 +7,20 @@ from algolabra.common_search_utils.children import children
 from algolabra.ui.mysignals import FringeSignals
 
 class FringeThread(QThread):
-    def __init__(self, parent, start, goal, citymap):
+    def __init__(self, parent, start, goal, citymap, slot_list):
         super().__init__(parent)
-        # jos parent on search_service?
-        # tarvitsen viitteen game sceneen
-        # QThread().__init__(parent)
         self.signals = FringeSignals()
         self.start_node = start
         self.goal_node = goal
         self.citymap = citymap
         # connect everything here
-        # self.signals..connect(parent.update_str_field)
-        # self.signals.signal_int.connect(parent.update_int_field)
-        # self.signals.node_visited.connect()
+        # slot_list = self.node_visit, self.node_expansion, self.flimit_change
+        self.signals.node_visited.connect(slot_list[0])
+        self.signals.node_expanded.connect(slot_list[1])
+        self.signals.flimit_set.connect(slot_list[2])
 
     def run(self):
-        print(f"fringe_as_worker_thread run")
-        print(f"{self.thread()=}")
         self.fringe_search(self.start_node, self.goal_node, self.citymap)
-
 
     def fringe_search(self, start: tuple[int, int], goal: tuple[int, int], citymap: list):
         """
