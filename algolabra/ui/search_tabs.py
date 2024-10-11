@@ -1,10 +1,9 @@
-from PyQt6.QtWidgets import QWidget, QGroupBox, QHBoxLayout, QLabel, QPushButton, QVBoxLayout, QGraphicsView, QComboBox
-from PyQt6.QtCore import pyqtSlot, pyqtSignal
+from PyQt6.QtWidgets import QWidget, QGroupBox, QHBoxLayout, QPushButton, QVBoxLayout, QGraphicsView, QComboBox
+from PyQt6.QtCore import pyqtSlot
 from algolabra.ui.map_scene import MapScene
 
 
-def get_control_area(search_name: str, scenario_service):
-    # TODO ok this does not work nicely
+def get_control_area(search_name: str):
     control_group = QGroupBox()
     control_layout = QHBoxLayout()
 
@@ -16,9 +15,11 @@ def get_control_area(search_name: str, scenario_service):
 
 
 class SearchTab(QWidget):
-    def __init__(self, parent=None, scenario_service=None):
+    def __init__(self, parent=None, scenario_service=None, search_service=None):
         super().__init__(parent=parent)
         self.scenario_service = scenario_service
+        self.search_service = search_service
+
         self.bucket_box = None
         self.scenario_box = None
 
@@ -54,31 +55,32 @@ class SearchTab(QWidget):
         return container
 
 class AstarTab(SearchTab):
-    def __init__(self, parent=None, scenario_service=None):
-        super().__init__(parent=parent, scenario_service=scenario_service)
+    def __init__(self, parent=None, scenario_service=None, search_service=None):
+        super().__init__(parent=parent, scenario_service=scenario_service, search_service=search_service)
 
-        run_button, control_area = get_control_area("A*", scenario_service)
+        run_button, control_area = get_control_area("A*")
         self.layout.addWidget(control_area)
         run_button.clicked.connect(self.run_astar)
 
-        self.scene = MapScene(scenario_service=scenario_service)
+        self.scene = MapScene(scenario_service=scenario_service, search_service=search_service)
         self.view = QGraphicsView(self.scene)
         self.layout.addWidget(self.view)
 
         self.setLayout(self.layout)
 
     def run_astar(self):
-        self.scenario_service.playbyplay_astar(self.bucket_box.currentIndex(), self.scenario_box.currentIndex())
+        self.search_service.playbyplay_astar(self.bucket_box.currentIndex(), self.scenario_box.currentIndex())
+        # self.scenario_service.playbyplay_astar(self.bucket_box.currentIndex(), self.scenario_box.currentIndex())
 
 class FringeTab(SearchTab):
-    def __init__(self, parent=None, scenario_service=None):
-        super().__init__(parent=parent, scenario_service=scenario_service)
+    def __init__(self, parent=None, scenario_service=None, search_service=None):
+        super().__init__(parent=parent, scenario_service=scenario_service, search_service=search_service)
 
-        run_button, control_area = get_control_area("Fringe", scenario_service)
+        run_button, control_area = get_control_area("Fringe")
         self.layout.addWidget(control_area)
         run_button.clicked.connect(self.run_fringe)
 
-        self.scene = MapScene(scenario_service=scenario_service)
+        self.scene = MapScene(scenario_service=scenario_service, search_service=search_service)
         self.view = QGraphicsView(self.scene)
         self.layout.addWidget(self.view)
 
@@ -86,5 +88,6 @@ class FringeTab(SearchTab):
 
     def run_fringe(self):
         print("search_tabs run_fringe")
-        self.scenario_service.playbyplay_fringe(self.bucket_box.currentIndex(), self.scenario_box.currentIndex())
+        self.search_service.playbyplay_fringe(self.bucket_box.currentIndex(), self.scenario_box.currentIndex())
+        # self.scenario_service.playbyplay_fringe(self.bucket_box.currentIndex(), self.scenario_box.currentIndex())
 

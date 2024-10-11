@@ -4,12 +4,13 @@ from PyQt6.QtWidgets import QGraphicsScene
 
 
 class MapScene(QGraphicsScene):
-    def __init__(self, scenario_service=None, tile_size=10):
+    def __init__(self, scenario_service=None, search_service=None, tile_size=10):
         super().__init__()
         self.tile_size = tile_size
         self.scenario_service = scenario_service
+        self.search_service = search_service
         scenario_service.map_changed.connect(self.set_bg_image)
-        self.upload_fringe_connections()
+        # self.upload_fringe_connections()
 
     def get_image_from_map(self, map_data: list):
         image = QImage(len(map_data[0]), len(map_data), QImage.Format.Format_RGB32)
@@ -44,7 +45,7 @@ class MapScene(QGraphicsScene):
     def upload_fringe_connections(self):
         # flimit_connection, node_visited_connection, node_expanded_connection
         # self.scenario_service.connect_fringe(self.flimit_change, self.node_visit, self.node_expansion)
-        self.scenario_service.upload_fringe_connections([self.flimit_change, self.node_visit, self.node_expansion])
+        # self.scenario_service.upload_fringe_connections([self.flimit_change, self.node_visit, self.node_expansion])
         print(f"map_scene upload_fringe_connections {[self.flimit_change, self.node_visit, self.node_expansion]}")
 
 if __name__=='__main__':

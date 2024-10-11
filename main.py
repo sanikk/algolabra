@@ -6,15 +6,12 @@ import sys
 from PyQt6.QtWidgets import QApplication
 
 def main():
-
-    search_service = SearchService()
-    scenario_service = ScenarioService(search_service=search_service)
-
+    scenario_service = ScenarioService()
+    search_service = SearchService(scenario_service=scenario_service)
 
     app = QApplication(sys.argv)
 
-    # ui = TabWindow(scenario_service=scenario_service)
-    ui = UI(scenario_service=scenario_service)
+    ui = UI(scenario_service=scenario_service, search_service=search_service)
     ui.resize(800, 600)
 
     ui.setWindowTitle('Pathfinding on a Grid')
