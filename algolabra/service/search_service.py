@@ -35,8 +35,6 @@ class SearchService(QObject):
         start, goal = self.scenario_service.get_scenario_start_and_goal(bucket, index)
         map_data = self.scenario_service.get_map_data()
 
-        print(f"start_fringe_thread {data_slots=}")
-
         instanced_thread = FringeThread(self, start, goal, map_data, map_slots, data_slots)
         instanced_thread.start()
 

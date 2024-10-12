@@ -16,8 +16,6 @@ class FringeThread(QThread):
         self.goal_node = goal
         self.citymap = citymap
 
-        print(f"fringe_thread {data_slots=}")
-
         self.signals.node_visited.connect(map_slots[0])
         self.signals.node_visited.connect(data_slots[0])
         self.signals.node_expanded.connect(map_slots[1])
