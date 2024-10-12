@@ -1,4 +1,4 @@
-from PyQt6.QtCore import QObject, pyqtSignal, QThread, pyqtSlot
+from PyQt6.QtCore import QThread
 
 from algolabra.fringe.doublelinkedlist import Node, DoubleLinkedList
 from algolabra.common_search_utils.heuristics import heuristics
@@ -13,8 +13,7 @@ class FringeThread(QThread):
         self.start_node = start
         self.goal_node = goal
         self.citymap = citymap
-        # connect everything here
-        # slot_list = self.node_visit, self.node_expansion, self.flimit_change
+
         self.signals.node_visited.connect(slot_list[0])
         self.signals.node_expanded.connect(slot_list[1])
         self.signals.flimit_set.connect(slot_list[2])
@@ -81,7 +80,7 @@ class FringeThread(QThread):
                 fringe.remove_node(node)
             flimit = fmin + 0.1
             ############
-            QThread.msleep(1)
+            # QThread.msleep(1)
             self.signals.flimit_set.emit(flimit)
             print(f"{flimit=}, {expanded=}, {visited=}")
             ############
