@@ -1,4 +1,5 @@
 import time
+from decimal import Decimal
 
 from algolabra.fringe.doublelinkedlist import DoubleLinkedList, Node
 from algolabra.common_search_utils.heuristics import heuristics
@@ -18,13 +19,13 @@ def fringe_search(start: tuple[int, int], goal: tuple[int, int], citymap: list):
     fringe = DoubleLinkedList(node=start_node)
     cache = [[None for a in line] for line in citymap]
 
-    cache[start_node.y][start_node.x] = 0, None
+    cache[start_node.y][start_node.x] = Decimal(0), None
     flimit = heuristics(start_node, *goal)
     found = False
-    found_cost = 0
+    found_cost = Decimal(0)
 
     while not found and fringe.head:
-        fmin = 1000000
+        fmin = Decimal(1000000)
         for node in fringe:
             g, parent = cache[node.y][node.x]
             f = g + heuristics(node, *goal)

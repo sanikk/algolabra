@@ -1,3 +1,6 @@
+from decimal import Decimal
+from math import sqrt
+
 from algolabra.fringe.doublelinkedlist import Node
 
 
@@ -13,4 +16,4 @@ def heuristics(node: Node, goalx: int, goaly: int):
     # undirected heuristics and cache for now
     delta_x = node.x - goalx
     delta_y = node.y - goaly
-    return max(abs(delta_x), abs(delta_y)) + (2**0.5 - 1) * min(abs(delta_x), abs(delta_y))
+    return Decimal(max(abs(delta_x), abs(delta_y)) + (Decimal(sqrt(2)) - Decimal(1)) * min(abs(delta_x), abs(delta_y)))

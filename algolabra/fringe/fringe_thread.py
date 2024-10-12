@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from PyQt6.QtCore import QThread
 
 from algolabra.fringe.doublelinkedlist import Node, DoubleLinkedList
@@ -34,7 +36,7 @@ class FringeThread(QThread):
         fringe = DoubleLinkedList(node=start_node)
         cache = [[None for a in line] for line in citymap]
 
-        cache[start_node.y][start_node.x] = 0, None
+        cache[start_node.y][start_node.x] = Decimal(0), None
         flimit = heuristics(start_node, *goal)
         ############
         self.signals.flimit_set.emit(flimit)
@@ -43,10 +45,10 @@ class FringeThread(QThread):
         visited = 0
         ############
         found = False
-        found_cost = 0
+        found_cost = Decimal(0)
 
         while not found and fringe.head:
-            fmin = 1000000
+            fmin = Decimal(1000000)
             for node in fringe:
                 ############
                 self.signals.node_visited.emit(node.x, node.y)
@@ -78,9 +80,8 @@ class FringeThread(QThread):
                     fringe.add_child(x, y, node)
                     cache[y][x] = g_child, (node.x, node.y)
                 fringe.remove_node(node)
-            flimit = fmin + 0.1
+            flimit = fmin
             ############
-            # QThread.msleep(1)
             self.signals.flimit_set.emit(flimit)
             print(f"{flimit=}, {expanded=}, {visited=}")
             ############
