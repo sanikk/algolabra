@@ -81,7 +81,9 @@ class FringeThread(QThread):
                     fringe.add_child(x, y, node)
                     cache[y][x] = g_child, (node.x, node.y)
                 fringe.remove_node(node)
-            flimit = fmin
+            # flimit = fmin
+            # add a bit of the magic sauce
+            flimit = fmin + Decimal(0.00001)
             ############
             self.signals.flimit_set.emit(flimit)
             print(f"{flimit=}, {expanded=}, {visited=}")

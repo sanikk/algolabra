@@ -1,4 +1,3 @@
-import math
 import time
 from decimal import Decimal
 
@@ -16,7 +15,7 @@ def fringe_search(start: tuple[int, int], goal: tuple[int, int], citymap: list):
     :param citymap:  map
     :return: cost and route if available
     """
-    diag_cost = Decimal(math.sqrt(2))
+    diag_cost = Decimal(2).sqrt()
     start_node = Node(*start)
     fringe = DoubleLinkedList(node=start_node)
     cache = [[None for a in line] for line in citymap]
@@ -48,7 +47,9 @@ def fringe_search(start: tuple[int, int], goal: tuple[int, int], citymap: list):
                 fringe.add_child(x, y, node)
                 cache[y][x] = g_child, (node.x, node.y)
             fringe.remove_node(node)
-        flimit = fmin
+        # flimit = fmin
+        # add a bit of the magic sauce
+        flimit = fmin + Decimal(0.00001)
     if found:
         route = [goal]
         while route[-1] != start:
