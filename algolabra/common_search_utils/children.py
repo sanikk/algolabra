@@ -1,8 +1,6 @@
 import math
-from math import sqrt
 from decimal import Decimal
 
-from algolabra.fringe.children import diag_cost
 from algolabra.fringe.doublelinkedlist import Node
 
 
@@ -16,7 +14,6 @@ def children(node, citymap, diag_cost):
 
     Uses x: int, y: int, cost: Decimal internally.
     """
-    print(f"{type(diag_cost)=}")
     masks = [
         (0, 1, Decimal(1)),
         (1, 1, diag_cost),
@@ -33,7 +30,6 @@ def children(node, citymap, diag_cost):
     open_ground = [1 if 0 <= x < len(citymap[0]) and 0 <= y < len(citymap) and citymap[y][x] == '.' else 0 for x, y, z in applied]
     cleared = []
     for i, (x, y, cost) in enumerate(applied[:8]):
-        print(f"{type(cost)=}")
         if cost == 1:
             if open_ground[i] == 1:
                 cleared.append((x, y, cost))
