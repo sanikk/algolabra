@@ -42,7 +42,15 @@ class IntroTab(QWidget):
         def updater():
             data = self.search_service.run_astar_for_bucket(bucket=self.bucketbox.currentIndex())
             if data:
-                [self.table.setItem(i, 5, QTableWidgetItem("{:.8f}".format(item))) for i, item in enumerate(data)]
+                # [self.table.setItem(i, 5, QTableWidgetItem("{:.8f}".format(item))) for i, item in enumerate(data)]
+                 # for i, line in enumerate(data):
+                 #    print(f"{line=}")
+                 #    for j, item in enumerate(line):
+                 #        print(f"{item=}")
+                 #        self.table.setItem(i, j + 5, QTableWidgetItem("{:.8f}".format(item)))
+                    # print(line)
+                 [[self.table.setItem(i, j + 5, QTableWidgetItem("{:.8f}".format(item))) for j, item in enumerate(line)]
+                 for i, line in enumerate(data)]
 
         button.clicked.connect(updater)
         layout.addWidget(button)
@@ -64,6 +72,7 @@ class IntroTab(QWidget):
         def updater():
             data = self.search_service.run_fringe_for_bucket(bucket=self.bucketbox.currentIndex())
             [[self.table.setItem(i, j + 9, QTableWidgetItem("{:.8f}".format(item))) for j, item in enumerate(line)] for i, line in enumerate(data)]
+
         button.clicked.connect(updater)
         layout.addWidget(button)
 

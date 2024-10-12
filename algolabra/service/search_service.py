@@ -1,7 +1,7 @@
 from PyQt6.QtCore import pyqtSignal, QObject, pyqtSlot
 
 from algolabra.fringe.timed_fringe import timed_fringe_search
-from algolabra.astar.astar import astar
+from algolabra.astar.astar import astar, timed_astar_search
 from algolabra.fringe.fringe_thread import FringeThread
 
 
@@ -39,9 +39,9 @@ class SearchService(QObject):
         instanced_thread.start()
 
     def run_timed_astar(self, start, goal, citymap):
-        cost, route = astar(start, goal, citymap)
-        self.astar_time = None
-        return cost
+        cost, timers, route = timed_astar_search(start, goal, citymap)
+        self.astar_time = timers
+        return [cost, *timers]
 
     def run_astar_for_bucket(self, bucket: int):
         results = []
