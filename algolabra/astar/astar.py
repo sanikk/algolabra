@@ -1,3 +1,4 @@
+import time
 from decimal import Decimal
 from heapq import heappush, heappop
 from algolabra.common_search_utils.heuristics import heuristics_for_tuples as heuristics
@@ -8,6 +9,14 @@ def reconstruct_path(start, goal, came_from):
     while path[-1] != start:
         path.append(came_from[path[-1]])
     return path
+
+def timed_astar_search(start, goal, citymap):
+    start_times = [time.perf_counter(), time.process_time(), time.thread_time()]
+    cost, route = astar(start, goal, citymap)
+    end_times = [time.perf_counter(), time.process_time(), time.thread_time()]
+    timers = [a - b for a, b in zip(end_times, start_times)]
+
+    return cost, timers, route
 
 def astar(start,goal, citymap):
     # init
@@ -20,8 +29,9 @@ def astar(start,goal, citymap):
     while heap:
         estimate, current = heappop(heap)
         if current == goal:
-            print(f"found! cost {g_scores[current]}")
-            return reconstruct_path(start, goal, came_from)
+            final_cost = g_scores[current]
+            # print(f"found! cost {final_cost}")
+            return final_cost, reconstruct_path(start, goal, came_from)
 
         for x, y, cost in children(*current, citymap, diag_cost):
             child = x, y
@@ -34,13 +44,4 @@ def astar(start,goal, citymap):
                 heappush(heap, (fscore, child))
 
 if __name__=='__main__':
-    from read_files import read_map
-    citymap = read_map("Boston_0_512.map")
-    start = 344, 85
-    goal = 343, 85
-    astar(start, goal, citymap)
-    # 1
-    start = 352, 438
-    goal = 346, 423
-    astar(start, goal, citymap)
-    # 17.48528137
+    pass

@@ -25,8 +25,6 @@ class FringeThread(QThread):
 
     def run(self):
         cost, timers, route = timed_search(self.fringe_search, self.start_node, self.goal_node, self.citymap)
-        print(timers)
-
 
     def fringe_search(self, start: tuple[int, int], goal: tuple[int, int], citymap: list):
         """
@@ -43,7 +41,6 @@ class FringeThread(QThread):
 
         cache[start_node.y][start_node.x] = Decimal(0), None
         flimit = heuristics(start_node, *goal, diag_cost)
-        # print(f"{type(flimit)=}")
         ############
         self.signals.flimit_set.emit(str(flimit))
         expanded = 0
@@ -89,7 +86,6 @@ class FringeThread(QThread):
                 # flimit = fmin
                 # add a bit of the magic sauce
                 flimit = fmin + Decimal(0.00001)
-                # print(f"{type(flimit)=}")
                 ############
                 self.signals.flimit_set.emit(str(flimit))
                 print(f"{flimit=}, {expanded=}, {visited=}")

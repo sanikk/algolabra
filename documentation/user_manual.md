@@ -12,6 +12,11 @@ poetry install
 ```bash
 poetry run invoke start
 ```
+After starting you can choose a scenario file, like one from movingai. have the scenario file and map in the 
+same location. Currently this only understands open '.' and blocked terrain from the maps.
+
+There are a few buttons. You'll figure it out.
+
 ## Tests
 ```bash
 poetry run invoke test

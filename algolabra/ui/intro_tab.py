@@ -19,17 +19,16 @@ class IntroTab(QWidget):
 
         self.setLayout(layout)
 
-        self.scenario_service.map_changed.connect(self.update_table)
+        self.scenario_service.map_changed.connect(self.prepare_table)
         self.scenario_service.map_changed.connect(self.update_bucketbox)
-        self.bucketbox.currentIndexChanged.connect(self.update_table)
+        self.bucketbox.currentIndexChanged.connect(self.prepare_table)
 
     @pyqtSlot()
-    def update_table(self):
-        table = self.table
-        table.clearContents()
+    def prepare_table(self):
+        self.table.clearContents()
         data = self.scenario_service.get_bucket_strings(self.bucketbox.currentIndex())
         if data:
-            [[table.setItem(y, x, QTableWidgetItem(item)) for x, item in enumerate(line)] for y, line in enumerate(data)]
+            [[self.table.setItem(y, x, QTableWidgetItem(item)) for x, item in enumerate(line)] for y, line in enumerate(data)]
 
     def astar_box(self):
         groupbox = QGroupBox("A*")
@@ -41,9 +40,17 @@ class IntroTab(QWidget):
         button = QPushButton("Run A*")
 
         def updater():
-            data = self.search_service.run_timed_astar(bucket=self.bucketbox.currentIndex())
-            # data = self.scenario_service.run_astar_fast(bucket=self.bucketbox.currentIndex())
-            result_label.setText(data)
+            data = self.search_service.run_astar_for_bucket(bucket=self.bucketbox.currentIndex())
+            if data:
+                # [self.table.setItem(i, 5, QTableWidgetItem("{:.8f}".format(item))) for i, item in enumerate(data)]
+                 # for i, line in enumerate(data):
+                 #    print(f"{line=}")
+                 #    for j, item in enumerate(line):
+                 #        print(f"{item=}")
+                 #        self.table.setItem(i, j + 5, QTableWidgetItem("{:.8f}".format(item)))
+                    # print(line)
+                 [[self.table.setItem(i, j + 5, QTableWidgetItem("{:.8f}".format(item))) for j, item in enumerate(line)]
+                 for i, line in enumerate(data)]
 
         button.clicked.connect(updater)
         layout.addWidget(button)
@@ -65,6 +72,7 @@ class IntroTab(QWidget):
         def updater():
             data = self.search_service.run_fringe_for_bucket(bucket=self.bucketbox.currentIndex())
             [[self.table.setItem(i, j + 9, QTableWidgetItem("{:.8f}".format(item))) for j, item in enumerate(line)] for i, line in enumerate(data)]
+
         button.clicked.connect(updater)
         layout.addWidget(button)
 
