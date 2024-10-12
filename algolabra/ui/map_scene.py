@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from PyQt6.QtCore import pyqtSlot
 from PyQt6.QtGui import QColor, QImage, QPixmap, QBrush
 from PyQt6.QtWidgets import QGraphicsScene
@@ -36,7 +38,7 @@ class MapScene(QGraphicsScene):
     def node_expansion(self, x, y):
         self.addRect(x * self.tile_size, y * self.tile_size, self.tile_size, self.tile_size, brush= QBrush(QColor(0, 0, 255)))
 
-    @pyqtSlot(float)
+    @pyqtSlot(Decimal)
     # TODO fill this in
     def flimit_change(self, new_flimit):
         pass

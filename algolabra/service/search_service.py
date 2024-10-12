@@ -9,9 +9,8 @@ class SearchService(QObject):
 
     operate = pyqtSignal()
 
-    def __init__(self, scenario_service=None, tilesize=8):
+    def __init__(self, scenario_service=None):
         super().__init__()
-        self.tilesize = tilesize
         self.scenario_service = scenario_service
 
         self.astar_time = None
@@ -57,6 +56,3 @@ class SearchService(QObject):
     @pyqtSlot()
     def handle_results(self):
         print("handling results...done")
-
-
-
