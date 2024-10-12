@@ -1,3 +1,4 @@
+import math
 import time
 from decimal import Decimal
 
@@ -5,22 +6,26 @@ from algolabra.fringe.doublelinkedlist import DoubleLinkedList, Node
 from algolabra.common_search_utils.heuristics import heuristics
 from algolabra.common_search_utils.children import children
 
-
+# TODO type check everything. make sure we using decimal
+# print(f"{type()=}")
 def fringe_search(start: tuple[int, int], goal: tuple[int, int], citymap: list):
     """
     Implementation for octile maps. No extra data collection or status prints.
+
     :param start: starting point (x, y)
     :param goal:  goal point (x, y)
     :param citymap:  map
     :return: cost and route if available
     """
-
+    diag_cost = Decimal(math.sqrt(2))
+    print(f"{type(diag_cost)=}")
     start_node = Node(*start)
     fringe = DoubleLinkedList(node=start_node)
     cache = [[None for a in line] for line in citymap]
 
     cache[start_node.y][start_node.x] = Decimal(0), None
-    flimit = heuristics(start_node, *goal)
+    flimit = heuristics(start_node, *goal, diag_cost)
+    print(f"{type(flimit)=}")
     found = False
     found_cost = Decimal(0)
 
@@ -28,25 +33,33 @@ def fringe_search(start: tuple[int, int], goal: tuple[int, int], citymap: list):
         fmin = Decimal(1000000)
         for node in fringe:
             g, parent = cache[node.y][node.x]
-            f = g + heuristics(node, *goal)
+            print(f"{type(g)=}")
+            f = g + heuristics(node, *goal, diag_cost)
+            print(f"{type(f)=}")
             if f > flimit:
                 fmin = min(f, fmin)
+                print(f"{type(fmin)=}")
                 continue
             if node.x == goal[0] and node.y == goal[1]:
                 found = True
                 found_cost = g
+                print(f"{type(found_cost)=}")
                 break
 
-            for x, y, cost in children(node, citymap):
+            for x, y, cost in children(node, citymap, diag_cost):
+                print(f"{type(cost)=}")
                 g_child = g + cost
+                print(f"{type(g_child)=}")
                 if cache[y][x]:
                     g_cached, parent = cache[y][x]
+                    print(f"{type(g_cached)=}")
                     if g_child >= g_cached:
                         continue
                 fringe.add_child(x, y, node)
                 cache[y][x] = g_child, (node.x, node.y)
             fringe.remove_node(node)
         flimit = fmin
+        print(f"{type(flimit)=}")
     if found:
         route = [goal]
         while route[-1] != start:
@@ -74,6 +87,8 @@ def timed_fringe_search(start, goal, citymap) -> tuple[int, list, list]:
     timers = [a - b for a,b in zip(end_times, start_times)]
 
     return cost, timers, route
+
+
 
 if __name__=='__main__':
     pass
