@@ -13,8 +13,6 @@ class MapScene(QGraphicsScene):
         self.search_service = search_service
         self.pixmap = None
         scenario_service.map_changed.connect(self.map_changed)
-        # nope.
-        # search_service.scenario_changed.connect(self.scenario_changed)
 
     def get_image_from_map(self, map_data: list):
         image = QImage(len(map_data[0]), len(map_data), QImage.Format.Format_RGB32)
@@ -52,14 +50,19 @@ class MapScene(QGraphicsScene):
         self.addRect(x * self.tile_size, max(0, y - 1) * self.tile_size, self.tile_size, 3 * self.tile_size,
                      brush=QBrush(QColor(245, 34, 213)))
 
+    def paint_tile_color(self, x, y, red, blue, green):
+        self.addRect(x * self.tile_size, y * self.tile_size, self.tile_size, self.tile_size, brush=QBrush(QColor(red, blue, green)))
+
+    def paint_tile_brush(self, x, y, brush):
+        self.addRect(x * self.tile_size, y * self.tile_size, self.tile_size, self.tile_size, brush=brush)
 
     @pyqtSlot(int, int)
     def node_visit(self, x, y):
-        self.addRect(x * self.tile_size, y * self.tile_size, self.tile_size, self.tile_size, brush= QBrush(QColor(0,255,0)))
+        self.paint_tile_color(x, y,0, 255, 0)
 
     @pyqtSlot(int, int)
     def node_expansion(self, x, y):
-        self.addRect(x * self.tile_size, y * self.tile_size, self.tile_size, self.tile_size, brush= QBrush(QColor(0, 0, 255)))
+        self.paint_tile_color(x, y,0, 0, 255)
 
     @pyqtSlot(Decimal)
     # TODO fill this in

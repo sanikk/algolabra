@@ -79,9 +79,13 @@ class IntroTab(QWidget):
     def get_scenario_table(self):
         table = QTableWidget()
         table.setRowCount(10)
+        # scenario columns
         labels = ["id", "bucket", "start", "goal", "cost",
+        # A* columns
         "A* cost", "perf_time", "proc_time", "thread_time",
-        "Fringe cost", "perf_time", "proc_time", "thread_time"]
+        # fringe columns
+        "Fringe cost", "perf_time", "proc_time", "thread_time",]
+                  # "nodes_visited", "nodes_expanded"
         table.setColumnCount(len(labels))
         table.setHorizontalHeaderLabels(labels)
         return table
