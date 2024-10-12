@@ -25,6 +25,7 @@ class IntroTab(QWidget):
 
     @pyqtSlot()
     def update_table(self):
+        # TODO tämä on väärin nimetty, ja tehtävä siten epäselvä
         table = self.table
         table.clearContents()
         data = self.scenario_service.get_bucket_strings(self.bucketbox.currentIndex())
@@ -41,9 +42,11 @@ class IntroTab(QWidget):
         button = QPushButton("Run A*")
 
         def updater():
-            data = self.search_service.run_timed_astar(bucket=self.bucketbox.currentIndex())
+            cost = self.search_service.run_timed_astar(bucket=self.bucketbox.currentIndex())
             # data = self.scenario_service.run_astar_fast(bucket=self.bucketbox.currentIndex())
-            result_label.setText(data)
+            if cost:
+                result_label.setText(str(cost))
+            # result_label.setText(data)
 
         button.clicked.connect(updater)
         layout.addWidget(button)

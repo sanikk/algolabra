@@ -39,9 +39,13 @@ class SearchService(QObject):
         instanced_thread.start()
 
     def run_timed_astar(self, bucket):
-        new_time = "123.456"
-        self.astar_time = new_time
-        return new_time
+        start, goal = self.scenario_service.get_scenario_start_and_goal(bucket, 0)
+        map_data = self.scenario_service.get_map_data()
+        cost, route = astar(start, goal, map_data)
+        return cost
+        # new_time = "123.456"
+        # self.astar_time = new_time
+        # return new_time
 
 
     def playbyplay_astar(self, start, goal, citymap):

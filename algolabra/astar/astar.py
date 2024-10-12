@@ -20,8 +20,9 @@ def astar(start,goal, citymap):
     while heap:
         estimate, current = heappop(heap)
         if current == goal:
-            print(f"found! cost {g_scores[current]}")
-            return reconstruct_path(start, goal, came_from)
+            final_cost = g_scores[current]
+            print(f"found! cost {final_cost}")
+            return final_cost, reconstruct_path(start, goal, came_from)
 
         for x, y, cost in children(*current, citymap, diag_cost):
             child = x, y
