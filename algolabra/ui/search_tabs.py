@@ -21,6 +21,8 @@ class SearchTab(QWidget):
         self.scenario_service = scenario_service
         self.search_service = search_service
 
+        self.scene = MapScene(scenario_service=scenario_service, search_service=search_service)
+
         self.bucket_box = None
         self.scenario_box = None
 
@@ -52,6 +54,10 @@ class SearchTab(QWidget):
         self.scenario_service.map_changed.connect(update_bucket_box)
         self.scenario_service.map_changed.connect(update_scenario_box)
         bucket_box.currentIndexChanged.connect(update_scenario_box)
+        def scenario_changer():
+            self.scene.scenario_changed(bucket_box.currentIndex(), scenario_box.currentIndex())
+        bucket_box.currentIndexChanged.connect(scenario_changer)
+        scenario_box.currentIndexChanged.connect(scenario_changer)
 
         return container
 
@@ -63,7 +69,7 @@ class AstarTab(SearchTab):
         self.layout.addWidget(control_area)
         run_button.clicked.connect(self.run_astar)
 
-        self.scene = MapScene(scenario_service=scenario_service, search_service=search_service)
+        # self.scene = MapScene(scenario_service=scenario_service, search_service=search_service)
         self.view = QGraphicsView(self.scene)
         self.layout.addWidget(self.view)
 
@@ -80,7 +86,7 @@ class FringeTab(SearchTab):
         self.layout.addWidget(control_area)
         run_button.clicked.connect(self.run_fringe)
 
-        self.scene = MapScene(scenario_service=scenario_service, search_service=search_service)
+        # self.scene = MapScene(scenario_service=scenario_service, search_service=search_service)
         self.view = QGraphicsView(self.scene)
         self.layout.addWidget(self.view)
 

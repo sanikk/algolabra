@@ -11,7 +11,10 @@ class MapScene(QGraphicsScene):
         self.tile_size = tile_size
         self.scenario_service = scenario_service
         self.search_service = search_service
-        scenario_service.map_changed.connect(self.set_bg_image)
+        self.pixmap = None
+        scenario_service.map_changed.connect(self.map_changed)
+        # nope.
+        # search_service.scenario_changed.connect(self.scenario_changed)
 
     def get_image_from_map(self, map_data: list):
         image = QImage(len(map_data[0]), len(map_data), QImage.Format.Format_RGB32)
@@ -22,13 +25,33 @@ class MapScene(QGraphicsScene):
         return image.scaled(len(map_data) * self.tile_size, len(map_data[0]) * self.tile_size)
 
     @pyqtSlot()
-    def set_bg_image(self):
+    def map_changed(self):
         map_data = self.scenario_service.get_map_data()
         if not map_data:
             return
+        self.pixmap = QPixmap.fromImage(self.get_image_from_map(map_data))
+        self.addPixmap(self.pixmap)
+
+    @pyqtSlot(int, int)
+    def scenario_changed(self, bucket, index):
         self.clear()
-        pixmap = QPixmap.fromImage(self.get_image_from_map(map_data))
-        self.addPixmap(pixmap)
+        if self.pixmap:
+            self.addPixmap(self.pixmap)
+        if bucket is None or index is None or index == -1:
+            return
+        start, goal = self.scenario_service.get_scenario_start_and_goal(bucket, index)
+        self.fill_start_goal(start, goal)
+
+    def fill_start_goal(self, start, goal):
+        x, y = start
+        self.addRect(max(0, x - 1) * self.tile_size, y * self.tile_size, 3 * self.tile_size, self.tile_size, brush=QBrush(QColor(56, 194, 180)))
+        self.addRect(x * self.tile_size, max(0, y - 1) * self.tile_size, self.tile_size, 3 * self.tile_size, brush=QBrush(QColor(56, 194, 180)))
+        x, y = goal
+        self.addRect(max(0, x - 1) * self.tile_size, y * self.tile_size, 3 * self.tile_size, self.tile_size,
+                     brush=QBrush(QColor(245, 34, 213)))
+        self.addRect(x * self.tile_size, max(0, y - 1) * self.tile_size, self.tile_size, 3 * self.tile_size,
+                     brush=QBrush(QColor(245, 34, 213)))
+
 
     @pyqtSlot(int, int)
     def node_visit(self, x, y):
