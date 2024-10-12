@@ -64,9 +64,9 @@ class MapScene(QGraphicsScene):
     def node_expansion(self, x, y):
         self.paint_tile_color(x, y,0, 0, 255)
 
-    @pyqtSlot(Decimal)
+    @pyqtSlot(str)
     # TODO fill this in
-    def flimit_change(self, new_flimit):
+    def flimit_change(self, new_flimit: str):
         pass
 
     def get_slots(self):

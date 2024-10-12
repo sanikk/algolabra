@@ -9,16 +9,21 @@ from algolabra.ui.mysignals import FringeSignals
 from algolabra.common_search_utils.timed_search import timed_search
 
 class FringeThread(QThread):
-    def __init__(self, parent, start, goal, citymap, slot_list):
+    def __init__(self, parent, start, goal, citymap, map_slots, data_slots):
         super().__init__(parent)
         self.signals = FringeSignals()
         self.start_node = start
         self.goal_node = goal
         self.citymap = citymap
 
-        self.signals.node_visited.connect(slot_list[0])
-        self.signals.node_expanded.connect(slot_list[1])
-        self.signals.flimit_set.connect(slot_list[2])
+        print(f"fringe_thread {data_slots=}")
+
+        self.signals.node_visited.connect(map_slots[0])
+        self.signals.node_visited.connect(data_slots[0])
+        self.signals.node_expanded.connect(map_slots[1])
+        self.signals.node_expanded.connect(data_slots[1])
+        self.signals.flimit_set.connect(map_slots[2])
+        self.signals.flimit_set.connect(data_slots[2])
 
     def run(self):
         cost, timers, route = timed_search(self.fringe_search, self.start_node, self.goal_node, self.citymap)
@@ -40,8 +45,9 @@ class FringeThread(QThread):
 
         cache[start_node.y][start_node.x] = Decimal(0), None
         flimit = heuristics(start_node, *goal, diag_cost)
+        # print(f"{type(flimit)=}")
         ############
-        self.signals.flimit_set.emit(flimit)
+        self.signals.flimit_set.emit(str(flimit))
         expanded = 0
         visited = 0
         ############
@@ -81,13 +87,15 @@ class FringeThread(QThread):
                     fringe.add_child(x, y, node)
                     cache[y][x] = g_child, (node.x, node.y)
                 fringe.remove_node(node)
-            # flimit = fmin
-            # add a bit of the magic sauce
-            flimit = fmin + Decimal(0.00001)
-            ############
-            self.signals.flimit_set.emit(flimit)
-            print(f"{flimit=}, {expanded=}, {visited=}")
-            ############
+            if not found:
+                # flimit = fmin
+                # add a bit of the magic sauce
+                flimit = fmin + Decimal(0.00001)
+                # print(f"{type(flimit)=}")
+                ############
+                self.signals.flimit_set.emit(str(flimit))
+                print(f"{flimit=}, {expanded=}, {visited=}")
+                ############
         if found:
             route = [goal]
             while route[-1] != start:
