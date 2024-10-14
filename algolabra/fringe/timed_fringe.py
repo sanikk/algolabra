@@ -16,17 +16,19 @@ def fringe_search(start: tuple[int, int], goal: tuple[int, int], citymap: list):
     :return: cost and route if available
     """
     diag_cost = Decimal(2).sqrt()
+    fmax = 10000000
+
     start_node = Node(*start)
     fringe = DoubleLinkedList(node=start_node)
     cache = [[None for a in line] for line in citymap]
 
-    cache[start_node.y][start_node.x] = Decimal(0), None
+    cache[start_node.y][start_node.x] = 0, None
     flimit = heuristics(start_node, *goal, diag_cost)
     found = False
-    found_cost = Decimal(0)
+    found_cost = 0
 
     while not found and fringe.head:
-        fmin = Decimal(1000000)
+        fmin = fmax
         for node in fringe:
             g, parent = cache[node.y][node.x]
             f = g + heuristics(node, *goal, diag_cost)
@@ -47,9 +49,7 @@ def fringe_search(start: tuple[int, int], goal: tuple[int, int], citymap: list):
                 fringe.add_child(x, y, node)
                 cache[y][x] = g_child, (node.x, node.y)
             fringe.remove_node(node)
-        # flimit = fmin
-        # add a bit of the magic sauce
-        flimit = fmin + Decimal(0.00001)
+        flimit = fmin
     if found:
         route = [goal]
         while route[-1] != start:

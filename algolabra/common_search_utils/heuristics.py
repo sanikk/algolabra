@@ -1,6 +1,4 @@
 from decimal import Decimal
-from math import sqrt
-
 from algolabra.fringe.doublelinkedlist import Node
 
 
@@ -15,9 +13,9 @@ def heuristics(node: Node, goalx: int, goaly: int, diag_cost: Decimal):
     :return:
     """
     # undirected heuristics and cache for now
-    delta_x = Decimal(node.x - goalx)
-    delta_y = Decimal(node.y - goaly)
-    result =  max(abs(delta_x), abs(delta_y)) + (diag_cost - Decimal(1)) * min(abs(delta_x), abs(delta_y))
+    delta_x = node.x - goalx
+    delta_y = node.y - goaly
+    result =  max(abs(delta_x), abs(delta_y)) + (diag_cost - 1) * min(abs(delta_x), abs(delta_y))
     return result
 
 def heuristics_for_tuples(startx:int, starty: int, goalx: int, goaly: int, diag_cost: Decimal):
@@ -29,9 +27,9 @@ def heuristics_for_tuples(startx:int, starty: int, goalx: int, goaly: int, diag_
     :param starty:
     :param diag_cost: Decimal of diag cost, Decimal('2').sqrt() works
     """
-    delta_x = Decimal(startx - goalx)
-    delta_y = Decimal(starty - goaly)
-    result =  max(abs(delta_x), abs(delta_y)) + (diag_cost - Decimal('1')) * min(abs(delta_x), abs(delta_y))
+    delta_x = startx - goalx
+    delta_y = starty - goaly
+    result =  max(abs(delta_x), abs(delta_y)) + (diag_cost - 1) * min(abs(delta_x), abs(delta_y))
     return result
 
 if __name__=='__main__':

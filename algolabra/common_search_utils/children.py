@@ -48,15 +48,15 @@ def children_with_tuples(x, y, citymap, diag_cost):
     Uses x: int, y: int, cost: Decimal internally.
     """
     masks = [
-        (0, 1, Decimal(1)),
+        (0, 1, 1),
         (1, 1, diag_cost),
-        (1, 0, Decimal(1)),
+        (1, 0, 1),
         (1, -1, diag_cost),
-        (0, -1, Decimal(1)),
+        (0, -1, 1),
         (-1, -1, diag_cost),
-        (-1, 0, Decimal(1)),
+        (-1, 0, 1),
         (-1, 1, diag_cost),
-        (0, 1, Decimal(1))
+        (0, 1, 1)
     ]
 
     applied = [(mask[0] + x, mask[1] + y, mask[2]) for mask in masks]
