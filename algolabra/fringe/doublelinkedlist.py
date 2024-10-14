@@ -1,6 +1,8 @@
 class Node:
     """
     Simple Node class for filling Doublelinked List.
+
+    This has served it's use.
     """
     def __init__(self, x=None, y=None, prev=None, next=None):
         self.x = x

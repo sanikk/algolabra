@@ -43,6 +43,11 @@ class ScenarioService(QObject):
         return [(a[0], a[2], a[3]) for a in self.scenarios.get(bucket, [])]
 
     def get_bucket_strings(self, bucket: int):
+        """
+        Get scenarios with individual cols as strings.
+
+        used in intro_tab prepare_table
+        """
         bucket = self.scenarios.get(bucket, [])
         if bucket:
             return [[str(a[0]), str(a[1]), f"({a[2][0]}, {a[2][1]})", f"({a[3][0]}, {a[3][1]})", str(a[4])] for a in bucket]
@@ -57,6 +62,8 @@ class ScenarioService(QObject):
     def get_bucket_list(self):
         """
         Return list of bucket indexes.
+
+        used in intro_tab.bucket_box
         """
         return [str(a) for a in self.scenarios.keys()]
 

@@ -11,11 +11,16 @@ from algolabra.common_search_utils.timed_search import timed_search
 class FringeThread(QThread):
     def __init__(self, parent, start, goal, citymap, map_slots, data_slots):
         super().__init__(parent)
+
         self.signals = FringeSignals()
+        self.connect_slots(map_slots, data_slots)
+
         self.start_node = start
         self.goal_node = goal
         self.citymap = citymap
 
+
+    def connect_slots(self, map_slots, data_slots):
         self.signals.node_visited.connect(map_slots[0])
         self.signals.node_visited.connect(data_slots[0])
         self.signals.node_expanded.connect(map_slots[1])
@@ -35,11 +40,12 @@ class FringeThread(QThread):
         :return: cost and route if available
         """
         diag_cost = Decimal(2).sqrt()
+        fmax = 10000000
         start_node = Node(*start)
         fringe = DoubleLinkedList(node=start_node)
         cache = [[None for a in line] for line in citymap]
 
-        cache[start_node.y][start_node.x] = Decimal(0), None
+        cache[start_node.y][start_node.x] = 0, None
         flimit = heuristics(start_node, *goal, diag_cost)
         ############
         self.signals.flimit_set.emit(str(flimit))
@@ -47,10 +53,10 @@ class FringeThread(QThread):
         visited = 0
         ############
         found = False
-        found_cost = Decimal(0)
+        found_cost = 0
 
         while not found and fringe.head:
-            fmin = Decimal(1000000)
+            fmin = fmax
             for node in fringe:
                 ############
                 self.signals.node_visited.emit(node.x, node.y)
@@ -83,9 +89,7 @@ class FringeThread(QThread):
                     cache[y][x] = g_child, (node.x, node.y)
                 fringe.remove_node(node)
             if not found:
-                # flimit = fmin
-                # add a bit of the magic sauce
-                flimit = fmin + Decimal(0.00001)
+                flimit = fmin
                 ############
                 self.signals.flimit_set.emit(str(flimit))
                 print(f"{flimit=}, {expanded=}, {visited=}")
