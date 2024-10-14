@@ -4,12 +4,11 @@ class Node:
 
     This has served it's use.
     """
-    def __init__(self, x=None, y=None, prev=None, next=None):
+    def __init__(self, x, y, left, right):
         self.x = x
         self.y = y
-
-        self.prev = prev
-        self.next = next
+        self.left = left
+        self.right = right
 
 
 class DLLIterator:
@@ -18,32 +17,29 @@ class DLLIterator:
     We point at previous node, resolve pointer only when asked for next, and then return next.
     """
     def __init__(self, node: Node):
-        self.previous = Node(next=node)
+        self.current = Node(None, None, None, node)
 
     def __next__(self):
-        if self.previous and self.previous.next:
-            self.previous = self.previous.next
-            return self.previous
+        if self.current and self.current.right:
+            self.current = self.current.right
+            return self.current
         raise StopIteration
 
     def __iter__(self):
         return self
 
-
 class DoubleLinkedList:
-    def __init__(self, x=None, y=None, node=None):
-        if x and y and not node:
-            node = Node(x, y)
+    def __init__(self, node):
         self.head = node
-        self.on_fringe = {}
-        if node:
-            self.on_fringe[(node.x, node.y)] = node
+        self.tail = node
+        self.on_fringe = {(node.x, node.y): node}
 
     def add_child(self, x, y, parent):
-        child = Node(x,y, parent, parent.next)
-        if parent.next:
-            parent.next.prev = child
-        parent.next = child
+        # TODO testaa nopeus jos heittäis vaan tailiin.
+        child = Node(x,y, parent, parent.right)
+        if parent.right:
+            parent.right.left = child
+        parent.right = child
 
         bookkeeping = self.on_fringe.pop((child.x, child.y), None)
         if bookkeeping:
@@ -51,12 +47,14 @@ class DoubleLinkedList:
         self.on_fringe[(child.x, child.y)] = child
 
     def remove_node(self, node):
-        if node.prev:
-            node.prev.next = node.next
-        if node.next:
-            node.next.prev = node.prev
+        if node.left:
+            node.left.right = node.right
+        if node.right:
+            node.right.left = node.left
         if self.head == node:
-            self.head = node.next
+            self.head = node.right
+        if self.tail == node:
+            self.tail = node.left
         self.on_fringe.pop((node.x, node.y), None)
 
 
@@ -69,8 +67,3 @@ class DoubleLinkedList:
         :return:
         """
         return DLLIterator(self.head)
-
-
-if __name__=='__main__':
-    # dll = DoubleLinkedList(data=1)
-    pass

@@ -29,7 +29,7 @@ class FringeThread(QThread):
         self.signals.flimit_set.connect(data_slots[2])
 
     def run(self):
-        cost, timers, route = timed_search(self.fringe_search, self.start_node, self.goal_node, self.citymap)
+        self.fringe_search(self.start_node, self.goal_node, self.citymap)
 
     def fringe_search(self, start: tuple[int, int], goal: tuple[int, int], citymap: list):
         """
@@ -41,7 +41,7 @@ class FringeThread(QThread):
         """
         diag_cost = Decimal(2).sqrt()
         fmax = 10000000
-        start_node = Node(*start)
+        start_node = Node(*start, None, None)
         fringe = DoubleLinkedList(node=start_node)
         cache = [[None for a in line] for line in citymap]
 

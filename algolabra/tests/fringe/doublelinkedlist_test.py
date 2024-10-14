@@ -1,24 +1,16 @@
 import unittest
-from algolabra.fringe.doublelinkedlist import DoubleLinkedList, Node
+# from algolabra.fringe.doublelinkedlist import DoubleLinkedList, Node
+from algolabra.fringe.doublelinkedlist_version import DoubleLinkedList, Node
 
 
 class TestDoubleLinkedList(unittest.TestCase):
     def setUp(self):
-        self.dll = DoubleLinkedList(1, 1)
+        node = Node(1,1,None, None)
+        self.dll = DoubleLinkedList(node)
 
-    def test_constructor_with_xy_works(self):
-        constructed = DoubleLinkedList(1, 1)
-        self.assertEqual(travel_list(constructed), [(1, 1)])
-        self.assertIsNotNone(constructed.head)
-
-        points = (2, 2)
-        constructed = DoubleLinkedList(*points)
+    def test_constructor_works(self):
+        constructed = DoubleLinkedList(Node(2,2,None, None))
         self.assertEqual(travel_list(constructed), [(2, 2)])
-
-    def test_constructor_with_no_data_works(self):
-        constructed = DoubleLinkedList()
-        self.assertEqual(travel_list(constructed), [])
-        self.assertIsNone(constructed.head)
 
     def test_add_child_adds_child(self):
         self.dll.add_child(2, 2, self.dll.head)

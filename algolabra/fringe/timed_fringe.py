@@ -18,8 +18,8 @@ def fringe_search(start: tuple[int, int], goal: tuple[int, int], citymap: list):
     diag_cost = Decimal(2).sqrt()
     fmax = 10000000
 
-    start_node = Node(*start)
-    fringe = DoubleLinkedList(node=start_node)
+    start_node = Node(*start, None, None)
+    fringe = DoubleLinkedList(start_node)
     cache = [[None for a in line] for line in citymap]
 
     cache[start_node.y][start_node.x] = 0, None
@@ -38,6 +38,7 @@ def fringe_search(start: tuple[int, int], goal: tuple[int, int], citymap: list):
             if node.x == goal[0] and node.y == goal[1]:
                 found = True
                 found_cost = g
+                print(f"found {g}")
                 break
 
             for x, y, cost in children(node, citymap, diag_cost):
@@ -70,14 +71,12 @@ def timed_fringe_search(start, goal, citymap) -> tuple[int, list, list]:
     :param citymap: a map as container of containers. quack quack.
     :return: cost, timer diffs, route
     """
-
     start_times = [time.perf_counter(), time.process_time(), time.thread_time()]
     cost, route = fringe_search(start, goal, citymap)
     end_times = [time.perf_counter(), time.process_time(), time.thread_time()]
     timers = [a - b for a,b in zip(end_times, start_times)]
 
     return cost, timers, route
-
 
 if __name__=='__main__':
     pass
