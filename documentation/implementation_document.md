@@ -14,6 +14,12 @@ used as heuristic.
 
 ## Performance and O-analysis comparisons
 
+I kept having small deviations from the ideal solutions, so i [checked](../algolabra/common_search_utils/check_movingai_ideal_solutions.py).
+The ideal solutions i checked used either 9 or 10 decimal approximations of sqrt(2). So there will
+be slight deviations from the ideal solutions of [movingai](https://www.movingai.com/benchmarks/index.html).
+
+to lift.
+
 Testing needed!
 
 ## Possible shortcomings and suggestions for improvement
