@@ -19,8 +19,9 @@ class MapScene(QGraphicsScene):
         image.fill(QColor(0, 0, 0))
 
         [[image.setPixelColor(x, y, QColor(255, 255, 255)) for x, cell in enumerate(row) if cell=="."] for y, row in enumerate(map_data)]
-
-        return image.scaled(len(map_data) * self.tile_size, len(map_data[0]) * self.tile_size)
+        print(f"{image=}")
+        return image
+        # return image.scaled(len(map_data) * self.tile_size, len(map_data[0]) * self.tile_size)
 
     @pyqtSlot()
     def map_changed(self):
@@ -42,19 +43,18 @@ class MapScene(QGraphicsScene):
 
     def fill_start_goal(self, start, goal):
         x, y = start
-        self.addRect(max(0, x - 1) * self.tile_size, y * self.tile_size, 3 * self.tile_size, self.tile_size, brush=QBrush(QColor(56, 194, 180)))
-        self.addRect(x * self.tile_size, max(0, y - 1) * self.tile_size, self.tile_size, 3 * self.tile_size, brush=QBrush(QColor(56, 194, 180)))
+        self.addRect(max(0, x - 1), y, 3, 1, brush=QBrush(QColor(56, 194, 180)))
+        self.addRect(x, max(0, y - 1), 1, 3, brush=QBrush(QColor(56, 194, 180)))
         x, y = goal
-        self.addRect(max(0, x - 1) * self.tile_size, y * self.tile_size, 3 * self.tile_size, self.tile_size,
-                     brush=QBrush(QColor(245, 34, 213)))
-        self.addRect(x * self.tile_size, max(0, y - 1) * self.tile_size, self.tile_size, 3 * self.tile_size,
-                     brush=QBrush(QColor(245, 34, 213)))
+        self.addRect(max(0, x - 1), y, 3, 1, brush=QBrush(QColor(245, 34, 213)))
+        self.addRect(x, max(0, y - 1), 1, 3, brush=QBrush(QColor(245, 34, 213)))
 
     def paint_tile_color(self, x, y, red, blue, green):
-        self.addRect(x * self.tile_size, y * self.tile_size, self.tile_size, self.tile_size, brush=QBrush(QColor(red, blue, green)))
+        self.addRect(x, y, 1, 1, brush=QBrush(QColor(red, blue, green)))
 
     def paint_tile_brush(self, x, y, brush):
-        self.addRect(x * self.tile_size, y * self.tile_size, self.tile_size, self.tile_size, brush=brush)
+        # self.addRect(x * self.tile_size, y * self.tile_size, self.tile_size, self.tile_size, brush=brush)
+        self.addRect(x, y, 1, 1, brush=brush)
 
     @pyqtSlot(int, int)
     def node_visit(self, x, y):
@@ -67,6 +67,7 @@ class MapScene(QGraphicsScene):
     @pyqtSlot(str)
     # TODO fill this in
     def flimit_change(self, new_flimit: str):
+        # imma use this as update_ready
         pass
 
     def get_slots(self):
