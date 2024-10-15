@@ -16,6 +16,9 @@ class UI(QWidget):
 
 class ScenarioControls(QGroupBox):
     def __init__(self, scenario_service=None):
+        """
+        This is shown at top of screen at all times.
+        """
         super().__init__("Scenario")
         self.scenario_service = scenario_service
         self.default_button_text = "Choose a Scenario file"
@@ -33,9 +36,13 @@ class ScenarioControls(QGroupBox):
         self.setLayout(layout)
 
     def set_scenario_file(self):
+
+
         ret = QFileDialog.getOpenFileName(parent=self,
                                           caption='Choose Scenario file',
-                                          directory='.')
+                                          directory='.',
+                                          filter="Scenario Files (*.map.scen)",
+                                          )
         if ret:
             self.scenario_service.set_scenario_file(ret[0])
             self.scenario_file_button.setText(ret[0] or "Change file")
