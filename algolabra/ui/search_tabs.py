@@ -1,7 +1,7 @@
 from decimal import Decimal
 
 from PyQt6.QtWidgets import QWidget, QGroupBox, QHBoxLayout, QPushButton, QVBoxLayout, QGraphicsView, QComboBox, QLabel
-from PyQt6.QtCore import pyqtSlot
+from PyQt6.QtCore import pyqtSlot, QRect, QRectF
 
 from algolabra.ui.map_scene import MapScene
 
@@ -25,6 +25,7 @@ class SearchTab(QWidget):
 
         self.scene = MapScene(scenario_service=scenario_service, search_service=search_service)
         self.view = QGraphicsView(self.scene)
+        print(f"QGraphicsView {self.view.sceneRect()=}")
 
         self.bucket_box = None
         self.scenario_box = None
@@ -59,9 +60,15 @@ class SearchTab(QWidget):
         bucket_box.currentIndexChanged.connect(update_scenario_box)
         def scenario_changer():
             self.scene.scenario_changed(bucket_box.currentIndex(), scenario_box.currentIndex())
+            start, goal = self.scenario_service.get_scenario_start_and_goal(bucket_box.currentIndex(), scenario_box.currentIndex())
+            qr = QRectF(max(0,min(start[0], goal[0]) * 10 - 30), max(0, min(start[1], goal[1]) * 10 - 30), max(start[0], goal[0]) - min(start[0], goal[0]) + 60,max(start[1], goal[1]) - min(start[1], goal[1]) + 60)
+            print(f"{qr=}")
+            # self.view.setSceneRect(qr)
         bucket_box.currentIndexChanged.connect(scenario_changer)
         scenario_box.currentIndexChanged.connect(scenario_changer)
-
+        # max(0,min(start[0], goal[0]) * 10 - 30), max(0, min(start[1], goal[1]) * 10 - 30), max(start[0], goal[0]) - min(start[0], goal[0]) + 60,max(start[1], goal[1]) - min(start[1], goal[1]) + 60
+        # leveys = max(start[0], goal[0]) - min(start[0], goal[0]) + 60
+        # korkeus = max(start[1], goal[1]) - min(start[1], goal[1]) + 60
         return container
 
 class AstarTab(SearchTab):
