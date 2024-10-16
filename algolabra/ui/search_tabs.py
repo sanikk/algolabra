@@ -25,7 +25,7 @@ class SearchTab(QWidget):
 
         self.scene = MapScene(scenario_service=scenario_service, search_service=search_service)
         self.view = QGraphicsView(self.scene)
-        print(f"QGraphicsView {self.view.sceneRect()=}")
+        self.view.scale(10, 10)
 
         self.bucket_box = None
         self.scenario_box = None
@@ -58,18 +58,27 @@ class SearchTab(QWidget):
         self.scenario_service.map_changed.connect(update_bucket_box)
         self.scenario_service.map_changed.connect(update_scenario_box)
         bucket_box.currentIndexChanged.connect(update_scenario_box)
+
         def scenario_changer():
             self.scene.scenario_changed(bucket_box.currentIndex(), scenario_box.currentIndex())
-            start, goal = self.scenario_service.get_scenario_start_and_goal(bucket_box.currentIndex(), scenario_box.currentIndex())
-            qr = QRectF(max(0,min(start[0], goal[0]) * 10 - 30), max(0, min(start[1], goal[1]) * 10 - 30), max(start[0], goal[0]) - min(start[0], goal[0]) + 60,max(start[1], goal[1]) - min(start[1], goal[1]) + 60)
-            print(f"{qr=}")
-            # self.view.setSceneRect(qr)
+            self.set_view(bucket_box.currentIndex(), scenario_box.currentIndex())
+
         bucket_box.currentIndexChanged.connect(scenario_changer)
         scenario_box.currentIndexChanged.connect(scenario_changer)
-        # max(0,min(start[0], goal[0]) * 10 - 30), max(0, min(start[1], goal[1]) * 10 - 30), max(start[0], goal[0]) - min(start[0], goal[0]) + 60,max(start[1], goal[1]) - min(start[1], goal[1]) + 60
-        # leveys = max(start[0], goal[0]) - min(start[0], goal[0]) + 60
-        # korkeus = max(start[1], goal[1]) - min(start[1], goal[1]) + 60
         return container
+
+    def set_view(self, bucket, index, extra_view=20):
+        start, goal = self.scenario_service.get_scenario_start_and_goal(bucket, index)
+        delta_x = max(start[0], goal[0]) - min(start[0], goal[0])
+        delta_y = max(start[1], goal[1]) - min(start[1], goal[1])
+        viewsize = min(self.scenario_service.get_map_size() - 1, max(delta_x, delta_y) + 2 * extra_view)
+        qr = QRectF(
+            max(min(start[0], goal[0]) - extra_view, 0),
+            max(min(start[1], goal[1]) - extra_view, 0),
+            viewsize,
+            viewsize
+        )
+        self.view.setSceneRect(qr)
 
 class AstarTab(SearchTab):
     def __init__(self, parent=None, scenario_service=None, search_service=None):
@@ -79,8 +88,6 @@ class AstarTab(SearchTab):
         self.layout.addWidget(control_area)
         run_button.clicked.connect(self.run_astar)
 
-        # self.scene = MapScene(scenario_service=scenario_service, search_service=search_service)
-        # self.view = QGraphicsView(self.scene)
         self.layout.addWidget(self.view)
 
         self.setLayout(self.layout)
