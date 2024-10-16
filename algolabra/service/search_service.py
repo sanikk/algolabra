@@ -63,3 +63,6 @@ class SearchService(QObject):
     @pyqtSlot()
     def handle_results(self):
         print("handling results...done")
+
+    def get_update(self):
+        return [(0,0), (0,1), (1, 0), (1, 1)], [(6, 6), (6, 7), (7, 6), (7, 7)], 3
