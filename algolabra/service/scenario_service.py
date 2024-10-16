@@ -23,6 +23,9 @@ class ScenarioService(QObject):
     def get_map_title(self):
         return self.map_title
 
+    def get_map_size(self):
+        return len(self.map_data)
+
     def set_map(self, map_path=None):
         if not map_path:
             return
