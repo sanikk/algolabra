@@ -3,6 +3,7 @@ from PyQt6.QtCore import pyqtSignal, QObject, pyqtSlot
 from algolabra.fringe.timed_fringe import timed_fringe_search
 from algolabra.astar.astar import astar, timed_astar_search
 from algolabra.fringe.fringe_thread import FringeThread
+from algolabra.fringe.fringe_live_thread import FringeLiveThread
 
 
 class SearchService(QObject):
@@ -38,6 +39,17 @@ class SearchService(QObject):
         instanced_thread = FringeThread(self, start, goal, map_data, map_slots, data_slots)
         instanced_thread.start()
 
+    def start_fringe_live_thread(self, bucket, index, map_slots, data_slots):
+        """
+        Runs the fringe version made for the Live Tab. It just sends default non-blocking signals now
+        from another thread. GUI keeps visited/expanded/status counts used in output.
+        """
+        start, goal = self.scenario_service.get_scenario_start_and_goal(bucket, index)
+        map_data = self.scenario_service.get_map_data()
+
+        instanced_thread = FringeLiveThread(self, start, goal, map_data, map_slots, data_slots)
+        instanced_thread.start()
+
     def run_timed_astar(self, start, goal, citymap):
         cost, timers, route = timed_astar_search(start, goal, citymap)
         self.astar_time = timers
@@ -63,3 +75,6 @@ class SearchService(QObject):
     @pyqtSlot()
     def handle_results(self):
         print("handling results...done")
+
+    def get_update(self):
+        return [(0,0), (0,1), (1, 0), (1, 1)], [(6, 6), (6, 7), (7, 6), (7, 7)], 3
