@@ -1,8 +1,9 @@
 from decimal import Decimal
+from multiprocessing.process import parent_process
 
-from PyQt6.QtCore import pyqtSlot, Qt
+from PyQt6.QtCore import pyqtSlot, Qt, QRectF
 from PyQt6.QtGui import QColor, QImage, QPixmap, QBrush, QPen, QPainter
-from PyQt6.QtWidgets import QGraphicsScene
+from PyQt6.QtWidgets import QGraphicsScene, QGraphicsItem
 
 
 class MapScene(QGraphicsScene):
@@ -11,6 +12,8 @@ class MapScene(QGraphicsScene):
         self.scenario_service = scenario_service
         self.search_service = search_service
         self.pixmap = None
+        self.paintable_layer = PaintableLayer()
+        self.addItem(self.paintable_layer)
         scenario_service.map_changed.connect(self.map_changed)
 
     def get_image_from_map(self, map_data: list):
@@ -21,6 +24,7 @@ class MapScene(QGraphicsScene):
 
     @pyqtSlot()
     def map_changed(self):
+        self.clear()
         map_data = self.scenario_service.get_map_data()
         if not map_data:
             return
@@ -71,6 +75,25 @@ class MapScene(QGraphicsScene):
 
     def get_slots(self):
         return self.node_visit, self.node_expansion, self.flimit_change, self.handle_lists
+
+
+class PaintableLayer(QGraphicsItem):
+    def __init__(self, parent=None, size=0, visited=None, expanded=None):
+        super().__init__(parent=parent)
+        self.visited = visited or []
+        self.expanded = expanded or []
+        self.size = size
+
+    def boundingRect(self):
+        return QRectF(0,0,self.size, self.size)
+
+    def paint(self, painter, option, widget = None):
+        painter.setBrush(QBrush(QColor(0, 255, 0)))
+        [painter.drawPoint(x, y) for x,y in self.visited]
+        painter.setBrush(QBrush(QColor(0, 0, 255)))
+        [painter.drawPoint(x, y) for x, y in self.expanded]
+
+
 
 if __name__=='__main__':
     pass
