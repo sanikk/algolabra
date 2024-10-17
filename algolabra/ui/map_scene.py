@@ -64,8 +64,13 @@ class MapScene(QGraphicsScene):
         all(self.paint_tile_color(x, y, 0, 255, 0) for x, y in visited)
         all(self.paint_tile_color(x, y, 0, 0, 255) for x, y in expanded)
 
+    @pyqtSlot(str, list, list)
+    def handle_lists(self, new_flimit: str, visited: list, expanded: list):
+        [self.paint_tile_color(x, y, 0, 255, 0) for x, y in visited]
+        [self.paint_tile_color(x, y, 0, 0, 255) for x, y in expanded]
+
     def get_slots(self):
-        return self.node_visit, self.node_expansion, self.flimit_change
+        return self.node_visit, self.node_expansion, self.flimit_change, self.handle_lists
 
 if __name__=='__main__':
     pass

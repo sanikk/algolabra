@@ -8,6 +8,7 @@ class FringeSignals(QObject):
     node_visited = pyqtSignal(int, int)
     node_expanded = pyqtSignal(int, int)
     result_ready = pyqtSignal(Decimal)
+    phase_ready = pyqtSignal(str, list, list)
 
 class GenericSearchSignals(QObject):
     result_ready = pyqtSignal(float)
