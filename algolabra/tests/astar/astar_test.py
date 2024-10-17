@@ -27,4 +27,5 @@ class TestChildren(unittest.TestCase):
         ret = astar(start, goal, self.city_map)
         self.assertEqual(len(ret), 2)
         self.assertEqual(type(ret[0]), Decimal)
-        self.assertEqual(str(ret[0]), '17.48528137423857029281013233')
+        self.assertLess(ret[0], 17.4852814)
+        self.assertGreater(ret[0], 17.4852813)

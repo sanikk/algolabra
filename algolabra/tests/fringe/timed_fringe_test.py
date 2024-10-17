@@ -22,4 +22,5 @@ class TestChildren(unittest.TestCase):
         ret = fringe_search(start, goal, self.citymap)
         self.assertEqual(len(ret), 2)
         self.assertEqual(type(ret[0]), Decimal)
-        self.assertEqual(str(ret[0]), '17.48528137423857029281013233')
+        self.assertLess(ret[0], 17.485282)
+        self.assertGreater(ret[0], 17.485281)

@@ -8,13 +8,25 @@ class TestChildren(unittest.TestCase):
     def setUp(self):
         self.le_map1 = [["#", "#", "#"], ["#", ".", "."], [".", ".", "."]]
         self.le_map2 = [["#", ".", "."], [".", ".", "."], [".", ".", "."]]
+        self.empty_map = [[".", ".", "."], [".", ".", "."], [".", ".", "."]]
         self.diag_cost = Decimal('2').sqrt()
 
     def test_children_returns_all_on_empty_map(self):
-        result = children(Node(1, 1), [[".", ".", "."], [".", ".", "."], [".", ".", "."]], self.diag_cost)
+        result = children(Node(1, 1), self.empty_map, self.diag_cost)
         self.assertEqual(len(result), 8)
         self.assertEqual(result, [(1, 2, 1), (2, 2, self.diag_cost), (2, 1, 1), (2, 0, self.diag_cost),
                                   (1, 0, 1), (0, 0, self.diag_cost), (0, 1, 1), (0, 2, self.diag_cost)])
+        result_coords = [(x, y) for x, y, z in result]
+        self.assertTrue((1, 2) in result_coords)
+
+        self.assertTrue((2, 2) in result_coords)
+        self.assertTrue((2, 1) in result_coords)
+        self.assertTrue((2, 0) in result_coords)
+        self.assertTrue((1, 0) in result_coords)
+        self.assertTrue((0, 0) in result_coords)
+        self.assertTrue((0, 1) in result_coords)
+        self.assertTrue((0, 2) in result_coords)
+
 
     def test_children_returns_the_right_7_on_one_blocked_corner(self):
         result = children(Node(1, 1), self.le_map2, self.diag_cost)
@@ -28,9 +40,9 @@ class TestChildren(unittest.TestCase):
         self.assertEqual(len(result), 3)
 
     def test_children_respects_x_bounds(self):
-        result = children(Node(0, 1), [[".", ".", "."], [".", ".", "."], [".", ".", "."]], self.diag_cost)
+        result = children(Node(0, 1), self.empty_map, self.diag_cost)
         self.assertEqual(len(result), 5)
-        result = children(Node(2, 1), [[".", ".", "."], [".", ".", "."], [".", ".", "."]], self.diag_cost)
+        result = children(Node(2, 1), self.empty_map, self.diag_cost)
         self.assertEqual(len(result), 5)
 
     def test_children_respects_y_bounds(self):
