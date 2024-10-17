@@ -1,7 +1,5 @@
-from decimal import Decimal
-
 from PyQt6.QtWidgets import QWidget, QGroupBox, QHBoxLayout, QPushButton, QVBoxLayout, QGraphicsView, QComboBox, QLabel
-from PyQt6.QtCore import pyqtSlot, QRect, QRectF
+from PyQt6.QtCore import pyqtSlot, QRectF
 
 from algolabra.ui.map_scene import MapScene
 
@@ -68,6 +66,11 @@ class SearchTab(QWidget):
         return container
 
     def set_view(self, bucket, index, extra_view=20):
+        """
+        Sets the area of the MapScene that is scrollable in this view.
+        Uses the start and goal of scenario. Get scenario with (bucket, index).
+        Leaves extra_view extra tiles in view in every direction.
+        """
         start, goal = self.scenario_service.get_scenario_start_and_goal(bucket, index)
         delta_x = max(start[0], goal[0]) - min(start[0], goal[0])
         delta_y = max(start[1], goal[1]) - min(start[1], goal[1])
@@ -79,6 +82,31 @@ class SearchTab(QWidget):
             viewsize
         )
         self.view.setSceneRect(qr)
+
+    def get_fringe_info_box(self):
+        container = QWidget()
+        layout = QHBoxLayout()
+
+        flimit_label = QLabel("FLimit:")
+        layout.addWidget(flimit_label)
+
+        self.flimit_value_label = QLabel("None")
+        layout.addWidget(self.flimit_value_label)
+
+        visited_label = QLabel("Visited:")
+        layout.addWidget(visited_label)
+
+        self.visited_value_label = QLabel("None")
+        layout.addWidget(self.visited_value_label)
+
+        expanded_label = QLabel("Expanded:")
+        layout.addWidget(expanded_label)
+
+        self.expanded_value_label = QLabel("None")
+        layout.addWidget(self.expanded_value_label)
+
+        container.setLayout(layout)
+        return container
 
 class AstarTab(SearchTab):
     def __init__(self, parent=None, scenario_service=None, search_service=None):
@@ -111,10 +139,7 @@ class FringeTab(SearchTab):
         self.layout.addWidget(control_area)
         run_button.clicked.connect(self.run_fringe)
 
-        self.layout.addWidget(self.get_info_box())
-
-        # self.scene = MapScene(scenario_service=scenario_service, search_service=search_service)
-
+        self.layout.addWidget(self.get_fringe_info_box())
         self.layout.addWidget(self.view)
 
         self.setLayout(self.layout)
@@ -138,27 +163,3 @@ class FringeTab(SearchTab):
         self.flimit = new_flimit
         self.flimit_value_label.setText(new_flimit)
 
-    def get_info_box(self):
-        container = QWidget()
-        layout = QHBoxLayout()
-
-        flimit_label = QLabel("FLimit:")
-        layout.addWidget(flimit_label)
-
-        self.flimit_value_label = QLabel("None")
-        layout.addWidget(self.flimit_value_label)
-
-        visited_label = QLabel("Visited:")
-        layout.addWidget(visited_label)
-
-        self.visited_value_label = QLabel("None")
-        layout.addWidget(self.visited_value_label)
-
-        expanded_label = QLabel("Expanded:")
-        layout.addWidget(expanded_label)
-
-        self.expanded_value_label = QLabel("None")
-        layout.addWidget(self.expanded_value_label)
-
-        container.setLayout(layout)
-        return container

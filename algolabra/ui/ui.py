@@ -1,5 +1,6 @@
-from PyQt6.QtWidgets import QTabWidget, QWidget, QVBoxLayout, QGroupBox, QLabel, QPushButton, QFileDialog, \
-    QGridLayout
+from PyQt6.QtWidgets import QTabWidget, QWidget, QVBoxLayout, QGroupBox, QLabel, QPushButton, QFileDialog
+
+from algolabra.ui.fringe_live_tab import FringeLiveTab
 from algolabra.ui.intro_tab import IntroTab
 from algolabra.ui.search_tabs import AstarTab, FringeTab
 
@@ -13,6 +14,7 @@ class UI(QWidget):
         self.tab_window = TabWindow(scenario_service=scenario_service, search_service=search_service)
         layout.addWidget(self.tab_window)
         self.setLayout(layout)
+
 
 class ScenarioControls(QGroupBox):
     def __init__(self, scenario_service=None):
@@ -35,9 +37,8 @@ class ScenarioControls(QGroupBox):
 
         self.setLayout(layout)
 
+
     def set_scenario_file(self):
-
-
         ret = QFileDialog.getOpenFileName(parent=self,
                                           caption='Choose Scenario file',
                                           directory='.',
@@ -61,3 +62,5 @@ class TabWindow(QTabWidget):
         self.addTab(astar_tab, 'A* tab')
         fringe_tab = FringeTab(scenario_service=scenario_service, search_service=search_service)
         self.addTab(fringe_tab, 'Fringe search tab')
+        fringe_live_tab = FringeLiveTab(scenario_service=scenario_service, search_service=search_service)
+        self.addTab(fringe_live_tab, 'Fringe live tab')

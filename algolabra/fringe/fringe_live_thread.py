@@ -8,7 +8,7 @@ from algolabra.common_search_utils.children import children
 from algolabra.ui.mysignals import FringeSignals
 
 
-class FringeForLivetab(QThread):
+class FringeLiveThread(QThread):
     """
     Version for livetab. I try to send signals live,
     but my available hardware is limited at the moment.
