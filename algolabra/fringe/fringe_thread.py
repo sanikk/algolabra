@@ -8,6 +8,11 @@ from algolabra.ui.mysignals import FringeSignals
 
 
 class FringeThread(QThread):
+    """
+    Version for FringeTab. Runs in another thread.
+    Uses signals and slots for communication.
+
+    """
     def __init__(self, parent, start, goal, citymap, scene_slots, data_slots):
         super().__init__(parent)
 
@@ -18,9 +23,6 @@ class FringeThread(QThread):
         self.goal_node = goal
         self.citymap = citymap
 
-        self.phases = {}
-
-
     def connect_slots(self, scene_slots, data_slots):
         self.signals.node_visited.connect(scene_slots[0])
         self.signals.node_visited.connect(data_slots[0])
@@ -28,7 +30,8 @@ class FringeThread(QThread):
         self.signals.node_expanded.connect(data_slots[1])
         self.signals.flimit_set.connect(scene_slots[2])
         self.signals.flimit_set.connect(data_slots[2])
-        self.signals.phase_ready.connect(scene_slots[3])
+        # TODO maybe give some feedback we found something? :D
+        # self.signals.result_ready.connect()
 
     def run(self):
         self.fringe_search(self.start_node, self.goal_node, self.citymap)
@@ -50,13 +53,7 @@ class FringeThread(QThread):
         cache[start_node.y][start_node.x] = 0, None
         flimit = heuristics(start_node, *goal, diag_cost)
         ############
-        flimit_str = str(flimit)
-        self.signals.flimit_set.emit(flimit_str)
-        expanded = 0
-        visited = 0
-        elist = []
-        vlist = []
-        self.phases[flimit_str] = vlist, elist
+        self.signals.flimit_set.emit(str(flimit))
         ############
         found = False
         found_cost = 0
@@ -65,9 +62,7 @@ class FringeThread(QThread):
             fmin = fmax
             for node in fringe:
                 ############
-                visited += 1
-                vlist.append((node.x, node.y))
-                ############
+                self.signals.node_visited.emit(node.x, node.y)
                 g, parent = cache[node.y][node.x]
                 f = g + heuristics(node, *goal, diag_cost)
                 if f > flimit:
@@ -76,16 +71,13 @@ class FringeThread(QThread):
                 if node.x == goal[0] and node.y == goal[1]:
                     print(f"Rounded: {getcontext().flags[Rounded]}, Inexact: {getcontext().flags[Inexact]}")
                     print(f"Found route with cost {g}")
-                    print(f"{expanded=}, {visited=}")
-                    self.signals.phase_ready.emit(str(flimit), vlist, elist)
+                    self.signals.result_ready.emit()
                     found = True
                     found_cost = g
                     break
 
                 ############
-                expanded += 1
-                elist.append((node.x, node.y))
-                ############
+                self.signals.node_expanded.emit(node.x, node.y)
                 for x, y, cost in children(node, citymap, diag_cost):
                     g_child = g + cost
                     if cache[y][x]:
@@ -96,18 +88,9 @@ class FringeThread(QThread):
                     cache[y][x] = g_child, (node.x, node.y)
                 fringe.remove_node(node)
             if not found:
-                #######
-                self.phases[flimit] = vlist, elist
-                flimit_str = str(flimit)
-                self.signals.phase_ready.emit(flimit_str, vlist, elist)
-                #######
                 flimit = fmin
-                ############
-                vlist = []
-                elist = []
-                self.phases[flimit_str] = vlist, elist
-                print(f"  {flimit=}, {expanded=}, {visited=}")
-                ############
+                self.signals.flimit_set.emit(str(flimit))
+                # print(f"  {flimit=}, {expanded=}, {visited=}")
         if found:
             route = [goal]
             while route[-1] != start:

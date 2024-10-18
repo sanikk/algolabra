@@ -20,7 +20,6 @@ class IntroTab(QWidget):
 
         self.setLayout(layout)
 
-        self.scenario_service.map_changed.connect(self.prepare_table)
         self.scenario_service.map_changed.connect(self.update_bucketbox)
         self.bucketbox.currentIndexChanged.connect(self.prepare_table)
 
@@ -43,11 +42,7 @@ class IntroTab(QWidget):
         def updater():
             data = self.search_service.run_astar_for_bucket(bucket=self.bucketbox.currentIndex())
             if data:
-                items = [[QTableWidgetItem("{:.8f}".format(item)) for item in line[:4]] for line in data]
-                # color every astar result green
-                [item[0].setBackground(QBrush(QColor(163, 230, 181))) for item in items]
-                # color Rounded or Inexact results red
-                [item[0].setBackground(QBrush(QColor(214, 148, 176))) for item, line in zip(items, data) if not data[4] or not data[5]]
+                items = self.prep_data_for_table(data)
                 [[self.table.setItem(i, j + 5, item) for j, item in enumerate(line)] for i, line in enumerate(items)]
         button.clicked.connect(updater)
         layout.addWidget(button)
@@ -68,16 +63,29 @@ class IntroTab(QWidget):
 
         def updater():
             data = self.search_service.run_fringe_for_bucket(bucket=self.bucketbox.currentIndex())
-            [[self.table.setItem(i, j + 9, QTableWidgetItem("{:.8f}".format(item))) for j, item in enumerate(line)] for i, line in enumerate(data)]
-
+            if data:
+                items = self.prep_data_for_table(data)
+                [[self.table.setItem(i, j + 9, item) for j, item in enumerate(line)] for i, line in enumerate(items)]
         button.clicked.connect(updater)
         layout.addWidget(button)
 
         groupbox.setLayout(layout)
         return groupbox
 
+    def prep_data_for_table(self, data):
+        if not data:
+            return []
+        items = [[QTableWidgetItem("{:.8f}".format(item)) for item in line[:4]] for line in data]
+        # color every cost green
+        [item[0].setBackground(QBrush(QColor(163, 230, 181))) for item in items]
+        # color Rounded or Inexact results red
+        [item[0].setBackground(QBrush(QColor(214, 148, 176))) for item, line in zip(items, data) if
+         not data[4] or not data[5]]
+        return items
+
     @pyqtSlot()
     def update_bucketbox(self):
+        self.prepare_table()
         self.bucketbox.clear()
         self.bucketbox.addItems(self.scenario_service.get_bucket_list())
 
