@@ -1,6 +1,6 @@
-from PyQt6.QtCore import pyqtSlot, Qt, QRectF, QEvent
-from PyQt6.QtGui import QColor, QImage, QPixmap, QBrush, QPen, QHelpEvent
-from PyQt6.QtWidgets import QGraphicsScene, QGraphicsItem, QToolTip, QWidget
+from PyQt6.QtCore import pyqtSlot, Qt, QRectF
+from PyQt6.QtGui import QColor, QImage, QPixmap, QBrush, QPen
+from PyQt6.QtWidgets import QGraphicsScene, QGraphicsItem, QToolTip
 
 
 class MapScene(QGraphicsScene):
@@ -33,8 +33,6 @@ class MapScene(QGraphicsScene):
         self.clear()
         if self.pixmap:
             self.addPixmap(self.pixmap)
-
-
         if bucket is None or index is None or index == -1:
             return
         start, goal = self.scenario_service.get_scenario_start_and_goal(bucket, index)
@@ -74,7 +72,6 @@ class PaintableLayer(QGraphicsItem):
         self.goal = goal
         self.size = size
         self.setAcceptHoverEvents(True)
-        # self.setToolTip(f"({event.pos()},{})")
 
     def boundingRect(self):
         return QRectF(0,0,self.size, self.size)

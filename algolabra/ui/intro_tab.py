@@ -20,7 +20,6 @@ class IntroTab(QWidget):
 
         self.setLayout(layout)
 
-        self.scenario_service.map_changed.connect(self.prepare_table)
         self.scenario_service.map_changed.connect(self.update_bucketbox)
         self.bucketbox.currentIndexChanged.connect(self.prepare_table)
 
@@ -78,6 +77,7 @@ class IntroTab(QWidget):
 
     @pyqtSlot()
     def update_bucketbox(self):
+        self.prepare_table()
         self.bucketbox.clear()
         self.bucketbox.addItems(self.scenario_service.get_bucket_list())
 
