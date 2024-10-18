@@ -4,6 +4,7 @@ from heapq import heappush, heappop
 from algolabra.common_search_utils.heuristics import heuristics_for_tuples as heuristics
 from algolabra.common_search_utils.children import children_with_tuples as children
 
+
 def reconstruct_path(start, goal, came_from):
     path = [goal]
     while path[-1] != start:
@@ -20,7 +21,8 @@ def timed_astar_search(start, goal, citymap):
 
 def astar(start,goal, citymap):
     # init
-    diag_cost = Decimal('2').sqrt()
+    diag_cost = Decimal('1.4142135623730950488')
+    # diag_cost = Decimal('2').sqrt()
     heap = []
     heappush(heap, (heuristics(*start, *goal, diag_cost), start))
     came_from = {start: 0}
