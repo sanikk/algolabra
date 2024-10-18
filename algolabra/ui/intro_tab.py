@@ -1,4 +1,5 @@
 from PyQt6.QtCore import pyqtSlot
+from PyQt6.QtGui import QBrush, QColor
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QGroupBox, QPushButton, QComboBox, QTableWidget, QTableWidgetItem
 
 
@@ -42,16 +43,12 @@ class IntroTab(QWidget):
         def updater():
             data = self.search_service.run_astar_for_bucket(bucket=self.bucketbox.currentIndex())
             if data:
-                # [self.table.setItem(i, 5, QTableWidgetItem("{:.8f}".format(item))) for i, item in enumerate(data)]
-                 # for i, line in enumerate(data):
-                 #    print(f"{line=}")
-                 #    for j, item in enumerate(line):
-                 #        print(f"{item=}")
-                 #        self.table.setItem(i, j + 5, QTableWidgetItem("{:.8f}".format(item)))
-                    # print(line)
-                 [[self.table.setItem(i, j + 5, QTableWidgetItem("{:.8f}".format(item))) for j, item in enumerate(line)]
-                 for i, line in enumerate(data)]
-
+                items = [[QTableWidgetItem("{:.8f}".format(item)) for item in line] for line in data[:4]]
+                # color every astar result green
+                [item[0].setBackground(QBrush(QColor(163, 230, 181))) for item in items]
+                # color Rounded or Inexact results red
+                [item[0].setBackground(QBrush(QColor(214, 148, 176))) for item, line in zip(items, data) if not data[4] or not data[5]]
+                [[self.table.setItem(i, j + 5, item) for j, item in enumerate(line)] for i, line in enumerate(items)]
         button.clicked.connect(updater)
         layout.addWidget(button)
 
@@ -110,3 +107,19 @@ class IntroTab(QWidget):
 
         groupbox.setLayout(layout)
         return groupbox
+
+class a(QTableWidgetItem):
+    def __init__(self):
+        super().__init__()
+
+class a(QTableWidgetItem):
+    def __init__(self):
+        super().__init__()
+
+class a(QTableWidgetItem):
+    def __init__(self):
+        super().__init__()
+
+class a(QTableWidgetItem):
+    def __init__(self):
+        super().__init__()

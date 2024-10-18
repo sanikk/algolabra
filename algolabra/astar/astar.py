@@ -1,5 +1,5 @@
 import time
-from decimal import Decimal
+from decimal import Decimal, getcontext, Rounded, Inexact
 from heapq import heappush, heappop
 from algolabra.common_search_utils.heuristics import heuristics_for_tuples as heuristics
 from algolabra.common_search_utils.children import children_with_tuples as children
@@ -13,16 +13,15 @@ def reconstruct_path(start, goal, came_from):
 
 def timed_astar_search(start, goal, citymap):
     start_times = [time.perf_counter(), time.process_time(), time.thread_time()]
-    cost, route = astar(start, goal, citymap)
+    cost, route, rounded, inexact = astar(start, goal, citymap)
     end_times = [time.perf_counter(), time.process_time(), time.thread_time()]
     timers = [a - b for a, b in zip(end_times, start_times)]
 
-    return cost, timers, route
+    return cost, timers, route, rounded, inexact
 
 def astar(start,goal, citymap):
     # init
     diag_cost = Decimal('1.4142135623730950488')
-    # diag_cost = Decimal('2').sqrt()
     heap = []
     heappush(heap, (heuristics(*start, *goal, diag_cost), start))
     came_from = {start: 0}
@@ -32,8 +31,10 @@ def astar(start,goal, citymap):
         estimate, current = heappop(heap)
         if current == goal:
             final_cost = g_scores[current]
-            # print(f"found! cost {final_cost}")
-            return final_cost, reconstruct_path(start, goal, came_from)
+            rounded = getcontext().flags[Rounded]
+            inexact = getcontext().flags[Inexact]
+
+            return final_cost, reconstruct_path(start, goal, came_from), rounded, inexact
 
         for x, y, cost in children(*current, citymap, diag_cost):
             child = x, y

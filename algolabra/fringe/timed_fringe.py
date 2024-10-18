@@ -16,13 +16,7 @@ def fringe_search(start: tuple[int, int], goal: tuple[int, int], citymap: list):
     :param citymap:  map
     :return: cost and route if available
     """
-    # getcontext().rounding = ROUND_DOWN
-    # diag_cost = Decimal(2).sqrt()
-    # diag_cost = Decimal('1.41421356237309504880168872')
-    # diag_cost = Decimal('1.414213562')
     diag_cost = Decimal('1.4142135623730950488')
-
-    # diag_cost = Decimal('1.41421356237')
     fmax = 10000000
 
     start_node = Node(*start, None, None)
