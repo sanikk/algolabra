@@ -1,4 +1,7 @@
-def handle_path(path):
+def handle_path(path: list) -> tuple[int, int, int]:
+    """
+    Transforms a path into number of straight moves, and number of diagonal moves.
+    """
     straight = 0
     diag = 0
     edellinen = None

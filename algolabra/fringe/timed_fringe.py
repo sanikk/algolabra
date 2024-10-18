@@ -1,9 +1,10 @@
 import time
-from decimal import Decimal
+from decimal import Decimal, getcontext, ROUND_DOWN, ROUND_FLOOR
 
 from algolabra.fringe.doublelinkedlist import DoubleLinkedList, Node
 from algolabra.common_search_utils.heuristics import heuristics
 from algolabra.common_search_utils.children import children
+from algolabra.common_search_utils.check_solution import handle_path
 
 
 def fringe_search(start: tuple[int, int], goal: tuple[int, int], citymap: list):
@@ -15,7 +16,7 @@ def fringe_search(start: tuple[int, int], goal: tuple[int, int], citymap: list):
     :param citymap:  map
     :return: cost and route if available
     """
-    diag_cost = Decimal(2).sqrt()
+    diag_cost = Decimal('1.4142135623730950488')
     fmax = 10000000
 
     start_node = Node(*start, None, None)
@@ -73,6 +74,7 @@ def timed_fringe_search(start, goal, citymap) -> tuple[int, list, list]:
     """
     start_times = [time.perf_counter(), time.process_time(), time.thread_time()]
     cost, route = fringe_search(start, goal, citymap)
+    print(f"{handle_path(route)=}")
     end_times = [time.perf_counter(), time.process_time(), time.thread_time()]
     timers = [a - b for a,b in zip(end_times, start_times)]
 

@@ -51,9 +51,9 @@ class SearchService(QObject):
         instanced_thread.start()
 
     def run_timed_astar(self, start, goal, citymap):
-        cost, timers, route = timed_astar_search(start, goal, citymap)
+        cost, timers, route, rounded, inexact = timed_astar_search(start, goal, citymap)
         self.astar_time = timers
-        return [cost, *timers]
+        return [cost, *timers, rounded, inexact]
 
     def run_astar_for_bucket(self, bucket: int):
         results = []
