@@ -1,8 +1,8 @@
 from PyQt6.QtWidgets import QTabWidget, QWidget, QVBoxLayout, QGroupBox, QLabel, QPushButton, QFileDialog
 
-from algolabra.ui.fringe_live_tab import FringeLiveTab
 from algolabra.ui.intro_tab import IntroTab
-from algolabra.ui.search_tabs import AstarTab, FringeTab
+from algolabra.ui.search_tabs import AstarTab
+from algolabra.ui.fringe_tab import FringeTab
 
 
 class UI(QWidget):
@@ -20,6 +20,9 @@ class ScenarioControls(QGroupBox):
     def __init__(self, scenario_service=None):
         """
         This is shown at top of screen at all times.
+        You can choose a scenario file here that is used everywhere.
+        Map file should load if it's named normally and in the same directory.
+        So ./Boston_0_512.map.scen looks for ./Boston_0_512.map
         """
         super().__init__("Scenario")
         self.scenario_service = scenario_service
@@ -60,7 +63,5 @@ class TabWindow(QTabWidget):
         self.addTab(intro_tab, 'intro tab')
         astar_tab = AstarTab(scenario_service=scenario_service, search_service=search_service)
         self.addTab(astar_tab, 'A* tab')
-        fringe_tab = FringeTab(scenario_service=scenario_service, search_service=search_service)
-        self.addTab(fringe_tab, 'Fringe search tab')
-        fringe_live_tab = FringeLiveTab(scenario_service=scenario_service, search_service=search_service)
-        self.addTab(fringe_live_tab, 'Fringe live tab')
+        fringe_live_tab = FringeTab(scenario_service=scenario_service, search_service=search_service)
+        self.addTab(fringe_live_tab, 'Fringe tab')
