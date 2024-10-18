@@ -1,10 +1,10 @@
 import time
-from decimal import Decimal, getcontext, ROUND_DOWN, ROUND_FLOOR
+from decimal import Decimal, getcontext, Rounded, Inexact
 
 from algolabra.fringe.doublelinkedlist import DoubleLinkedList, Node
 from algolabra.common_search_utils.heuristics import heuristics
 from algolabra.common_search_utils.children import children
-from algolabra.common_search_utils.check_solution import handle_path
+
 
 
 def fringe_search(start: tuple[int, int], goal: tuple[int, int], citymap: list):
@@ -57,9 +57,11 @@ def fringe_search(start: tuple[int, int], goal: tuple[int, int], citymap: list):
         while route[-1] != start:
             x,y = route[-1]
             route.append(cache[y][x][1])
-        return found_cost, route
+        rounded = getcontext().flags[Rounded]
+        inexact = getcontext().flags[Inexact]
+        return found_cost, route, rounded, inexact
 
-def timed_fringe_search(start, goal, citymap) -> tuple[int, list, list]:
+def timed_fringe_search(start, goal, citymap):
     """
     Runner for timed fringe search.
     We setup things here for timing.
@@ -70,15 +72,14 @@ def timed_fringe_search(start, goal, citymap) -> tuple[int, list, list]:
     :param start: (x, y) of start
     :param goal: (x, y) of goal
     :param citymap: a map as container of containers. quack quack.
-    :return: cost, timer diffs, route
+    :return: cost, timer diffs, route, rounded, inexact
     """
     start_times = [time.perf_counter(), time.process_time(), time.thread_time()]
-    cost, route = fringe_search(start, goal, citymap)
-    print(f"{handle_path(route)=}")
+    cost, route, rounded, inexact = fringe_search(start, goal, citymap)
     end_times = [time.perf_counter(), time.process_time(), time.thread_time()]
     timers = [a - b for a,b in zip(end_times, start_times)]
 
-    return cost, timers, route
+    return cost, timers, route, rounded, inexact
 
 if __name__=='__main__':
     pass
