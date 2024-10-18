@@ -42,7 +42,10 @@ def children_with_tuples(x, y, citymap, diag_cost):
     Gives the valid neighbors of a node on an octile map.
 
     :param node: parent Node, needs node.x, node.y
+    :param x: child x
+    :param y: child y
     :param citymap: some kind of map
+    :param diag_cost: cost of a diagonal move (float, decimal, int, quack quack)
     :return: list of the (x,y,cost) of valid children
 
     Uses x: int, y: int, cost: Decimal internally.
@@ -72,9 +75,4 @@ def children_with_tuples(x, y, citymap, diag_cost):
 
 
 if __name__=='__main__':
-    diag_cost = Decimal(math.sqrt(2))
-    map1 = [["#", "#", "#"], ["#", ".", "."], [".", ".", "."]]
-    print(children(Node(1,1), map1, diag_cost))
-    print(children(Node(1, 0), map1, diag_cost))
-    print(children(Node(0, 1), map1, diag_cost))
-    print(children(Node(0, 0), map1, diag_cost))
+    pass

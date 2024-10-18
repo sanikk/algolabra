@@ -43,7 +43,7 @@ class IntroTab(QWidget):
         def updater():
             data = self.search_service.run_astar_for_bucket(bucket=self.bucketbox.currentIndex())
             if data:
-                items = [[QTableWidgetItem("{:.8f}".format(item)) for item in line] for line in data[:4]]
+                items = [[QTableWidgetItem("{:.8f}".format(item)) for item in line[:4]] for line in data]
                 # color every astar result green
                 [item[0].setBackground(QBrush(QColor(163, 230, 181))) for item in items]
                 # color Rounded or Inexact results red
@@ -107,19 +107,3 @@ class IntroTab(QWidget):
 
         groupbox.setLayout(layout)
         return groupbox
-
-class a(QTableWidgetItem):
-    def __init__(self):
-        super().__init__()
-
-class a(QTableWidgetItem):
-    def __init__(self):
-        super().__init__()
-
-class a(QTableWidgetItem):
-    def __init__(self):
-        super().__init__()
-
-class a(QTableWidgetItem):
-    def __init__(self):
-        super().__init__()
