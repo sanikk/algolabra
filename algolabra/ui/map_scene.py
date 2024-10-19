@@ -71,7 +71,7 @@ class PaintableLayer(QGraphicsItem):
         self.start = start
         self.goal = goal
         self.size = size
-        self.setAcceptHoverEvents(True)
+        # self.setAcceptHoverEvents(True)
 
     def boundingRect(self):
         return QRectF(0,0,self.size, self.size)
@@ -93,14 +93,13 @@ class PaintableLayer(QGraphicsItem):
         [painter.drawRect(x, y, 1, 1) for x, y in self.expanded]
 
     def paint_start_goal(self, painter):
-        if not self.start and self.goal:
-            return
-        painter.setPen(QPen(QColor(56, 194, 180)))
-        painter.drawRect(max(0, self.start[0] - 1), self.start[1], 3, 1)
-        painter.drawRect(self.start[0], max(0, self.start[1] - 1), 1, 3)
-        painter.setPen(QPen(QColor(245, 34, 213)))
-        painter.drawRect(max(0, self.goal[0] - 1), self.goal[1], 3, 1)
-        painter.drawRect(self.goal[0], max(0, self.goal[1] - 1), 1, 3)
+        if self.start and self.goal:
+            painter.setPen(QPen(QColor(56, 194, 180)))
+            painter.drawRect(max(0, self.start[0] - 1), self.start[1], 3, 1)
+            painter.drawRect(self.start[0], max(0, self.start[1] - 1), 1, 3)
+            painter.setPen(QPen(QColor(245, 34, 213)))
+            painter.drawRect(max(0, self.goal[0] - 1), self.goal[1], 3, 1)
+            painter.drawRect(self.goal[0], max(0, self.goal[1] - 1), 1, 3)
 
     def node_visit(self, x, y):
         self.visited.append((x, y))
@@ -121,9 +120,9 @@ class PaintableLayer(QGraphicsItem):
         self.expanded = []
         self.update()
 
-    def hoverMoveEvent(self, event):
-        QToolTip.showText(event.screenPos(), f"({int(event.pos().x())}, {int(event.pos().y())})", None)
-        super().hoverMoveEvent(event)
+    # def hoverMoveEvent(self, event):
+    #     QToolTip.showText(event.screenPos(), f"({int(event.pos().x())}, {int(event.pos().y())})", None)
+    #     super().hoverMoveEvent(event)
 
 
 if __name__=='__main__':

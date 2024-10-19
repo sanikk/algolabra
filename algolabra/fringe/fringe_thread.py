@@ -5,12 +5,27 @@ from algolabra.fringe.doublelinkedlist import Node, DoubleLinkedList
 from algolabra.common_search_utils.heuristics import heuristics
 from algolabra.common_search_utils.children import children
 from algolabra.ui.mysignals import FringeSignals
+import logging
 
+
+class Node:
+    """
+    Simple Node class for filling Doublelinked List.
+
+    This has served it's use.
+    """
+    def __init__(self, x, y, left, right):
+        self.x = x
+        self.y = y
+        self.left = left
+        self.right = right
+
+    def __repr__(self):
+        return f"Node: ({self.x},{self.y})"
 
 class FringeThread(QThread):
     """
     Version for FringeTab. Runs in another thread.
-    Uses signals and slots for communication.
 
     """
     def __init__(self, parent, start, goal, citymap, scene_slots, data_slots):
@@ -35,6 +50,7 @@ class FringeThread(QThread):
 
     def run(self):
         self.fringe_search(self.start_node, self.goal_node, self.citymap)
+        self.finished.emit()
 
     def fringe_search(self, start: tuple[int, int], goal: tuple[int, int], citymap: list):
         """
@@ -53,7 +69,10 @@ class FringeThread(QThread):
         cache[start_node.y][start_node.x] = 0, None
         flimit = heuristics(start_node, *goal, diag_cost)
         ############
-        self.signals.flimit_set.emit(str(flimit))
+        flimit_str = str(flimit)
+        self.signals.flimit_set.emit(flimit_str)
+        visited = 0
+        expanded = 0
         ############
         found = False
         found_cost = 0
@@ -63,6 +82,8 @@ class FringeThread(QThread):
             for node in fringe:
                 ############
                 self.signals.node_visited.emit(node.x, node.y)
+                visited += 1
+                ############
                 g, parent = cache[node.y][node.x]
                 f = g + heuristics(node, *goal, diag_cost)
                 if f > flimit:
@@ -71,6 +92,7 @@ class FringeThread(QThread):
                 if node.x == goal[0] and node.y == goal[1]:
                     print(f"Rounded: {getcontext().flags[Rounded]}, Inexact: {getcontext().flags[Inexact]}")
                     print(f"Found route with cost {g}")
+                    print(f"{visited=}, {expanded=}")
                     self.signals.result_ready.emit()
                     found = True
                     found_cost = g
@@ -78,6 +100,8 @@ class FringeThread(QThread):
 
                 ############
                 self.signals.node_expanded.emit(node.x, node.y)
+                expanded += 1
+                ############
                 for x, y, cost in children(node, citymap, diag_cost):
                     g_child = g + cost
                     if cache[y][x]:
@@ -89,7 +113,8 @@ class FringeThread(QThread):
                 fringe.remove_node(node)
             if not found:
                 flimit = fmin
-                self.signals.flimit_set.emit(str(flimit))
+                flimit_str = str(flimit)
+                self.signals.flimit_set.emit(flimit_str)
                 # print(f"  {flimit=}, {expanded=}, {visited=}")
         if found:
             route = [goal]
@@ -97,3 +122,5 @@ class FringeThread(QThread):
                 x,y = route[-1]
                 route.append(cache[y][x][1])
             return found_cost, route
+
+# 09 v:10 e: 3 cost:3.4142

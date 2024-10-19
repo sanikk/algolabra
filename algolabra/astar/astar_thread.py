@@ -13,6 +13,7 @@ class AstarThread(SearchThread):
     def run(self):
         cost, route, rounded, inexact = self.astar(self.start_node, self.goal_node, self.citymap)
         print(f"{cost=}, {route=}, {rounded=}, {inexact=}")
+        self.finished.emit()
 
     def reconstruct_path(self, start, goal, came_from):
         path = [goal]
