@@ -3,6 +3,7 @@ from PyQt6.QtWidgets import QTabWidget, QWidget, QVBoxLayout, QGroupBox, QLabel,
 from algolabra.ui.intro_tab import IntroTab
 from algolabra.ui.search_tabs import AstarTab
 from algolabra.ui.fringe_tab import FringeTab
+from algolabra.ui.testbed_tab import TestbedTab
 
 
 class UI(QWidget):
@@ -63,5 +64,8 @@ class TabWindow(QTabWidget):
         self.addTab(intro_tab, 'intro tab')
         astar_tab = AstarTab(scenario_service=scenario_service, search_service=search_service)
         self.addTab(astar_tab, 'A* tab')
-        fringe_live_tab = FringeTab(scenario_service=scenario_service, search_service=search_service)
-        self.addTab(fringe_live_tab, 'Fringe tab')
+        fringe_tab = FringeTab(scenario_service=scenario_service, search_service=search_service)
+        self.addTab(fringe_tab, 'Fringe tab')
+        testbed_tab = TestbedTab(scenario_service=scenario_service, search_service=search_service)
+        self.addTab(testbed_tab, 'testbed tab')
+
