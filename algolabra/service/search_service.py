@@ -1,10 +1,15 @@
 from PyQt6.QtCore import pyqtSignal, QObject, pyqtSlot
+import time
+from decimal import Decimal
 
 from algolabra.astar.astar_thread import AstarThread
 from algolabra.fringe.timed_fringe import timed_fringe_search
 from algolabra.astar.astar import timed_astar_search
 from algolabra.fringe.fringe_thread import FringeThread
-
+from algolabra.fringe.fringe_testbed import fringe_search as timed_testbed
+from algolabra.common_search_utils.timed_search import timed_search
+from algolabra.common_search_utils.check_solution import handle_path
+# from algolabra.fringe.vertaisarvio import find_path
 
 class SearchService(QObject):
 
@@ -45,6 +50,7 @@ class SearchService(QObject):
         map_data = self.scenario_service.get_map_data()
 
         instanced_thread = AstarThread(self, start, goal, map_data, map_slots, data_slots)
+        instanced_thread.finished.connect(instanced_thread.deleteLater)
         instanced_thread.start()
 
     def run_timed_astar(self, start, goal, citymap):
@@ -56,6 +62,26 @@ class SearchService(QObject):
         map_data = self.scenario_service.get_map_data()
         for scenario_id, start, goal in self.scenario_service.get_data_from_bucket(bucket):
             results.append(self.run_timed_astar(start, goal, map_data))
+            print(f"{scenario_id} done.")
+        return results
+
+    def run_timed_testbed(self, start, goal, citymap):
+        start_times = [time.perf_counter(), time.process_time(), time.thread_time()]
+        # route, cost, visited, expanded = find_path(start, goal, citymap)
+        route, cost, visited, expanded = None, None, None, None
+        end_times = [time.perf_counter(), time.process_time(), time.thread_time()]
+        timers = [a - b for a, b in zip(end_times, start_times)]
+
+        # steps, straight, diag =  handle_path(route)
+        # cost = diag * Decimal('1.4142135623730950488') + straight
+
+        return [cost, *timers, visited, expanded, False, False]
+
+    def run_testbed_for_bucket(self, bucket: int):
+        results = []
+        map_data = self.scenario_service.get_map_data()
+        for scenario_id, start, goal in self.scenario_service.get_data_from_bucket(bucket):
+            results.append(self.run_timed_testbed(start, goal, map_data))
             print(f"{scenario_id} done.")
         return results
 

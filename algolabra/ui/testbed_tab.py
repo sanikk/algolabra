@@ -42,10 +42,14 @@ class TestbedTab(QWidget):
         button = QPushButton("Run Testbed")
 
         def updater():
-            data = self.search_service.run_astar_for_bucket(bucket=self.bucketbox.currentIndex())
+            data = self.search_service.run_testbed_for_bucket(bucket=self.bucketbox.currentIndex())
             if data:
-                items = self.prep_data_for_table(data)
-                [[self.table.setItem(i, j + 5, item) for j, item in enumerate(line)] for i, line in enumerate(items)]
+                for i, line in enumerate(data):
+                    for j, item in enumerate(line):
+                        if type(item) == int:
+                            self.table.setItem(i, j + 5, QTableWidgetItem(item))
+                        else:
+                            self.table.setItem(i, j + 5, QTableWidgetItem("{:.8f}".format(item)))
         button.clicked.connect(updater)
         layout.addWidget(button)
 
