@@ -4,18 +4,44 @@ from heapq import heappush, heappop
 from algolabra.common_search_utils.heuristics import heuristics_for_tuples as heuristics
 from algolabra.common_search_utils.children import children_with_tuples as children
 from algolabra.common_search_utils.search_thread import SearchThread
-from algolabra.ui.mysignals import FringeSignals
+
 
 class AstarThread(SearchThread):
+    """
+    A QThread using implementation of A* with QtSignals.
+    """
     def __init__(self, parent, start, goal, citymap, scene_slots, data_slots):
-        super().__init__(parent, start, goal, citymap, FringeSignals(), scene_slots, data_slots)
+        """
+
+        :param parent:
+        :param start:
+        :param goal:
+        :param citymap:
+        :param scene_slots:
+        :param data_slots:
+        """
+        super().__init__(parent, start, goal, citymap, scene_slots, data_slots)
 
     def run(self):
+        """
+        Overrides run method from SearchThread and QThread.
+        Runs the actual search. This is run in another thread.
+
+        :return: None
+        """
         cost, route, rounded, inexact = self.astar(self.start_node, self.goal_node, self.citymap)
         print(f"{cost=}, {route=}, {rounded=}, {inexact=}")
         self.finished.emit()
 
     def reconstruct_path(self, start, goal, came_from):
+        """
+        Reconstructs path returned by astar.
+
+        :param start:
+        :param goal:
+        :param came_from:
+        :return:
+        """
         path = [goal]
         while path[-1] != start:
             path.append(came_from[path[-1]])
@@ -59,6 +85,3 @@ class AstarThread(SearchThread):
 
                     fscore = tentative_gscore + heuristics(x, y, *goal, diag_cost)
                     heappush(heap, (fscore, child))
-
-if __name__=='__main__':
-    pass

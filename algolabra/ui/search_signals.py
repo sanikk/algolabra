@@ -1,10 +1,12 @@
-from decimal import Decimal
-
 from PyQt6.QtCore import QObject, pyqtSignal
 
-class FringeSignals(QObject):
+class SearchSignals(QObject):
     """
-    flimit_set, node_visited, node_expanded, result_ready, path_step
+    flimit_set(str)
+    node_visited(int, int)
+    node_expanded(int, int)
+    result_ready()
+    path_step(int, int)
     """
     flimit_set = pyqtSignal(str)
     node_visited = pyqtSignal(int, int)

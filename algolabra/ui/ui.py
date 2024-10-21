@@ -1,6 +1,7 @@
 from PyQt6.QtWidgets import QTabWidget, QWidget, QVBoxLayout, QGroupBox, QLabel, QPushButton, QFileDialog
 
 from algolabra.ui.intro_tab import IntroTab
+from algolabra.ui.log_tab import LogTab
 from algolabra.ui.search_tabs import AstarTab
 from algolabra.ui.fringe_tab import FringeTab
 from algolabra.ui.testbed_tab import TestbedTab
@@ -22,6 +23,7 @@ class ScenarioControls(QGroupBox):
         """
         This is shown at top of screen at all times.
         You can choose a scenario file here that is used everywhere.
+
         Map file should load if it's named normally and in the same directory.
         So ./Boston_0_512.map.scen looks for ./Boston_0_512.map
         """
@@ -68,4 +70,6 @@ class TabWindow(QTabWidget):
         self.addTab(fringe_tab, 'Fringe tab')
         testbed_tab = TestbedTab(scenario_service=scenario_service, search_service=search_service)
         self.addTab(testbed_tab, 'testbed tab')
+        logging_tab = LogTab(scenario_service=scenario_service, search_service=search_service)
+        self.addTab(logging_tab, 'Log Fringe')
 

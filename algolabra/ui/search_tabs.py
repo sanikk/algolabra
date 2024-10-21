@@ -2,6 +2,7 @@ from PyQt6.QtWidgets import QWidget, QGroupBox, QHBoxLayout, QPushButton, QVBoxL
 from PyQt6.QtCore import pyqtSlot, QRectF
 
 from algolabra.ui.map_scene import MapScene
+from algolabra.ui.bucket_box import get_common, connect_scenario_change
 
 
 class SearchTab(QWidget):
@@ -26,41 +27,9 @@ class SearchTab(QWidget):
         self.scenario_box = None
 
         self.layout = layout = QVBoxLayout()
-        layout.addWidget(self.get_common())
+        layout.addWidget(get_common(self))
+        connect_scenario_change(self)
 
-    def get_common(self):
-        container = QWidget()
-        layout = QVBoxLayout()
-        self.bucket_box = bucket_box = QComboBox()
-        layout.addWidget(bucket_box)
-        self.scenario_box = scenario_box = QComboBox()
-        layout.addWidget(scenario_box)
-        container.setLayout(layout)
-
-        # connect stuff
-
-        @pyqtSlot()
-        def update_bucket_box():
-            bucket_box.clear()
-            bucket_box.addItems(self.scenario_service.get_bucket_list())
-
-        @pyqtSlot(int)
-        @pyqtSlot()
-        def update_scenario_box():
-            scenario_box.clear()
-            scenario_box.addItems(self.scenario_service.get_full_strings(bucket_box.currentIndex()))
-
-        self.scenario_service.map_changed.connect(update_bucket_box)
-        self.scenario_service.map_changed.connect(update_scenario_box)
-        bucket_box.currentIndexChanged.connect(update_scenario_box)
-
-        def scenario_changer():
-            self.scene.scenario_changed(bucket_box.currentIndex(), scenario_box.currentIndex())
-            self.set_view(bucket_box.currentIndex(), scenario_box.currentIndex())
-
-        bucket_box.currentIndexChanged.connect(scenario_changer)
-        scenario_box.currentIndexChanged.connect(scenario_changer)
-        return container
 
     def set_view(self, bucket, index, extra_view=20):
         """
