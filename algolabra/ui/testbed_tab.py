@@ -13,11 +13,9 @@ class TestbedTab(QWidget):
         self.table = None
 
         layout = QVBoxLayout()
-
         layout.addWidget(self.get_scenario_box())
         layout.addWidget(self.testbed_box())
         layout.addWidget(self.fringe_box())
-
         self.setLayout(layout)
 
         self.scenario_service.map_changed.connect(self.update_bucketbox)
@@ -30,8 +28,6 @@ class TestbedTab(QWidget):
         if data:
             [[self.table.setItem(y, x, QTableWidgetItem(item)) for x, item in enumerate(line)] for y, line in enumerate(data)]
 
-
-
     def testbed_box(self):
         groupbox = QGroupBox("Testbed")
         layout = QVBoxLayout()
@@ -39,17 +35,12 @@ class TestbedTab(QWidget):
         result_label = QLabel("No results yet")
         layout.addWidget(result_label)
 
-        button = QPushButton("Run Testbed")
-
         def updater():
             data = self.search_service.run_testbed_for_bucket(bucket=self.bucketbox.currentIndex())
             if data:
-                for i, line in enumerate(data):
-                    for j, item in enumerate(line):
-                        if type(item) == int:
-                            self.table.setItem(i, j + 5, QTableWidgetItem(item))
-                        else:
-                            self.table.setItem(i, j + 5, QTableWidgetItem("{:.8f}".format(item)))
+                items = self.prep_data_for_table(data)
+                [[self.table.setItem(i, j + 5, item) for j, item in enumerate(line)] for i, line in enumerate(items)]
+        button = QPushButton("Run Testbed")
         button.clicked.connect(updater)
         layout.addWidget(button)
 
@@ -66,7 +57,6 @@ class TestbedTab(QWidget):
         layout.addWidget(result_label)
 
         button = QPushButton("Run Basecase")
-
         def updater():
             data = self.search_service.run_fringe_for_bucket(bucket=self.bucketbox.currentIndex())
             if data:
@@ -98,15 +88,14 @@ class TestbedTab(QWidget):
     def get_scenario_table(self):
         table = QTableWidget()
         table.setRowCount(10)
-        # scenario columns
-        labels = ["id", "bucket", "start", "goal", "cost",
-        # Testbed columns
-        "Testbed cost", "perf_time", "proc_time", "thread_time",
-        "nodes_visited", "nodes_expanded",
-        # fringe columns
-        "Basecase cost", "perf_time", "proc_time", "thread_time",
-        "nodes_visited", "nodes_expanded",
-        ]
+
+        scenario_columns = ["id", "bucket", "start", "goal", "cost",]
+        testbed_columns = ["Testbed cost", "perf_time", "proc_time", "thread_time",
+            "nodes_visited", "nodes_expanded",]
+        basecase_columns = ["Basecase cost", "perf_time", "proc_time", "thread_time",
+            "nodes_visited", "nodes_expanded",]
+        labels = [*scenario_columns, *testbed_columns, *basecase_columns]
+
         table.setColumnCount(len(labels))
         table.setHorizontalHeaderLabels(labels)
         return table

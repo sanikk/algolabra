@@ -1,15 +1,13 @@
 from PyQt6.QtCore import pyqtSignal, QObject, pyqtSlot
 import time
-from decimal import Decimal
 
 from algolabra.astar.astar_thread import AstarThread
 from algolabra.fringe.timed_fringe import timed_fringe_search
 from algolabra.astar.astar import timed_astar_search
 from algolabra.fringe.fringe_thread import FringeThread
-from algolabra.fringe.fringe_testbed import fringe_search as timed_testbed
-from algolabra.common_search_utils.timed_search import timed_search
-from algolabra.common_search_utils.check_solution import handle_path
-# from algolabra.fringe.vertaisarvio import find_path
+from algolabra.fringe.fringe_testbed import fringe_search_with_tail_dll
+from algolabra.fringe.fringe_with_loggings import fringe_search_with_logging
+
 
 class SearchService(QObject):
 
@@ -67,15 +65,13 @@ class SearchService(QObject):
 
     def run_timed_testbed(self, start, goal, citymap):
         start_times = [time.perf_counter(), time.process_time(), time.thread_time()]
-        # route, cost, visited, expanded = find_path(start, goal, citymap)
-        route, cost, visited, expanded = None, None, None, None
+
+        cost, route, visited, expanded, rounded, inexact = fringe_search_with_tail_dll(start, goal, citymap)
+
         end_times = [time.perf_counter(), time.process_time(), time.thread_time()]
         timers = [a - b for a, b in zip(end_times, start_times)]
 
-        # steps, straight, diag =  handle_path(route)
-        # cost = diag * Decimal('1.4142135623730950488') + straight
-
-        return [cost, *timers, visited, expanded, False, False]
+        return [cost, *timers, visited, expanded, rounded, inexact]
 
     def run_testbed_for_bucket(self, bucket: int):
         results = []
@@ -85,6 +81,6 @@ class SearchService(QObject):
             print(f"{scenario_id} done.")
         return results
 
-    @pyqtSlot()
-    def handle_results(self):
-        print("handling results...done")
+    def run_fringe_with_logging(self, bucket, scenario):
+        start, goal = self.scenario_service.get_scenario_start_and_goal(bucket, scenario)
+        fringe_search_with_logging(start, goal, self.scenario_service.get_map_data(), bucket, scenario)

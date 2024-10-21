@@ -23,6 +23,7 @@ class ScenarioControls(QGroupBox):
         """
         This is shown at top of screen at all times.
         You can choose a scenario file here that is used everywhere.
+
         Map file should load if it's named normally and in the same directory.
         So ./Boston_0_512.map.scen looks for ./Boston_0_512.map
         """

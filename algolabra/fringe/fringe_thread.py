@@ -1,60 +1,44 @@
 from decimal import Decimal, getcontext, Inexact, Rounded
-from PyQt6.QtCore import QThread
 
+from algolabra.common_search_utils.search_thread import SearchThread
 from algolabra.fringe.doublelinkedlist import Node, DoubleLinkedList
 from algolabra.common_search_utils.heuristics import heuristics
 from algolabra.common_search_utils.children import children
-from algolabra.ui.mysignals import FringeSignals
-import logging
 
 
-class Node:
-    """
-    Simple Node class for filling Doublelinked List.
-
-    This has served it's use.
-    """
-    def __init__(self, x, y, left, right):
-        self.x = x
-        self.y = y
-        self.left = left
-        self.right = right
-
-    def __repr__(self):
-        return f"Node: ({self.x},{self.y})"
-
-class FringeThread(QThread):
+class FringeThread(SearchThread):
     """
     Version for FringeTab. Runs in another thread.
 
     """
     def __init__(self, parent, start, goal, citymap, scene_slots, data_slots):
-        super().__init__(parent)
+        """
 
-        self.signals = FringeSignals()
-        self.connect_slots(scene_slots, data_slots)
-
-        self.start_node = start
-        self.goal_node = goal
-        self.citymap = citymap
-
-    def connect_slots(self, scene_slots, data_slots):
-        self.signals.node_visited.connect(scene_slots[0])
-        self.signals.node_visited.connect(data_slots[0])
-        self.signals.node_expanded.connect(scene_slots[1])
-        self.signals.node_expanded.connect(data_slots[1])
-        self.signals.flimit_set.connect(scene_slots[2])
-        self.signals.flimit_set.connect(data_slots[2])
-        # TODO maybe give some feedback we found something? :D
-        # self.signals.result_ready.connect()
+        :param parent: parent of QThread. needed.
+        :param start: start (x,y)
+        :param goal: goal (x,y)
+        :param citymap: map as list of lists.
+        :param scene_slots: QtSlots from MapScene
+        :param data_slots: QtSlots from SearchTab
+        """
+        super().__init__(parent, start, goal, citymap, scene_slots, data_slots)
 
     def run(self):
+        """
+        Runs the actual search
+        Overrides method from SearchThread and QThread.
+
+        :return:
+        """
         self.fringe_search(self.start_node, self.goal_node, self.citymap)
         self.finished.emit()
 
     def fringe_search(self, start: tuple[int, int], goal: tuple[int, int], citymap: list):
         """
-        Implementation for octile maps. No extra data collection or status prints.
+        Implementation for octile maps.
+
+        Sends signals of visits, expansions, flimit changes.
+
         :param start: starting point (x, y)
         :param goal:  goal point (x, y)
         :param citymap:  map
@@ -89,6 +73,7 @@ class FringeThread(QThread):
                 if f > flimit:
                     fmin = min(f, fmin)
                     continue
+
                 if node.x == goal[0] and node.y == goal[1]:
                     print(f"Rounded: {getcontext().flags[Rounded]}, Inexact: {getcontext().flags[Inexact]}")
                     print(f"Found route with cost {g}")
@@ -115,12 +100,9 @@ class FringeThread(QThread):
                 flimit = fmin
                 flimit_str = str(flimit)
                 self.signals.flimit_set.emit(flimit_str)
-                # print(f"  {flimit=}, {expanded=}, {visited=}")
         if found:
             route = [goal]
             while route[-1] != start:
                 x,y = route[-1]
                 route.append(cache[y][x][1])
             return found_cost, route
-
-# 09 v:10 e: 3 cost:3.4142
