@@ -1,4 +1,4 @@
-from algolabra.ui.ui import TabWindow, UI
+from algolabra.ui.ui import UI
 from algolabra.service.scenario_service import ScenarioService
 from algolabra.service.search_service import SearchService
 
