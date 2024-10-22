@@ -6,7 +6,6 @@ from algolabra.common_search_utils.heuristics import heuristics
 from algolabra.common_search_utils.children import children
 
 
-
 def fringe_search(start: tuple[int, int], goal: tuple[int, int], citymap: list):
     """
     Implementation for octile maps. No extra data collection or status prints.
@@ -21,9 +20,8 @@ def fringe_search(start: tuple[int, int], goal: tuple[int, int], citymap: list):
 
     start_node = Node(*start, None, None)
     fringe = DoubleLinkedList(start_node)
-    cache = [[None for a in line] for line in citymap]
 
-    cache[start_node.y][start_node.x] = 0, None
+    cache = {start: (0, None)}
     flimit = heuristics(start_node, *goal, diag_cost)
     found = False
     found_cost = 0
@@ -31,7 +29,8 @@ def fringe_search(start: tuple[int, int], goal: tuple[int, int], citymap: list):
     while not found and fringe.head:
         fmin = fmax
         for node in fringe:
-            g, parent = cache[node.y][node.x]
+            nt = (node.x, node.y)
+            g, parent = cache[nt]
             f = g + heuristics(node, *goal, diag_cost)
             if f > flimit:
                 fmin = min(f, fmin)
@@ -43,20 +42,21 @@ def fringe_search(start: tuple[int, int], goal: tuple[int, int], citymap: list):
                 break
 
             for x, y, cost in reversed(children(node, citymap, diag_cost)):
+                tup = (x, y)
                 g_child = g + cost
-                if cache[y][x]:
-                    g_cached, parent = cache[y][x]
+                if tup in cache:
+                    g_cached, parent = cache[tup]
                     if g_child >= g_cached:
                         continue
                 fringe.add_child(x, y, node)
-                cache[y][x] = g_child, (node.x, node.y)
+                cache[tup] = g_child, nt
             fringe.remove_node(node)
         flimit = fmin
     if found:
         route = [goal]
         while route[-1] != start:
-            x,y = route[-1]
-            route.append(cache[y][x][1])
+            loc = route[-1]
+            route.append(cache[loc][1])
         rounded = getcontext().flags[Rounded]
         inexact = getcontext().flags[Inexact]
         return found_cost, route, rounded, inexact
