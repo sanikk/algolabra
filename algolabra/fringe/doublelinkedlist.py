@@ -1,21 +1,15 @@
 class Node:
-    """
-    Simple Node class for filling Doublelinked List.
-
-    This has served it's use.
-    """
     def __init__(self, x, y, left, right):
         self.x = x
         self.y = y
         self.left = left
         self.right = right
 
+    def __repr__(self):
+        return f"Node: ({self.x},{self.y})"
+
 
 class DLLIterator:
-    """
-    Modified iterator for Doublelinked List.
-    We point at previous node, resolve pointer only when asked for next, and then return next.
-    """
     def __init__(self, node: Node):
         self.current = Node(None, None, None, node)
 
@@ -35,12 +29,19 @@ class DoubleLinkedList:
         self.on_fringe = {(node.x, node.y): node}
 
     def add_child(self, x, y, parent):
-        # TODO testaa nopeus jos heittäis vaan tailiin.
         child = Node(x,y, parent, parent.right)
         if parent.right:
             parent.right.left = child
         parent.right = child
+        self.bookkeep(child)
 
+    def add_tail(self, x, y):
+        child = Node(x,y,self.tail, None)
+        self.tail.right = child
+        self.tail = child
+        self.bookkeep(child)
+
+    def bookkeep(self, child):
         bookkeeping = self.on_fringe.pop((child.x, child.y), None)
         if bookkeeping:
             self.remove_node(bookkeeping)
