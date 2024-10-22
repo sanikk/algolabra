@@ -1,9 +1,9 @@
 import time
 from decimal import Decimal, getcontext, Rounded, Inexact
 
-from algolabra.fringe.doublelinkedlist import DoubleLinkedList, Node
-from algolabra.common_search_utils.heuristics import heuristics
-from algolabra.common_search_utils.children import children
+from algolabra.fringe.ordered_set_tester import LastUpdatedOrderedDict
+from algolabra.common_search_utils.heuristics import heuristics_for_tuples as heuristics
+from algolabra.common_search_utils.children import children_with_tuples as children
 
 
 def fringe_search(start: tuple[int, int], goal: tuple[int, int], citymap: list):
@@ -18,47 +18,63 @@ def fringe_search(start: tuple[int, int], goal: tuple[int, int], citymap: list):
     diag_cost = Decimal('1.4142135623730950488')
     fmax = 10000000
 
-    start_node = Node(*start, None, None)
-    fringe = DoubleLinkedList(start_node)
+    # visited = 0
+    # expanded = 0
 
-    cache = {start: (0, None)}
-    flimit = heuristics(start_node, *goal, diag_cost)
+    # start_node = Node(*start, None, None)
+    # fringe = DoubleLinkedList(start_node)
+    fringe = LastUpdatedOrderedDict([(None, None), (start, None)])
+
+    cache = [[None for a in line] for line in citymap]
+
+    cache[start[1]][start[0]] = 0, None
+    flimit = heuristics(*start, *goal, diag_cost)
     found = False
     found_cost = 0
 
-    while not found and fringe.head:
+    while not found and fringe:
         fmin = fmax
-        for node in fringe:
-            nt = (node.x, node.y)
-            g, parent = cache[nt]
-            f = g + heuristics(node, *goal, diag_cost)
+        while node := fringe.peek_last():
+        # for node in fringe:
+            # print(f"od_fringe {node=}")
+            # visited += 1
+            g, parent = cache[node[1]][node[0]]
+            f = g + heuristics(*node, *goal, diag_cost)
             if f > flimit:
                 fmin = min(f, fmin)
+                fringe.pass_node()
                 continue
-            if node.x == goal[0] and node.y == goal[1]:
+            if node[0] == goal[0] and node[1] == goal[1]:
                 found = True
                 found_cost = g
                 print(f"found {g}")
                 break
 
-            for x, y, cost in reversed(children(node, citymap, diag_cost)):
-                tup = (x, y)
+            # fringe.remove_node(node)
+            fringe.popitem(last=True)
+            # expanded += 1
+
+            for x, y, cost in children(*node, citymap, diag_cost):
                 g_child = g + cost
-                if tup in cache:
-                    g_cached, parent = cache[tup]
+                if cache[y][x]:
+                    g_cached, parent = cache[y][x]
                     if g_child >= g_cached:
                         continue
-                fringe.add_child(x, y, node)
-                cache[tup] = g_child, nt
-            fringe.remove_node(node)
-        flimit = fmin
+                # fringe.add_child(x, y, node)
+                fringe[(x,y)] = None
+                cache[y][x] = g_child, (node[0], node[1])
+            # fringe.remove_node(node)
+        if not found:
+            flimit = fmin
+            fringe.pass_node()
     if found:
         route = [goal]
         while route[-1] != start:
-            loc = route[-1]
-            route.append(cache[loc][1])
+            x,y = route[-1]
+            route.append(cache[y][x][1])
         rounded = getcontext().flags[Rounded]
         inexact = getcontext().flags[Inexact]
+        # return found_cost, route, visited, expanded, rounded, inexact
         return found_cost, route, rounded, inexact
 
 def timed_fringe_search(start, goal, citymap):
@@ -79,7 +95,7 @@ def timed_fringe_search(start, goal, citymap):
     end_times = [time.perf_counter(), time.process_time(), time.thread_time()]
     timers = [a - b for a,b in zip(end_times, start_times)]
 
-    return cost, timers, route, rounded, inexact
+    return cost, timers, rounded, inexact
 
 if __name__=='__main__':
     pass
