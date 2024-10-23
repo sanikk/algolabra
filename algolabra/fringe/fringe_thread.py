@@ -3,7 +3,7 @@ from decimal import Decimal, getcontext, Inexact, Rounded
 from algolabra.common_search_utils.search_thread import SearchThread
 from algolabra.fringe.doublelinkedlist import Node, DoubleLinkedList
 from algolabra.common_search_utils.heuristics import heuristics_with_node
-from algolabra.common_search_utils.children import children_with_node
+from algolabra.common_search_utils.children import children_with_node, children
 
 
 class FringeThread(SearchThread):
@@ -87,7 +87,7 @@ class FringeThread(SearchThread):
                 self.signals.node_expanded.emit(node.x, node.y)
                 expanded += 1
                 ############
-                for x, y, cost in children_with_node(node, citymap, diag_cost):
+                for x, y, cost in children(node.x, node.y, citymap, diag_cost):
                     g_child = g + cost
                     if cache[y][x]:
                         g_cached, parent = cache[y][x]

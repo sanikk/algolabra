@@ -3,7 +3,7 @@ from decimal import Decimal, getcontext, Rounded, Inexact
 
 from algolabra.fringe.testbed_dll import Node, DoubleLinkedListAddTail as DoubleLinkedList
 from algolabra.common_search_utils.heuristics import heuristics_with_node
-from algolabra.common_search_utils.children import children_with_node
+from algolabra.common_search_utils.children import children_with_node, children
 
 
 def fringe_search_with_logging(start: tuple[int, int], goal: tuple[int, int], citymap: list, bucket, scenario, diag_cost):
@@ -20,7 +20,7 @@ def fringe_search_with_logging(start: tuple[int, int], goal: tuple[int, int], ci
     logging.basicConfig(filename='fringe.log', level=logging.DEBUG,
                         format='%(message)s')
 
-    fmax = 10000000
+    fmax = float('inf')
     start_node = Node(*start, None, None)
     fringe = DoubleLinkedList(node=start_node)
     cache = [[None for a in line] for line in citymap]
@@ -65,7 +65,7 @@ def fringe_search_with_logging(start: tuple[int, int], goal: tuple[int, int], ci
             expansions[(node.x, node.y)] += 1
             logging.info(f"visit({visits[(node.x, node.y)]}) - expand({expansions[(node.x, node.y)]}) {node}: ")
             ############
-            for x, y, cost in children_with_node(node, citymap, diag_cost):
+            for x, y, cost in children(node.x, node.y, citymap, diag_cost):
                 g_child = g + cost
                 if cache[y][x]:
                     g_cached, parent = cache[y][x]
