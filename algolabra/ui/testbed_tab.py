@@ -35,13 +35,13 @@ class TestbedTab(QWidget):
         result_label = QLabel("No results yet")
         layout.addWidget(result_label)
 
-        def updater():
+        def testbed_updater():
             data = self.search_service.run_testbed_for_bucket(bucket=self.bucketbox.currentIndex())
             if data:
                 items = self.prep_data_for_table(data)
                 [[self.table.setItem(i, j + 5, item) for j, item in enumerate(line)] for i, line in enumerate(items)]
         button = QPushButton("Run Testbed")
-        button.clicked.connect(updater)
+        button.clicked.connect(testbed_updater)
         layout.addWidget(button)
 
         groupbox.setLayout(layout)
@@ -57,35 +57,55 @@ class TestbedTab(QWidget):
         layout.addWidget(result_label)
 
         button = QPushButton("Run Basecase")
-        def updater():
+        def basecase_updater():
             data = self.search_service.run_fringe_for_bucket(bucket=self.bucketbox.currentIndex())
             if data:
                 items = self.prep_data_for_table(data)
                 [[self.table.setItem(i, j + 11, item) for j, item in enumerate(line)] for i, line in enumerate(items)]
-        button.clicked.connect(updater)
+        button.clicked.connect(basecase_updater)
         layout.addWidget(button)
 
         groupbox.setLayout(layout)
         return groupbox
 
-    def prep_data_for_table(self, data):
+    def prep_data_for_table(self, data: list):
+        """
+        Preps data from search_service for your viewing pleasure. :)
+        There is a check if there are visited&expanded fields in data.
+
+        :param data: data from search_service (cost, timer1, timer2, timer3, [visited, expanded,] Rounded, Inexact)
+
+        :return: QTableWidgetItems prepped for scenario_table
+        """
         if not data:
             return []
         items = [[QTableWidgetItem("{:.8f}".format(item)) for item in line[:6]] for line in data]
         # color every cost green
         [item[0].setBackground(QBrush(QColor(163, 230, 181))) for item in items]
-        # color Rounded or Inexact results red
-        [item[0].setBackground(QBrush(QColor(214, 148, 176))) for item, line in zip(items, data) if
-         not data[6] or not data[7]]
+        if len(data[0]) > 7:
+            # paint result red/green only if there is data on Rounded, Inexact
+            [item[0].setBackground(QBrush(QColor(163, 230, 181))) for item in items]
+            [item[0].setBackground(QBrush(QColor(214, 148, 176))) for item, data in zip(items, data) if
+                not data[6] or not data[7]]
         return items
 
     @pyqtSlot()
     def update_bucketbox(self):
+        """
+        Slot() function that preps and fills table when bucketbox needs to be updated.
+
+        :return: None
+        """
         self.prepare_table()
         self.bucketbox.clear()
         self.bucketbox.addItems(self.scenario_service.get_bucket_list())
 
-    def get_scenario_table(self):
+    def get_scenario_table(self) -> QTableWidget:
+        """
+        Builds and returns a scenario_table.
+
+        :return: QTableWidget
+        """
         table = QTableWidget()
         table.setRowCount(10)
 
@@ -100,7 +120,13 @@ class TestbedTab(QWidget):
         table.setHorizontalHeaderLabels(labels)
         return table
 
-    def get_scenario_box(self):
+    def get_scenario_box(self) -> QGroupBox:
+        """
+        Builds and returns the scenario_box that holds bucket_box and scenario_table.
+        Also sets self.bucketbox, self.table.
+
+        :return: QGroupBox with a bucketbox
+        """
         groupbox = QGroupBox("Scenario")
         layout = QVBoxLayout()
 
