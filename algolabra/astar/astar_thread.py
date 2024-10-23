@@ -1,8 +1,8 @@
 from decimal import Decimal, getcontext, Rounded, Inexact
 from heapq import heappush, heappop
 
-from algolabra.common_search_utils.heuristics import heuristics_for_tuples as heuristics
-from algolabra.common_search_utils.children import children_with_tuples as children
+from algolabra.common_search_utils.heuristics import heuristics as heuristics
+from algolabra.common_search_utils.children import children as children
 from algolabra.common_search_utils.search_thread import SearchThread
 
 
@@ -10,7 +10,7 @@ class AstarThread(SearchThread):
     """
     A QThread using implementation of A* with QtSignals.
     """
-    def __init__(self, parent, start, goal, citymap, scene_slots, data_slots):
+    def __init__(self, parent, start, goal, citymap, scene_slots, data_slots, diag_cost):
         """
 
         :param parent:
@@ -20,7 +20,7 @@ class AstarThread(SearchThread):
         :param scene_slots:
         :param data_slots:
         """
-        super().__init__(parent, start, goal, citymap, scene_slots, data_slots)
+        super().__init__(parent, start, goal, citymap, scene_slots, data_slots, diag_cost)
 
     def run(self):
         """
@@ -40,7 +40,7 @@ class AstarThread(SearchThread):
         :param start:
         :param goal:
         :param came_from:
-        :return:
+        :return: path [as list of (x,y) coordinates].
         """
         path = [goal]
         while path[-1] != start:
@@ -48,11 +48,20 @@ class AstarThread(SearchThread):
         return path
 
 
-    def astar(self, start, goal, citymap):
+    def astar(self, start: tuple[int, int], goal: tuple[int, int], citymap: list) -> tuple[Decimal, list, bool, bool]:
+        """
+        Simple implementation with heapq.
+        Using supplied diag_cost, children, heuristics.
+
+        :param start: (x,y)
+        :param goal: (x,y)
+        :param citymap: map as list
+        :return: cost, path, Rounded, Inexact
+        """
         # init
-        diag_cost = Decimal('1.4142135623730950488')
+
         heap = []
-        heappush(heap, (heuristics(*start, *goal, diag_cost), start))
+        heappush(heap, (heuristics(*start, *goal, self.diag_cost), start))
         #
         self.signals.flimit_set.emit(str(heap[0]))
         #
@@ -73,15 +82,15 @@ class AstarThread(SearchThread):
 
                 return final_cost, self.reconstruct_path(start, goal, came_from), rounded, inexact
 
-            for x, y, cost in children(*current, citymap, diag_cost):
+            for x, y, cost in children(*current, citymap, self.diag_cost):
                 child = x, y
                 tentative_gscore = g_scores[current] + cost
-                if tentative_gscore < g_scores.get(child, 10000000):
+                if tentative_gscore < g_scores.get(child, float('inf')):
                     #
                     self.signals.node_visited.emit(x, y)
                     #
                     came_from[child] = current
                     g_scores[child] = tentative_gscore
 
-                    fscore = tentative_gscore + heuristics(x, y, *goal, diag_cost)
+                    fscore = tentative_gscore + heuristics(x, y, *goal, self.diag_cost)
                     heappush(heap, (fscore, child))

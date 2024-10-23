@@ -48,7 +48,7 @@ class TestbedTab(QWidget):
         return groupbox
 
     def fringe_box(self):
-        # TODO add a progress bar while running bucket
+        # TODO add a progress bar while running bucket, printing {id} done for now
         # https://doc.qt.io/qt-6/qprogressbar.html
         groupbox = QGroupBox("Basecase")
         layout = QVBoxLayout()

@@ -1,13 +1,14 @@
-from algolabra.fileIO.read_files import read_map, read_scenarios
 from pathlib import Path
+from decimal import Decimal
 from PyQt6.QtCore import pyqtSignal, QObject
 
+from algolabra.fileIO.read_files import read_map, read_scenarios
 
 class ScenarioService(QObject):
 
     map_changed = pyqtSignal()
 
-    def __init__(self, scenario_file=None):
+    def __init__(self, scenario_file=None, diag_cost=None):
         super().__init__()
 
         self.scenario_file = scenario_file
@@ -16,6 +17,7 @@ class ScenarioService(QObject):
         self.map_file = None
         self.map_data = None
         self.map_title = None
+        self.diag_cost = diag_cost or Decimal('1.4142135623730950488')
 
     def get_map_data(self):
         return self.map_data
@@ -86,3 +88,6 @@ class ScenarioService(QObject):
     def get_scenario_start_and_goal(self, bucket, index):
         scenario = self.scenarios[bucket][index]
         return scenario[2], scenario[3]
+
+    def get_diag_cost(self):
+        return self.diag_cost

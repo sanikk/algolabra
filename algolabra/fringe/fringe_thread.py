@@ -2,8 +2,8 @@ from decimal import Decimal, getcontext, Inexact, Rounded
 
 from algolabra.common_search_utils.search_thread import SearchThread
 from algolabra.fringe.doublelinkedlist import Node, DoubleLinkedList
-from algolabra.common_search_utils.heuristics import heuristics
-from algolabra.common_search_utils.children import children
+from algolabra.common_search_utils.heuristics import heuristics_with_node
+from algolabra.common_search_utils.children import children_with_node
 
 
 class FringeThread(SearchThread):
@@ -11,7 +11,7 @@ class FringeThread(SearchThread):
     Version for FringeTab. Runs in another thread.
 
     """
-    def __init__(self, parent, start, goal, citymap, scene_slots, data_slots):
+    def __init__(self, parent, start, goal, citymap, scene_slots, data_slots, diag_cost):
         """
 
         :param parent: parent of QThread. needed.
@@ -21,7 +21,7 @@ class FringeThread(SearchThread):
         :param scene_slots: QtSlots from MapScene
         :param data_slots: QtSlots from SearchTab
         """
-        super().__init__(parent, start, goal, citymap, scene_slots, data_slots)
+        super().__init__(parent, start, goal, citymap, scene_slots, data_slots, diag_cost)
 
     def run(self):
         """
@@ -30,10 +30,10 @@ class FringeThread(SearchThread):
 
         :return:
         """
-        self.fringe_search(self.start_node, self.goal_node, self.citymap)
+        self.fringe_search(self.start_node, self.goal_node, self.citymap, self.diag_cost)
         self.finished.emit()
 
-    def fringe_search(self, start: tuple[int, int], goal: tuple[int, int], citymap: list):
+    def fringe_search(self, start: tuple[int, int], goal: tuple[int, int], citymap: list, diag_cost):
         """
         Implementation for octile maps.
 
@@ -42,16 +42,16 @@ class FringeThread(SearchThread):
         :param start: starting point (x, y)
         :param goal:  goal point (x, y)
         :param citymap:  map
+        :param diag_cost: cost of diagonal movement
         :return: cost and route if available
         """
-        diag_cost = Decimal('1.4142135623730950488')
         fmax = 10000000
         start_node = Node(*start, None, None)
         fringe = DoubleLinkedList(node=start_node)
         cache = [[None for a in line] for line in citymap]
 
         cache[start_node.y][start_node.x] = 0, None
-        flimit = heuristics(start_node, *goal, diag_cost)
+        flimit = heuristics_with_node(start_node, *goal, diag_cost)
         ############
         flimit_str = str(flimit)
         self.signals.flimit_set.emit(flimit_str)
@@ -69,7 +69,7 @@ class FringeThread(SearchThread):
                 visited += 1
                 ############
                 g, parent = cache[node.y][node.x]
-                f = g + heuristics(node, *goal, diag_cost)
+                f = g + heuristics_with_node(node, *goal, diag_cost)
                 if f > flimit:
                     fmin = min(f, fmin)
                     continue
@@ -87,7 +87,7 @@ class FringeThread(SearchThread):
                 self.signals.node_expanded.emit(node.x, node.y)
                 expanded += 1
                 ############
-                for x, y, cost in children(node, citymap, diag_cost):
+                for x, y, cost in children_with_node(node, citymap, diag_cost):
                     g_child = g + cost
                     if cache[y][x]:
                         g_cached, parent = cache[y][x]

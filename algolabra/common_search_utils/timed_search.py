@@ -22,3 +22,6 @@ def timed_search(search, start, goal, citymap) -> tuple[int, list, list]:
     timers = [a - b for a,b in zip(end_times, start_times)]
 
     return cost, timers, route
+
+def get_timers():
+    return [time.perf_counter(), time.process_time(), time.thread_time()]

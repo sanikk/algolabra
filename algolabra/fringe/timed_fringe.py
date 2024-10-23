@@ -6,7 +6,7 @@ from algolabra.common_search_utils.heuristics import heuristics as heuristics
 from algolabra.common_search_utils.children import children as children
 
 
-def fringe_search(start: tuple[int, int], goal: tuple[int, int], citymap: list):
+def fringe_search(start: tuple[int, int], goal: tuple[int, int], citymap: list, diag_cost):
     """
     Implementation for octile maps. No extra data collection or status prints.
 
@@ -14,13 +14,12 @@ def fringe_search(start: tuple[int, int], goal: tuple[int, int], citymap: list):
 
     :param start: starting point (x, y)
     :param goal:  goal point (x, y)
-    :param citymap:  map
+    :param citymap: map as list
+    :param diag_cost: cost of diagonal movement
+
     :return: cost and route if available
     """
-    diag_cost = Decimal('1.4142135623730950488')
-    # fmax = 10000000
     fmax = float('inf')
-
 
     fringe = DoubleLinkedList(start)
 
@@ -63,7 +62,7 @@ def fringe_search(start: tuple[int, int], goal: tuple[int, int], citymap: list):
         inexact = getcontext().flags[Inexact]
         return found_cost, route, rounded, inexact
 
-def timed_fringe_search(start, goal, citymap):
+def timed_fringe_search(start, goal, citymap, diag_cost):
     """
     Runner for timed fringe search.
     We setup things here for timing.
@@ -74,10 +73,11 @@ def timed_fringe_search(start, goal, citymap):
     :param start: (x, y) of start
     :param goal: (x, y) of goal
     :param citymap: a map as container of containers. quack quack.
+    :param diag_cost: cost of diagonal movement
     :return: cost, timer diffs, route, rounded, inexact
     """
     start_times = [time.perf_counter(), time.process_time(), time.thread_time()]
-    cost, route, rounded, inexact = fringe_search(start, goal, citymap)
+    cost, route, rounded, inexact = fringe_search(start, goal, citymap, diag_cost)
     end_times = [time.perf_counter(), time.process_time(), time.thread_time()]
     timers = [a - b for a,b in zip(end_times, start_times)]
 

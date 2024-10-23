@@ -6,7 +6,7 @@ class SearchThread(QThread):
     """
     Simple QThread wrapper class for a search.
     """
-    def __init__(self, parent: QObject, start: tuple[int, int], goal: tuple[int, int], citymap: list, scene_slots: list, data_slots: list):
+    def __init__(self, parent: QObject, start: tuple[int, int], goal: tuple[int, int], citymap: list, scene_slots: list, data_slots: list, diag_cost):
         """
 
         :param parent: parent of QThread.
@@ -15,6 +15,7 @@ class SearchThread(QThread):
         :param citymap: map as list of lists
         :param scene_slots: QtSlots from MapScene
         :param data_slots: QtSlots from SearchTab
+        :param diag_cost: cost of diagonal movement to be used
         """
         super().__init__(parent)
         self.signals = SearchSignals()
@@ -23,6 +24,7 @@ class SearchThread(QThread):
         self.start_node = start
         self.goal_node = goal
         self.citymap = citymap
+        self.diag_cost = diag_cost
 
     def connect_slots(self, scene_slots, data_slots):
         """
@@ -42,6 +44,7 @@ class SearchThread(QThread):
     def run(self):
         """
         Overrides the method from QThread. Implement this in subclass.
+
         :return:
         """
         pass

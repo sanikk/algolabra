@@ -2,8 +2,9 @@ import time
 from decimal import Decimal, getcontext, Rounded, Inexact
 from heapq import heappush, heappop
 
-from algolabra.common_search_utils.heuristics import heuristics_for_tuples as heuristics
-from algolabra.common_search_utils.children import children_with_tuples as children
+from algolabra.common_search_utils.heuristics import heuristics
+from algolabra.common_search_utils.children import children
+from algolabra.common_search_utils.timed_search import get_timers
 
 
 def reconstruct_path(start: tuple[int, int], goal: tuple[int, int], came_from: dict):
@@ -20,7 +21,7 @@ def reconstruct_path(start: tuple[int, int], goal: tuple[int, int], came_from: d
         path.append(came_from[path[-1]])
     return path
 
-def timed_astar_search(start: tuple[int, int], goal: tuple[int, int], citymap: list):
+def timed_astar_search(start: tuple[int, int], goal: tuple[int, int], citymap: list, diag_cost):
     """
     Times an A* run.
     :param start:
@@ -33,14 +34,16 @@ def timed_astar_search(start: tuple[int, int], goal: tuple[int, int], citymap: l
             inexact: bool if result was inexact, provided by decimal
 
     """
-    start_times = [time.perf_counter(), time.process_time(), time.thread_time()]
-    cost, route, rounded, inexact = astar(start, goal, citymap)
-    end_times = [time.perf_counter(), time.process_time(), time.thread_time()]
-    timers = [a - b for a, b in zip(end_times, start_times)]
+    start_times = get_timers()
 
-    return cost, timers, route, rounded, inexact
+    cost, route, rounded, inexact = astar(start, goal, citymap, diag_cost)
 
-def astar(start: tuple[int, int],goal: tuple[int, int], citymap: list) -> tuple[Decimal, list, bool, bool]:
+    end_times = get_timers()
+    timings = [a - b for a, b in zip(end_times, start_times)]
+
+    return cost, timings, route, rounded, inexact
+
+def astar(start: tuple[int, int],goal: tuple[int, int], citymap: list, diag_cost) -> tuple[Decimal, list, bool, bool]:
     """
     Simple A* using stock heapq.
     Currently uses same children and heuristics as Fringe.
@@ -51,7 +54,6 @@ def astar(start: tuple[int, int],goal: tuple[int, int], citymap: list) -> tuple[
     :return:
     """
     # init
-    diag_cost = Decimal('1.4142135623730950488')
     heap = []
     heappush(heap, (heuristics(*start, *goal, diag_cost), start))
     came_from = {start: 0}
