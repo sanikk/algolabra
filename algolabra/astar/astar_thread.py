@@ -4,7 +4,6 @@ from heapq import heappush, heappop
 from algolabra.common_search_utils.heuristics import heuristics as heuristics
 from algolabra.common_search_utils.children import children as children
 from algolabra.common_search_utils.search_thread import SearchThread
-from vertaisarvio import diag_cost
 
 
 class AstarThread(SearchThread):
