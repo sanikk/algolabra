@@ -36,7 +36,7 @@ class TestbedTab(QWidget):
         layout.addWidget(result_label)
 
         def testbed_updater():
-            data = self.search_service.run_testbed_for_bucket(bucket=self.bucketbox.currentIndex())
+            data = self.search_service.run_fringe_for_bucket_two(bucket=self.bucketbox.currentIndex())
             if data:
                 items = self.prep_data_for_table(data)
                 [[self.table.setItem(i, j + 5, item) for j, item in enumerate(line)] for i, line in enumerate(items)]

@@ -5,10 +5,6 @@ class Node:
         self.left = left
         self.right = right
 
-    def __repr__(self):
-        return f"Node: ({self.x},{self.y})"
-
-
 class DLLIterator:
     def __init__(self, node: Node):
         self.current = Node(None, None, None, node)
@@ -68,3 +64,8 @@ class DoubleLinkedList:
         :return:
         """
         return DLLIterator(self.head)
+
+    def __bool__(self):
+        if self.head is None:
+            return False
+        return True

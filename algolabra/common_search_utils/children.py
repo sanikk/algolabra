@@ -36,7 +36,8 @@ def children_with_node(node, citymap, diag_cost):
     print(f"Obsolete function children.children_with_node called")
     return children(node.x, node.y, citymap, diag_cost)
 
-def children(nx, ny, citymap, diag_cost):
+
+def children(nx, ny, citymap, diag_cost, map_size):
     """
     Gives the valid neighbors of a node on an octile map.
 
@@ -46,7 +47,6 @@ def children(nx, ny, citymap, diag_cost):
 
     Uses x: int, y: int, cost: Decimal internally.
     """
-    # TODO name this to children
     masks = [
         (0, 1, Decimal(1)),
         (1, 1, diag_cost),
@@ -60,7 +60,7 @@ def children(nx, ny, citymap, diag_cost):
     ]
 
     applied = [(mask[0] + nx, mask[1] + ny, mask[2]) for mask in masks]
-    open_ground = [1 if 0 <= x < len(citymap[0]) and 0 <= y < len(citymap) and citymap[y][x] == '.' else 0 for x, y, z in applied]
+    open_ground = [1 if 0 <= x < map_size and 0 <= y < map_size and citymap[y][x] == '.' else 0 for x, y, z in applied]
 
     cleared = [a for i,a in enumerate(applied[:8]) if (a[2] == 1 and open_ground[i]) or (open_ground[i] and open_ground[i-1] and open_ground[i+1])]
     return cleared

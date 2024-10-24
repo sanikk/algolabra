@@ -4,6 +4,7 @@ from heapq import heappush, heappop
 from algolabra.common_search_utils.heuristics import heuristics as heuristics
 from algolabra.common_search_utils.children import children as children
 from algolabra.common_search_utils.search_thread import SearchThread
+from vertaisarvio import diag_cost
 
 
 class AstarThread(SearchThread):
@@ -59,9 +60,10 @@ class AstarThread(SearchThread):
         :return: cost, path, Rounded, Inexact
         """
         # init
-
+        diff = self.diag_cost - Decimal('1')
+        map_size = len(citymap)
         heap = []
-        heappush(heap, (heuristics(*start, *goal, self.diag_cost), start))
+        heappush(heap, (heuristics(*start, *goal, diff, self.diag_cost), start))
         #
         self.signals.flimit_set.emit(str(heap[0]))
         #
@@ -82,7 +84,7 @@ class AstarThread(SearchThread):
 
                 return final_cost, self.reconstruct_path(start, goal, came_from), rounded, inexact
 
-            for x, y, cost in children(*current, citymap, self.diag_cost):
+            for x, y, cost in children(*current, citymap, self.diag_cost, map_size):
                 child = x, y
                 tentative_gscore = g_scores[current] + cost
                 if tentative_gscore < g_scores.get(child, float('inf')):
@@ -92,5 +94,5 @@ class AstarThread(SearchThread):
                     came_from[child] = current
                     g_scores[child] = tentative_gscore
 
-                    fscore = tentative_gscore + heuristics(x, y, *goal, self.diag_cost)
+                    fscore = tentative_gscore + heuristics(x, y, *goal, diff, self.diag_cost)
                     heappush(heap, (fscore, child))
