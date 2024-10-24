@@ -49,9 +49,11 @@ class FringeThread(SearchThread):
         start_node = Node(*start, None, None)
         fringe = DoubleLinkedList(node=start_node)
         cache = [[None for a in line] for line in citymap]
+        diff = diag_cost - Decimal('1')
+        map_size = len(citymap)
 
         cache[start_node.y][start_node.x] = 0, None
-        flimit = heuristics_with_node(start_node, *goal, diag_cost)
+        flimit = heuristics_with_node(start_node, *goal, diff, diag_cost)
         ############
         flimit_str = str(flimit)
         self.signals.flimit_set.emit(flimit_str)
@@ -69,7 +71,7 @@ class FringeThread(SearchThread):
                 visited += 1
                 ############
                 g, parent = cache[node.y][node.x]
-                f = g + heuristics_with_node(node, *goal, diag_cost)
+                f = g + heuristics_with_node(node, *goal, diff, diag_cost)
                 if f > flimit:
                     fmin = min(f, fmin)
                     continue
@@ -87,7 +89,7 @@ class FringeThread(SearchThread):
                 self.signals.node_expanded.emit(node.x, node.y)
                 expanded += 1
                 ############
-                for x, y, cost in children(node.x, node.y, citymap, diag_cost):
+                for x, y, cost in children(node.x, node.y, citymap, diag_cost, map_size):
                     g_child = g + cost
                     if cache[y][x]:
                         g_cached, parent = cache[y][x]

@@ -2,7 +2,7 @@ from decimal import Decimal
 from algolabra.fringe.doublelinkedlist import Node
 
 
-def heuristics_with_node(node: Node, goalx: int, goaly: int, diag_cost: Decimal) -> Decimal:
+def heuristics_with_node(node: Node, goalx: int, goaly: int, diff, diag_cost: Decimal) -> Decimal:
     """
     This is an obsolete Wrapper function.
 
@@ -12,9 +12,9 @@ def heuristics_with_node(node: Node, goalx: int, goaly: int, diag_cost: Decimal)
     :param diag_cost: cost to move diagonally
     :return: estimate in Decimal
     """
-    return heuristics(node.x, node.y, goalx, goaly, diag_cost)
+    return heuristics(node.x, node.y, goalx, goaly, diff, diag_cost)
 
-def heuristics(startx:int, starty: int, goalx: int, goaly: int, diag_cost: Decimal) -> Decimal:
+def heuristics(startx:int, starty: int, goalx: int, goaly: int, diff, diag_cost: Decimal) -> Decimal:
     """
     Octile distance function for heuristics. Gives the optimal distance with no obstacles.
 
@@ -26,5 +26,6 @@ def heuristics(startx:int, starty: int, goalx: int, goaly: int, diag_cost: Decim
     """
     abs_delta_x = abs(startx - goalx)
     abs_delta_y = abs(starty - goaly)
-    result =  max(abs_delta_x, abs_delta_y) + (diag_cost - 1) * min(abs_delta_x, abs_delta_y)
+    # result =  max(abs_delta_x, abs_delta_y) + (diag_cost - 1) * min(abs_delta_x, abs_delta_y)
+    result = max(abs_delta_x, abs_delta_y) + (diff) * min(abs_delta_x, abs_delta_y)
     return result
