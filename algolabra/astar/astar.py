@@ -36,7 +36,7 @@ def astar(start: tuple[int, int],goal: tuple[int, int], citymap: list, diag_cost
     # init
     map_size = len(citymap)
     heap = []
-    diff = diag_cost - 1
+    diff = diag_cost - Decimal('1')
     heappush(heap, (heuristics(*start, *goal, diff, diag_cost), start))
     came_from = {start: 0}
     g_scores = {start:0}
