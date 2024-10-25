@@ -10,8 +10,10 @@ from algolabra.fringe.new_loggings import fringe_search_with_logging
 
 # import testbed cases here as testbed_timed or testbed_search
 
-from algolabra.fringe.dequef import fringe_search as intro_tab_search
-from algolabra.fringe.dequef import fringe_search as basecase_search
+# from algolabra.fringe.dequef import fringe_search as intro_tab_search
+# from algolabra.fringe.dequef import fringe_search as testbed_search
+from algolabra.fringe.basic_fringe import fringe_search as basecase_search
+from algolabra.fringe.timed_cache import fringe_search as intro_tab_search
 
 
 
@@ -27,7 +29,7 @@ class SearchService(QObject):
     # FRINGE
     @timered
     def run_timed_fringe(self, start, goal, citymap, diag_cost):
-        return intro_tab_search(start, goal, citymap, diag_cost)
+        return basecase_search(start, goal, citymap, diag_cost)
 
     def run_fringe_for_bucket(self, bucket: int):
         results = []
@@ -91,8 +93,8 @@ class SearchService(QObject):
         diag_cost = self.scenario_service.get_diag_cost()
 
         for scenario_id, start, goal in self.scenario_service.get_data_from_bucket(bucket):
-            for i in range(10):
-                results.append(self.run_timed_astar(start, goal, map_data, diag_cost))
+
+            results.append(self.run_timed_astar(start, goal, map_data, diag_cost))
             print(f"{scenario_id} done.")
         return results
 
@@ -100,7 +102,7 @@ class SearchService(QObject):
     @timered
     def run_timed_testbed(self, start, goal, citymap, diag_cost):
         # return testbed_search(start, goal, citymap, diag_cost)
-        return testbed_search(start, goal, citymap, diag_cost)
+        return testbed_search(*start, *goal, citymap, diag_cost)
 
 
     def run_testbed_for_bucket(self, bucket: int):
