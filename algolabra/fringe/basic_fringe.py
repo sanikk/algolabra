@@ -3,7 +3,6 @@ from decimal import Decimal, getcontext, Rounded, Inexact
 from algolabra.fringe.dll_clean import DoubleLinkedList, Node
 from algolabra.common_search_utils.heuristics import new_heuristic
 from algolabra.common_search_utils.children import children as children
-from profilehooks import profile
 
 
 def fringe_search(start: tuple[int, int], goal: tuple[int, int], citymap: list, diag_cost):
