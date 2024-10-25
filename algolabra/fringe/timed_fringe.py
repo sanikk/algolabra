@@ -1,23 +1,23 @@
-import time
 from decimal import Decimal, getcontext, Rounded, Inexact
 
 from algolabra.fringe.doublelinkedlist import DoubleLinkedList, Node
 from algolabra.common_search_utils.heuristics import heuristics as heuristics
 from algolabra.common_search_utils.children import children as children
 
-# from profilehooks import profile, coverage
+from profilehooks import profile, coverage
 
 # @coverage
-# @profile
+@profile
 def fringe_search(start: tuple[int, int], goal: tuple[int, int], citymap: list, diag_cost):
     fmax = float('inf')
     map_size = len(citymap)
+    diff = diag_cost - Decimal('1')
 
     start_node = Node(*start, None, None)
     fringe = DoubleLinkedList(start_node)
 
     cache = {start: (0, None)}
-    flimit = heuristics(*start, *goal, diag_cost)
+    flimit = heuristics(*start, *goal, diff, diag_cost)
     found = False
     found_cost = 0
 
@@ -27,7 +27,7 @@ def fringe_search(start: tuple[int, int], goal: tuple[int, int], citymap: list, 
         for node in fringe:
             tup = (node.x, node.y)
             g, parent = cache[tup]
-            f = g + heuristics(node.x, node.y, *goal, diag_cost)
+            f = g + heuristics(node.x, node.y, *goal, diff, diag_cost)
             if f > flimit:
                 fmin = min(f, fmin)
                 continue
