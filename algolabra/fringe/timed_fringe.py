@@ -1,7 +1,7 @@
 from decimal import Decimal, getcontext, Rounded, Inexact
 
 from algolabra.fringe.doublelinkedlist import DoubleLinkedList, Node
-from algolabra.common_search_utils.heuristics import heuristics as heuristics
+from algolabra.common_search_utils.heuristics import old_heuristics as heuristics
 from algolabra.common_search_utils.children import children as children
 
 
@@ -54,10 +54,10 @@ def fringe_search(start: tuple[int, int], goal: tuple[int, int], citymap: list, 
 
 
 if __name__=='__main__':
-
     from read_files import read_map
     le_map = read_map("Boston_0_512.map")
     diag_cost = Decimal('1.4142135623730950488')
     # 351	359	354	357	3.82842712
     fringe_search((351, 359), (354, 357), le_map, diag_cost)
     # 405	67	404	64	3.41421356
+    print(fringe_search((352, 438), (346, 423), le_map, diag_cost))

@@ -1,11 +1,9 @@
 import logging
 from decimal import Decimal, getcontext, Rounded, Inexact
 
-# from algolabra.fringe.testbed_dll import Node, DoubleLinkedListAddTail as DoubleLinkedList
+
 from algolabra.fringe.data_structs.doublelinkedlist_version import DoubleLinkedList, Node
-# from doublelinkedlist_version import DoubleLinkedList, Node
-# from algolabra.fringe.doublelinkedlist import DoubleLinkedList, Node
-from algolabra.common_search_utils.heuristics import heuristics
+from algolabra.common_search_utils.heuristics import old_heuristics as heuristics
 from algolabra.common_search_utils.children import children
 
 
@@ -15,12 +13,13 @@ def fringe_search_with_logging(start: tuple[int, int], goal: tuple[int, int], ci
 
     fmax = float('inf')
     map_size = len(citymap)
+    diff = diag_cost - Decimal(1)
 
     start_node = Node(*start, None, None)
     fringe = DoubleLinkedList(start_node)
 
     cache = {start: (0, None)}
-    flimit = heuristics(*start, *goal, diag_cost)
+    flimit = heuristics(*start, *goal, diff)
     ############
     logging.info(f"Running Fringe for scenario {bucket}{scenario}")
     logging.info(f"starting with flimit {flimit}")
@@ -44,7 +43,7 @@ def fringe_search_with_logging(start: tuple[int, int], goal: tuple[int, int], ci
             visits[(node.x, node.y)] += 1
             ######
             g, parent = cache[tup]
-            f = g + heuristics(node.x, node.y, *goal, diag_cost)
+            f = g + heuristics(node.x, node.y, *goal, diff)
             if f > flimit:
                 logging.info(f"visit {node}({visits[(node.x, node.y)]}): f:{f} over flimit {flimit}")
                 fmin = min(f, fmin)

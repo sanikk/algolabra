@@ -1,9 +1,9 @@
 import logging
-from decimal import Decimal, getcontext, Rounded, Inexact
+from decimal import getcontext, Rounded, Inexact
 
-from algolabra.fringe.testbed_dll import Node, DoubleLinkedListAddTail as DoubleLinkedList
+from algolabra.fringe.doublelinkedlist import DoubleLinkedList, Node
 from algolabra.common_search_utils.heuristics import heuristics_with_node
-from algolabra.common_search_utils.children import children_with_node, children
+from algolabra.common_search_utils.children import children
 
 
 def fringe_search_with_logging(start: tuple[int, int], goal: tuple[int, int], citymap: list, bucket, scenario, diag_cost):

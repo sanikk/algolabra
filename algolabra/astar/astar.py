@@ -1,10 +1,8 @@
 from decimal import Decimal, getcontext, Rounded, Inexact
 from heapq import heappush, heappop
 
-from algolabra.common_search_utils.heuristics import heuristics
+from algolabra.common_search_utils.heuristics import old_heuristics as heuristics
 from algolabra.common_search_utils.children import children
-
-# from profilehooks import coverage, profile
 
 
 def reconstruct_path(start: tuple[int, int], goal: tuple[int, int], came_from: dict):
@@ -21,8 +19,7 @@ def reconstruct_path(start: tuple[int, int], goal: tuple[int, int], came_from: d
         path.append(came_from[path[-1]])
     return path
 
-# @coverage
-# @profile
+
 def astar(start: tuple[int, int],goal: tuple[int, int], citymap: list, diag_cost) -> tuple[Decimal, list, bool, bool]:
     """
     Simple A* using stock heapq.
@@ -37,7 +34,7 @@ def astar(start: tuple[int, int],goal: tuple[int, int], citymap: list, diag_cost
     map_size = len(citymap)
     heap = []
     diff = diag_cost - Decimal('1')
-    heappush(heap, (heuristics(*start, *goal, diff, diag_cost), start))
+    heappush(heap, (heuristics(*start, *goal, diff), start))
     came_from = {start: 0}
     g_scores = {start:0}
 
@@ -57,5 +54,5 @@ def astar(start: tuple[int, int],goal: tuple[int, int], citymap: list, diag_cost
                 came_from[child] = current
                 g_scores[child] = tentative_gscore
 
-                fscore = tentative_gscore + heuristics(x, y, *goal, diff, diag_cost)
+                fscore = tentative_gscore + heuristics(x, y, *goal, diff)
                 heappush(heap, (fscore, child))

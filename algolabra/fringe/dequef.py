@@ -2,11 +2,15 @@ from decimal import Decimal, getcontext, Rounded, Inexact
 from collections import deque
 
 from algolabra.common_search_utils.children import children
-from algolabra.common_search_utils.heuristics import heuristics
+from algolabra.common_search_utils.heuristics import old_heuristics as heuristics
 
 
 """
 Version made in tandem with ChatGPT. This took some back and forth.
+
+End result is about the same as my abandoned fast_version_with_deque. 
+Neither is satisfactory on long paths, larger maps.
+
 """
 
 
@@ -17,7 +21,7 @@ def fringe_search(start: tuple[int, int], goal: tuple[int, int], citymap: list, 
     later = deque()
     diff = diag_cost - 1
 
-    flimit = heuristics(*start, *goal, diff, diag_cost)
+    flimit = heuristics(*start, *goal, diff)
     found = False
     found_cost = 0
     cache = {start: (0, None)}
@@ -29,7 +33,7 @@ def fringe_search(start: tuple[int, int], goal: tuple[int, int], citymap: list, 
             current = now.popleft()
 
             g, parent = cache[current]
-            f = g + heuristics(*current, *goal, diff, diag_cost)
+            f = g + heuristics(*current, *goal, diff)
 
             if f > flimit:
                 fmin = min(f, fmin)

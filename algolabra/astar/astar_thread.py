@@ -1,7 +1,7 @@
 from decimal import Decimal, getcontext, Rounded, Inexact
 from heapq import heappush, heappop
 
-from algolabra.common_search_utils.heuristics import heuristics as heuristics
+from algolabra.common_search_utils.heuristics import old_heuristics as heuristics
 from algolabra.common_search_utils.children import children as children
 from algolabra.common_search_utils.search_thread import SearchThread
 
@@ -62,7 +62,7 @@ class AstarThread(SearchThread):
         diff = self.diag_cost - Decimal('1')
         map_size = len(citymap)
         heap = []
-        heappush(heap, (heuristics(*start, *goal, diff, self.diag_cost), start))
+        heappush(heap, (heuristics(*start, *goal, diff), start))
         #
         self.signals.flimit_set.emit(str(heap[0]))
         #
@@ -93,5 +93,5 @@ class AstarThread(SearchThread):
                     came_from[child] = current
                     g_scores[child] = tentative_gscore
 
-                    fscore = tentative_gscore + heuristics(x, y, *goal, diff, self.diag_cost)
+                    fscore = tentative_gscore + heuristics(x, y, *goal, diff)
                     heappush(heap, (fscore, child))

@@ -5,13 +5,12 @@ from algolabra.common_search_utils.result_utils import timered
 from algolabra.astar.astar_thread import AstarThread
 from algolabra.astar.astar import astar
 
-from algolabra.fringe.timed_fringe import fringe_search as testbed_search
+# from algolabra.fringe.timed_fringe import fringe_search as testbed_search
 from algolabra.fringe.fringe_thread import FringeThread
 from algolabra.fringe.new_loggings import fringe_search_with_logging
-from algolabra.fringe.basic_fringe import fringe_search as basecase_search
-
-
-
+# from algolabra.fringe.basic_fringe import fringe_search as basecase_search
+from algolabra.fringe.dequef import fringe_search as basecase_search
+from algolabra.fringe.fast_version_with_deque import fringe_search as testbed_search
 
 class SearchService(QObject):
 
@@ -33,9 +32,7 @@ class SearchService(QObject):
         diag_cost = self.scenario_service.get_diag_cost()
 
         for scenario_id, start, goal in self.scenario_service.get_data_from_bucket(bucket):
-
             results.append(self.run_timed_fringe(start, goal, map_data, diag_cost))
-            # print(results[-1])
             print(f"{scenario_id} done.")
         return results
 
@@ -51,7 +48,6 @@ class SearchService(QObject):
         for scenario_id, start, goal in self.scenario_service.get_data_from_bucket(bucket):
 
             results.append(self.run_timed_fringe_two(start, goal, map_data, diag_cost))
-            # print(results[-1])
             print(f"{scenario_id} done.")
         return results
 

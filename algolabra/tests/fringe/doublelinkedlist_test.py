@@ -1,6 +1,5 @@
 import unittest
-# from algolabra.fringe.doublelinkedlist import DoubleLinkedList, Node
-from algolabra.fringe.doublelinkedlist_version import DoubleLinkedList, Node
+from algolabra.fringe.doublelinkedlist import DoubleLinkedList, Node
 
 
 class TestDoubleLinkedList(unittest.TestCase):
