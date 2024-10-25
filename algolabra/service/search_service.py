@@ -1,19 +1,15 @@
 from PyQt6.QtCore import pyqtSignal, QObject
 
 from algolabra.common_search_utils.result_utils import timered
+
 from algolabra.astar.astar_thread import AstarThread
-from algolabra.fringe.timed_fringe import fringe_search as testbed_search
 from algolabra.astar.astar import astar
+
+from algolabra.fringe.timed_fringe import fringe_search as testbed_search
 from algolabra.fringe.fringe_thread import FringeThread
-from algolabra.fringe.fringe_with_loggings import fringe_search_with_logging
 from algolabra.fringe.new_loggings import fringe_search_with_logging
-
-# import testbed cases here as testbed_timed or testbed_search
-
-# from algolabra.fringe.dequef import fringe_search as intro_tab_search
-# from algolabra.fringe.dequef import fringe_search as testbed_search
 from algolabra.fringe.basic_fringe import fringe_search as basecase_search
-from algolabra.fringe.timed_cache import fringe_search as intro_tab_search
+
 
 
 
