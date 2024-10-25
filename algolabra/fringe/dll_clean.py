@@ -15,7 +15,7 @@ class Node:
         self.left = left
         self.right = right
 
-    def __repr__(self):
+    def __str__(self):
         return f"Node: ({self.x},{self.y}), left={self.left}, right={self.right}"
 
 class DLLIterator:
@@ -46,6 +46,20 @@ class DoubleLinkedList:
         self.tail = node
         self.on_fringe = {(node.x, node.y): node}
 
+    def add_child(self, x, y):
+        # TODO time these
+        if (x, y) in self.on_fringe:
+            child = self.on_fringe.pop((x, y))
+            self._cut_node_links(child)
+            child.left = self.tail
+            child.right = None
+        else:
+            child = Node(x, y, self.tail, None)
+
+        self.tail.right = child
+        self.tail = child
+        self.on_fringe[(x, y)] = child
+        return
 
 
     def add_child_to_tail(self, x, y):
