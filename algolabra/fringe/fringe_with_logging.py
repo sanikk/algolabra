@@ -6,7 +6,7 @@ from algolabra.common_search_utils.children import children
 from algolabra.common_search_utils.heuristics import heuristics
 
 
-def fringe_search_with_logging(start: tuple[int, int], goal: tuple[int, int], citymap: list, diag_cost, bucket, scenario, filename=None):
+def fringe_search_with_logging(start: tuple[int, int], goal: tuple[int, int], citymap: list, diag_cost, bucket, scenario, logger=None, filename=None):
     """
     The deque version with logging.
 
@@ -17,8 +17,12 @@ def fringe_search_with_logging(start: tuple[int, int], goal: tuple[int, int], ci
     :return:
     """
     ###############
-    logging.basicConfig(filename=filename or 'fringe.log', level=logging.DEBUG,
+    if logger:
+        logging.getLogger(logger)
+    else:
+        logging.basicConfig(filename=filename or 'fringe.log', level=logging.DEBUG,
                         format='%(message)s')
+
     ##############
     map_size = len(citymap)
     diff = diag_cost - Decimal(2)
