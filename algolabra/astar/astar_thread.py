@@ -29,69 +29,72 @@ class AstarThread(SearchThread):
 
         :return: None
         """
-        cost, route, rounded, inexact = self.astar(self.start_node, self.goal_node, self.citymap)
+        cost, route, rounded, inexact = astar(self.start_node, self.goal_node, self.citymap, self.diag_cost,  self.signals)
         print(f"{cost=}, {route=}, {rounded=}, {inexact=}")
         self.finished.emit()
 
-    def reconstruct_path(self, start, goal, came_from):
-        """
-        Reconstructs path returned by astar.
+def reconstruct_path(start, goal, came_from):
+    """
+    Reconstructs path returned by astar.
 
-        :param start:
-        :param goal:
-        :param came_from:
-        :return: path [as list of (x,y) coordinates].
-        """
-        path = [goal]
-        while path[-1] != start:
-            path.append(came_from[path[-1]])
-        return path
+    :param start:
+    :param goal:
+    :param came_from:
+    :return: path [as list of (x,y) coordinates].
+    """
+    path = [goal]
+    while path[-1] != start:
+        path.append(came_from[path[-1]])
+    return path
 
 
-    def astar(self, start: tuple[int, int], goal: tuple[int, int], citymap: list) -> tuple[Decimal, list, bool, bool]:
-        """
-        Simple implementation with heapq.
-        Using supplied diag_cost, children, heuristics.
+def astar(start: tuple[int, int], goal: tuple[int, int], citymap: list, diag_cost, signals=None) -> tuple[Decimal, list, bool, bool]:
+    """
+    Simple implementation with heapq.
+    Using supplied diag_cost, children, heuristics.
 
-        :param start: (x,y)
-        :param goal: (x,y)
-        :param citymap: map as list
-        :return: cost, path, Rounded, Inexact
-        """
-        # init
-        diff = self.diag_cost - Decimal('1')
-        map_size = len(citymap)
-        heap = []
-        heappush(heap, (heuristics(*start, *goal, diff), start))
+    :param start: (x,y)
+    :param goal: (x,y)
+    :param citymap: map as list
+    :return: cost, path, Rounded, Inexact
+    """
+    # init
+    diff = diag_cost - Decimal('1')
+    map_size = len(citymap)
+    heap = []
+    heappush(heap, (heuristics(*start, *goal, diff), start))
+    #
+    if signals:
+        signals.flimit_set.emit(str(heap[0]))
+    #
+    came_from = {start: 0}
+    g_scores = {start:0}
+
+    while heap:
+        estimate, current = heappop(heap)
         #
-        self.signals.flimit_set.emit(str(heap[0]))
+        if signals:
+            signals.flimit_set.emit(str(estimate))
+            signals.node_expanded.emit(*current)
         #
-        came_from = {start: 0}
-        g_scores = {start:0}
+        if current == goal:
+            print("FOUND!!")
+            final_cost = g_scores[current]
+            rounded = getcontext().flags[Rounded]
+            inexact = getcontext().flags[Inexact]
 
-        while heap:
-            estimate, current = heappop(heap)
-            #
-            self.signals.flimit_set.emit(str(estimate))
-            self.signals.node_expanded.emit(*current)
-            #
-            if current == goal:
-                print("FOUND!!")
-                final_cost = g_scores[current]
-                rounded = getcontext().flags[Rounded]
-                inexact = getcontext().flags[Inexact]
+            return final_cost, reconstruct_path(start, goal, came_from), rounded, inexact
 
-                return final_cost, self.reconstruct_path(start, goal, came_from), rounded, inexact
+        for x, y, cost in children(*current, citymap, diag_cost, map_size):
+            child = x, y
+            tentative_gscore = g_scores[current] + cost
+            if tentative_gscore < g_scores.get(child, float('inf')):
+                #
+                if signals:
+                    signals.node_visited.emit(x, y)
+                #
+                came_from[child] = current
+                g_scores[child] = tentative_gscore
 
-            for x, y, cost in children(*current, citymap, self.diag_cost, map_size):
-                child = x, y
-                tentative_gscore = g_scores[current] + cost
-                if tentative_gscore < g_scores.get(child, float('inf')):
-                    #
-                    self.signals.node_visited.emit(x, y)
-                    #
-                    came_from[child] = current
-                    g_scores[child] = tentative_gscore
-
-                    fscore = tentative_gscore + heuristics(x, y, *goal, diff)
-                    heappush(heap, (fscore, child))
+                fscore = tentative_gscore + heuristics(x, y, *goal, diff)
+                heappush(heap, (fscore, child))
