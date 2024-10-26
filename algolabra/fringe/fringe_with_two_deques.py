@@ -2,7 +2,7 @@ from decimal import Decimal, getcontext, Rounded, Inexact
 from collections import deque
 
 from algolabra.common_search_utils.children import children
-from algolabra.common_search_utils.heuristics import old_heuristics as heuristics
+from algolabra.common_search_utils.heuristics import heuristics
 
 
 def fringe_search(start: tuple[int, int], goal: tuple[int, int], citymap: list, diag_cost):
@@ -16,7 +16,7 @@ def fringe_search(start: tuple[int, int], goal: tuple[int, int], citymap: list, 
     :return:
     """
     map_size = len(citymap)
-    diff = diag_cost - Decimal(1)
+    diff = diag_cost - Decimal(2)
 
     now = deque([start])
     later = deque()
@@ -48,18 +48,11 @@ def fringe_search(start: tuple[int, int], goal: tuple[int, int], citymap: list, 
 
             kids = children(*current, citymap, diag_cost, map_size)
 
-            # due to children insertion order we reverse if going x->0, y -> max
-
-            if  start[0] < goal[0]:
-                kids.reverse()
-
             for kid in kids:
                 gchild = kid[2] + data[1]
                 if (kid[0], kid[1]) not in cache or gchild < cache[kid[0], kid[1]][1]:
                     cache[(kid[0], kid[1])] = current, gchild, None
                     now.appendleft((kid[0], kid[1]))
-
-
         flimit = fmin
         if not later:
             break
@@ -73,22 +66,3 @@ def fringe_search(start: tuple[int, int], goal: tuple[int, int], citymap: list, 
         inexact = getcontext().flags[Inexact]
         return found_cost, route, rounded, inexact
 
-class Node:
-    def __init__(self, x, y, left=None, right=None):
-        self.x = x
-        self.y = y
-        self.left = left
-        self.right = right
-
-
-if __name__=='__main__':
-    from read_files import read_map
-    le_map = read_map("Boston_0_512.map")
-    diag_cost = Decimal('1.4142135623730950488')
-    # 351	359	354	357	3.82842712
-    # fringe_search((351, 359), (354, 357), le_map, diag_cost)
-    # 405	67	404	64	3.41421356
-    # 10	Boston_0_512.map	512	512	6	409	39	388	43.35533905
-    fringe_search((6, 409), (39, 388), le_map, diag_cost)
-    # 10	Boston_0_512.map	512	512	2	448	21	482	41.87005768
-    # 10	Boston_0_512.map	512	512	67	484	33	504	42.28427124
