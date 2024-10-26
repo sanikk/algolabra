@@ -6,7 +6,8 @@ from algolabra.astar.astar_thread import AstarThread
 from algolabra.astar.astar import astar
 
 from algolabra.fringe.fringe_thread import FringeThread
-from algolabra.fringe.new_loggings import fringe_search_with_logging
+from algolabra.fringe.fringe_with_logging import fringe_search_with_logging
+
 
 from algolabra.fringe.fringe_with_dll import fringe_search as testbed_search
 from algolabra.fringe.fringe_with_two_deques import fringe_search as basecase_search
@@ -108,7 +109,7 @@ class SearchService(QObject):
 
     # LOGGING
 
-    def run_fringe_with_logging(self, bucket, scenario):
-        fringe_search_with_logging(*self.scenario_service.get_scenario_start_and_goal(bucket, scenario), self.scenario_service.get_map_data(), bucket, scenario, self.scenario_service.get_diag_cost())
+    def run_fringe_with_logging(self, bucket, scenario, filename=None):
+        fringe_search_with_logging(*self.scenario_service.get_scenario_start_and_goal(bucket, scenario), self.scenario_service.get_map_data(), self.scenario_service.get_diag_cost(), bucket, scenario, filename)
 
 
