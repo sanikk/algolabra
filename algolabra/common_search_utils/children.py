@@ -1,83 +1,34 @@
 from decimal import Decimal
 
 
-def children_return_tuple(node, citymap, diag_cost):
-    """
-    Gives the valid neighbors of a node on an octile map.
+def children(node_x,node_y, citymap, diag_cost, map_size):
+    d1 = Decimal(1)
 
-    :param node: parent Node, needs node.x, node.y
-    :param citymap: some kind of map
-    :return: list of the (x,y,cost) of valid children
-
-    Uses x: int, y: int, cost: Decimal internally.
-    """
     masks = [
-        (0, 1, Decimal(1)),
-        (1, 1, diag_cost),
-        (1, 0, Decimal(1)),
-        (1, -1, diag_cost),
-        (0, -1, Decimal(1)),
-        (-1, -1, diag_cost),
-        (-1, 0, Decimal(1)),
-        (-1, 1, diag_cost),
-        (0, 1, Decimal(1))
+        ( 0,-1, d1),    # N
+        (-1,-1, diag_cost),    # NW
+        (-1, 0, d1),    # W
+        (-1, 1, diag_cost),    # SW
+        ( 0, 1, d1),    # S
+        ( 1, 1, diag_cost),    # SE
+        ( 1, 0, d1),    # E
+        ( 1,-1, diag_cost)    # NE
     ]
-
-    applied = [((mask[0] + node[0], mask[1] + node[1]), mask[2]) for mask in masks]
-    open_ground = [1 if 0 <= x < len(citymap[0]) and 0 <= y < len(citymap) and citymap[y][x] == '.' else 0 for (x, y), z in applied]
-
-    cleared = [a for i,a in enumerate(applied[:8]) if (a[1] == 1 and open_ground[i]) or (open_ground[i] and open_ground[i-1] and open_ground[i+1])]
-    return cleared
-
-def children_with_node(node, citymap, diag_cost):
-    """
-    This is an obsolete wrapper function
-    """
-    print(f"Obsolete function children.children_with_node called")
-    return children(node.x, node.y, citymap, diag_cost)
-
-
-def children(nx, ny, citymap, diag_cost, map_size):
-    """
-    Gives the valid neighbors of a node on an octile map.
-
-    :param node: parent Node, needs node.x, node.y
-    :param citymap: some kind of map
-    :return: list of the (x,y,cost) of valid children
-
-    Uses x: int, y: int, cost: Decimal internally.
-    """
-    masks = [
-        (0, 1, Decimal(1)),
-        (1, 1, diag_cost),
-        (1, 0, Decimal(1)),
-        (1, -1, diag_cost),
-        (0, -1, Decimal(1)),
-        (-1, -1, diag_cost),
-        (-1, 0, Decimal(1)),
-        (-1, 1, diag_cost),
-        (0, 1, Decimal(1))
-    ]
-
-    applied = [(mask[0] + nx, mask[1] + ny, mask[2]) for mask in masks]
-    open_ground = [1 if 0 <= x < map_size and 0 <= y < map_size and citymap[y][x] == '.' else 0 for x, y, z in applied]
-
-    cleared = [a for i,a in enumerate(applied[:8]) if (a[2] == 1 and open_ground[i]) or (open_ground[i] and open_ground[i-1] and open_ground[i+1])]
-    return cleared
-
-def children_with_tuple(node: tuple[int, int], citymap, diag_cost):
-    """
-    Gives the valid neighbors of a node on an octile map.
-
-    :param node: parent Node, needs node.x, node.y
-    :param citymap: some kind of map
-    :return: list of the (x,y,cost) of valid children
-
-    Uses x: int, y: int, cost: Decimal internally.
-    """
-    return children(node[0], node[1], citymap, diag_cost)
-
-
-
-if __name__=='__main__':
-    pass
+    returnable = []
+    for i, (dx, dy, cost) in enumerate(masks):
+        x, y = node_x + dx, node_y + dy
+        if not 0 <= x < map_size:
+            continue
+        if not 0 <= y < map_size:
+            continue
+        if citymap[y][x] != '.':
+            continue
+        if cost != d1:
+            dx,dy = node_x + masks[i-1][0], node_y + masks[i-1][1]
+            if not (0 <= dx < map_size and 0 <= dy < map_size and citymap[dy][dx] == '.'):
+                continue
+            dx, dy = node_x + masks[(i+1)%8][0], node_y + masks[(i+1)%8][1]
+            if not (0 <= dx < map_size and 0 <= dy < map_size and citymap[dy][dx] == '.'):
+                continue
+        returnable.append((x, y, cost))
+    return returnable
