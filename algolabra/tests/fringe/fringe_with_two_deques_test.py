@@ -44,7 +44,6 @@ class TestFringeWithTwoDeques(unittest.TestCase):
         # shortest path is made of d diagonal and s straigth steps so exact cost should be
         # d * diag_cost + straight
 
-
         steps, straight, diagonal = handle_path(ret[1])
         correct_answer = diagonal * self.diag_cost + straight
 
