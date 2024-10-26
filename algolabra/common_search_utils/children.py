@@ -1,30 +1,47 @@
 from decimal import Decimal
 
 
-def children(nx, ny, citymap, diag_cost, map_size):
+def children(nx: int, ny: int, citymap, diag_cost: Decimal, map_size: int):
     """
-    Gives the valid neighbors of a node on an octile map.
+        Gives the valid neighbors of a node on an octile map.
 
-    :param node: parent Node, needs node.x, node.y
-    :param citymap: some kind of map
-    :return: list of the (x,y,cost) of valid children
+        :param nx, ny x,y of node
+        :param citymap: some kind of map
+        :return: list of the (x,y,cost) of valid children
 
-    Uses x: int, y: int, cost: Decimal internally.
-    """
+        Uses x: int, y: int, cost: Decimal internally.
+        """
+    d1 = Decimal(1)
     masks = [
-        (0, 1, Decimal(1)),
-        (1, 1, diag_cost),
-        (1, 0, Decimal(1)),
-        (1, -1, diag_cost),
-        (0, -1, Decimal(1)),
+        (0, -1, d1),
         (-1, -1, diag_cost),
-        (-1, 0, Decimal(1)),
+        (-1, 0, d1),
         (-1, 1, diag_cost),
-        (0, 1, Decimal(1))
+        (0, 1, d1),
+        (1, 1, diag_cost),
+        (1, 0, d1),
+        (1, -1, diag_cost),
     ]
+    returnable = []
+    for i, (dx, dy, cost) in enumerate(masks):
+        x,y = nx + dx, ny + dy
+        if not 0 <= x < map_size or not 0 <= y < map_size:
+            continue
+        if citymap[y][x] != '.':
+            continue
+        if cost!=1:
+            px, py = ny + masks[i - 1][1], nx + masks[i - 1][0]
+            if not 0 <= px < map_size or not 0 <= py < map_size or not citymap[py][px] == '.':
+                continue
+            px, py = ny + masks[(i + 1) % 8][1], nx + masks[(i + 1) % 8][0]
+            if not 0 <= px < map_size or not 0 <= py < map_size or not citymap[py][px] == '.':
+                continue
+        returnable.append((x,y,cost))
+    return returnable
 
-    applied = [(mask[0] + nx, mask[1] + ny, mask[2]) for mask in masks]
-    open_ground = [1 if 0 <= x < map_size and 0 <= y < map_size and citymap[y][x] == '.' else 0 for x, y, z in applied]
 
-    cleared = [a for i,a in enumerate(applied[:8]) if (a[2] == 1 and open_ground[i]) or (open_ground[i] and open_ground[i-1] and open_ground[i+1])]
-    return cleared
+if __name__=='__main__':
+    diag_cost = Decimal('1.4142135623730950488')
+    m = [[".", "#", "."], [".", ".", "."], [".", ".", "."]]
+    ret = children(1, 1, m, diag_cost, 3)
+    print(ret)

@@ -3,7 +3,7 @@ from decimal import Decimal, getcontext, Inexact, Rounded
 from algolabra.common_search_utils.search_thread import SearchThread
 from algolabra.fringe.doublelinkedlist import Node, DoubleLinkedList
 from algolabra.common_search_utils.heuristics import heuristics_with_node
-from algolabra.common_search_utils.children import children_with_node, children
+from algolabra.common_search_utils.children import children
 
 
 class FringeThread(SearchThread):

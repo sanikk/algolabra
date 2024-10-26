@@ -50,16 +50,16 @@ def fringe_search(start: tuple[int, int], goal: tuple[int, int], citymap: list, 
 
             # due to children insertion order we reverse if going x->0, y -> max
 
-            if  start[0] < goal[0]:
-                kids.reverse()
+            # hmm. four directions? split and paste to end to rotate? should be fast with only max 8.
+
+            # if  start[0] < goal[0]:
+            #     kids.reverse()
 
             for kid in kids:
                 gchild = kid[2] + data[1]
                 if (kid[0], kid[1]) not in cache or gchild < cache[kid[0], kid[1]][1]:
                     cache[(kid[0], kid[1])] = current, gchild, None
                     now.appendleft((kid[0], kid[1]))
-
-
         flimit = fmin
         if not later:
             break

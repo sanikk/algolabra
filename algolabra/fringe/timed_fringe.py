@@ -14,7 +14,7 @@ def fringe_search(start: tuple[int, int], goal: tuple[int, int], citymap: list, 
     fringe = DoubleLinkedList(start_node)
 
     cache = {start: (0, None)}
-    flimit = heuristics(*start, *goal, diff, diag_cost)
+    flimit = heuristics(*start, *goal, diff)
     found = False
     found_cost = 0
 
@@ -24,7 +24,7 @@ def fringe_search(start: tuple[int, int], goal: tuple[int, int], citymap: list, 
         for node in fringe:
             tup = (node.x, node.y)
             g, parent = cache[tup]
-            f = g + heuristics(node.x, node.y, *goal, diff, diag_cost)
+            f = g + heuristics(node.x, node.y, *goal, diff)
             if f > flimit:
                 fmin = min(f, fmin)
                 continue
@@ -51,13 +51,3 @@ def fringe_search(start: tuple[int, int], goal: tuple[int, int], citymap: list, 
         rounded = getcontext().flags[Rounded]
         inexact = getcontext().flags[Inexact]
         return found_cost, route, rounded, inexact
-
-
-if __name__=='__main__':
-    from read_files import read_map
-    le_map = read_map("Boston_0_512.map")
-    diag_cost = Decimal('1.4142135623730950488')
-    # 351	359	354	357	3.82842712
-    fringe_search((351, 359), (354, 357), le_map, diag_cost)
-    # 405	67	404	64	3.41421356
-    print(fringe_search((352, 438), (346, 423), le_map, diag_cost))

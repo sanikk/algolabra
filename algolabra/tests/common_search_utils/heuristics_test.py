@@ -7,22 +7,20 @@ from algolabra.common_search_utils.heuristics import heuristics_with_node
 class HeuristicsTest(unittest.TestCase):
 
     def setUp(self):
-        self.diag_cost = Decimal('2').sqrt()
+        self.diag_cost = Decimal('1.4142135623730950488')
 
     def test_heuristics_gives_right_cost_to_one_move(self):
         node = Node(x=1, y=1)
+        diff = self.diag_cost - Decimal(1)
+        self.assertEqual(heuristics_with_node(node, 0, 1, diff, self.diag_cost), 1)
+        self.assertEqual(heuristics_with_node(node, 2, 1, diff, self.diag_cost), 1)
+        self.assertEqual(heuristics_with_node(node, 1, 0, diff, self.diag_cost), 1)
+        self.assertEqual(heuristics_with_node(node, 1, 2, diff, self.diag_cost), 1)
 
-        self.assertEqual(heuristics_with_node(node, 0, 1, self.diag_cost), 1)
-        self.assertEqual(heuristics_with_node(node, 2, 1, self.diag_cost), 1)
-        self.assertEqual(heuristics_with_node(node, 1, 0, self.diag_cost), 1)
-        self.assertEqual(heuristics_with_node(node, 1, 2, self.diag_cost), 1)
-
-        diag_cost = Decimal(2).sqrt()
-
-        self.assertEqual(heuristics_with_node(node, 0, 2, diag_cost), diag_cost)
-        self.assertEqual(heuristics_with_node(node, 2, 2, diag_cost), diag_cost)
-        self.assertEqual(heuristics_with_node(node, 2, 0, diag_cost), diag_cost)
-        self.assertEqual(heuristics_with_node(node, 0, 0, diag_cost), diag_cost)
+        self.assertEqual(heuristics_with_node(node, 0, 2, diff, self.diag_cost), self.diag_cost)
+        self.assertEqual(heuristics_with_node(node, 2, 2, diff, self.diag_cost), self.diag_cost)
+        self.assertEqual(heuristics_with_node(node, 2, 0, diff, self.diag_cost), self.diag_cost)
+        self.assertEqual(heuristics_with_node(node, 0, 0, diff, self.diag_cost), self.diag_cost)
 
 
 class Node:
