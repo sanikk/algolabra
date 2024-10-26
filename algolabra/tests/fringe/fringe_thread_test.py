@@ -1,7 +1,7 @@
 import unittest
 from decimal import Decimal
 
-from PyQt6.QtCore import QObject, pyqtSignal, pyqtSlot, QCoreApplication, QEventLoop
+from PyQt6.QtCore import QObject, pyqtSlot, QCoreApplication, QEventLoop
 
 from algolabra.fringe.fringe_thread import fringe_search
 from algolabra.fileIO.read_files import read_map
