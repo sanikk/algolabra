@@ -5,6 +5,8 @@ from algolabra.common_search_utils.children import children
 from algolabra.common_search_utils.heuristics import heuristics
 from algolabra.common_search_utils.search_thread import SearchThread
 
+from PyQt6.QtCore import QCoreApplication, QEventLoop
+
 class FringeThread(SearchThread):
     """
     Version for FringeTab. Runs in another thread.
@@ -98,12 +100,14 @@ def fringe_search(start: tuple[int, int], goal: tuple[int, int], citymap: list, 
                 if (kid[0], kid[1]) not in cache or gchild < cache[kid[0], kid[1]][1]:
                     cache[(kid[0], kid[1])] = current, gchild, None
                     now.appendleft((kid[0], kid[1]))
-        flimit = fmin
-        ############
-        if signals:
+        if not found:
+            flimit = fmin
+            ############
+            if signals:
 
-            signals.flimit_set.emit(str(flimit))
-        ############
+                signals.flimit_set.emit(str(flimit))
+                QCoreApplication.processEvents(QEventLoop.ProcessEventsFlag.AllEvents, 50)
+            ############
         if not later:
             break
         now, later = later, now

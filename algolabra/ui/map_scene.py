@@ -1,6 +1,6 @@
 from PyQt6.QtCore import pyqtSlot, Qt, QRectF
 from PyQt6.QtGui import QColor, QImage, QPixmap, QBrush, QPen
-from PyQt6.QtWidgets import QGraphicsScene, QGraphicsItem, QToolTip
+from PyQt6.QtWidgets import QGraphicsScene, QGraphicsItem
 
 
 class MapScene(QGraphicsScene):

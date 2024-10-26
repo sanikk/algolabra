@@ -1,9 +1,14 @@
 import unittest
 from decimal import Decimal
 
+from PyQt6.QtCore import QObject, pyqtSignal, pyqtSlot, QCoreApplication, QEventLoop
+
 from algolabra.fringe.fringe_thread import fringe_search
 from algolabra.fileIO.read_files import read_map
 from algolabra.common_search_utils.check_solution import handle_path
+from algolabra.ui.search_signals import SearchSignals
+
+
 
 
 class TestFringeThread(unittest.TestCase):
@@ -54,3 +59,42 @@ class TestFringeThread(unittest.TestCase):
 
         self.assertLess(ret[0], 122.05382387)
         self.assertGreater(ret[0], 122.05382385)
+
+    def test_signals(self):
+        obj = SearchSignals()
+        handler = Mock()
+        obj.node_visited.connect(handler.node_visited)
+        obj.node_expanded.connect(handler.node_expanded)
+        obj.flimit_set.connect(handler.flimit_change)
+
+        start = 344, 85
+        goal = 343, 85
+        fringe_search(start, goal, self.citymap, self.diag_cost, signals=obj)
+
+        QCoreApplication.processEvents(QEventLoop.ProcessEventsFlag.AllEvents, 50)
+        # QEventLoop.AllEvents
+        # QEventLoop.ProcessEventsFlag.AllEvents
+
+        self.assertEqual(handler.visited, 7)
+        self.assertEqual(handler.expanded, 1)
+        self.assertEqual(handler.flimit_change_count, 1)
+
+class Mock(QObject):
+    def __init__(self, parent=None):
+        super().__init__()
+        self.visited = 0
+        self.expanded = 0
+        self.flimit_change_count = 0
+
+    @pyqtSlot(int, int)
+    def node_visited(self, x, y):
+        self.visited += 1
+
+    @pyqtSlot(int, int)
+    def node_expanded(self, x, y):
+        self.expanded += 1
+
+    @pyqtSlot(str)
+    def flimit_change(self, new_flimit: str):
+        self.flimit_change_count += 1
+
