@@ -55,6 +55,10 @@ def fringe_search(start: tuple[int, int], goal: tuple[int, int], citymap: list, 
     found_cost = 0
     cache = {start: (None, 0, flimit)}
 
+    if signals:
+        signals.flimit_set.emit(str(flimit))
+
+
     while not found:
         fmin = float('inf')
 
@@ -62,7 +66,8 @@ def fringe_search(start: tuple[int, int], goal: tuple[int, int], citymap: list, 
             current = now.popleft()
 
             ############
-            signals.node_visited.emit(*current)
+            if signals:
+                signals.node_visited.emit(*current)
             ############
 
             data = cache[current]
@@ -77,11 +82,13 @@ def fringe_search(start: tuple[int, int], goal: tuple[int, int], citymap: list, 
             if current == goal:
                 found = True
                 found_cost = data[1]
-                signals.result_ready.emit()
+                if signals:
+                    signals.result_ready.emit()
                 break
 
             ############
-            signals.node_expanded.emit(*current)
+            if signals:
+                signals.node_expanded.emit(*current)
             ############
 
             kids = children(*current, citymap, diag_cost, map_size)
@@ -93,8 +100,9 @@ def fringe_search(start: tuple[int, int], goal: tuple[int, int], citymap: list, 
                     now.appendleft((kid[0], kid[1]))
         flimit = fmin
         ############
-        flimit_str = str(flimit)
-        signals.flimit_set.emit(flimit_str)
+        if signals:
+
+            signals.flimit_set.emit(str(flimit))
         ############
         if not later:
             break
