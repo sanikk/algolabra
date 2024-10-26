@@ -6,8 +6,6 @@ from algolabra.fileIO.read_files import read_map
 
 class TestChildren(unittest.TestCase):
     def setUp(self):
-        self.dummy_open = [[".", ".", "."], [".", ".", "."], [".", ".", "."]]
-        self.dummy_alley = [[".", ".", "."], [".", "#", "."], [".", "#", "."]]
         self.city_map = read_map("algolabra/bostonmaps/Boston_0_512.map")
         self.diag_cost = Decimal('1.4142135623730950488')
 

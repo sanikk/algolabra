@@ -16,6 +16,13 @@ class TestFringeWithDll(unittest.TestCase):
         self.assertEqual(len(ret), 4)
         self.assertEqual(ret[0], Decimal(1))
 
+    def test_minimap_no_path(self):
+        start = 2,2
+        goal = 0,0
+        m = [[".", "#", "."], [".", "#", "."], [".", "#", "."]]
+        ret = fringe_search(start, goal, m, self.diag_cost)
+        self.assertIsNone(ret)
+
 
     def test_short_path_with_citymap(self):
         start = 352, 438

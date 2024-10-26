@@ -11,6 +11,13 @@ class TestFringeWithTwoDeques(unittest.TestCase):
         self.citymap = read_map("algolabra/bostonmaps/Boston_0_512.map")
         self.diag_cost = Decimal('1.4142135623730950488')
 
+    def test_minimap_no_path(self):
+        start = 0,0
+        goal = 2,2
+        m = [[".", "#", "."], [".", "#", "."], [".", "#", "."]]
+        ret = fringe_search(start, goal, m, self.diag_cost)
+        self.assertIsNone(ret)
+
     def test_one_step_path_with_citymap(self):
         start = 344, 85
         goal = 343, 85
