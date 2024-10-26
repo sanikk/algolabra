@@ -5,7 +5,7 @@ from algolabra.common_search_utils.result_utils import timered
 from algolabra.astar.astar_thread import AstarThread
 from algolabra.astar.astar import astar
 
-from algolabra.fringe.new_thread import FringeThread
+from algolabra.fringe.fringe_thread import FringeThread
 from algolabra.fringe.new_loggings import fringe_search_with_logging
 
 from algolabra.fringe.fringe_with_dll import fringe_search as testbed_search
