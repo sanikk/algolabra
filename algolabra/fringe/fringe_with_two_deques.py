@@ -43,7 +43,7 @@ def fringe_search(start: tuple[int, int], goal: tuple[int, int], citymap: list, 
 
             if current == goal:
                 found = True
-                print(f"found {data[1]}")
+                found_cost = data[1]
                 break
 
             kids = children(*current, citymap, diag_cost, map_size)
@@ -65,4 +65,3 @@ def fringe_search(start: tuple[int, int], goal: tuple[int, int], citymap: list, 
         rounded = getcontext().flags[Rounded]
         inexact = getcontext().flags[Inexact]
         return found_cost, route, rounded, inexact
-
