@@ -55,6 +55,13 @@ class TestAstarThread(unittest.TestCase):
         ret = astar(start, goal, m, self.diag_cost)
         self.assertIsNone(ret)
 
+    def test_reconstruct_path_function(self):
+        camefrom = {(344,85): (343,85)}
+        start = 343,85
+        goal = 344,85
+        ret = reconstruct_path(start, goal, camefrom)
+        self.assertEqual(ret, [(344, 85), (343, 85)])
+
     def test_signals(self):
         obj = SearchSignals()
         handler = Mock()
