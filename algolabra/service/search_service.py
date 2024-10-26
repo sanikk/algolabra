@@ -5,7 +5,7 @@ from algolabra.common_search_utils.result_utils import timered
 from algolabra.astar.astar_thread import AstarThread
 from algolabra.astar.astar import astar
 
-# from algolabra.fringe.fringe_thread import FringeThread
+from algolabra.fringe.new_thread import FringeThread
 from algolabra.fringe.new_loggings import fringe_search_with_logging
 
 from algolabra.fringe.fringe_with_dll import fringe_search as testbed_search
@@ -59,9 +59,9 @@ class SearchService(QObject):
         map_data = self.scenario_service.get_map_data()
         diag_cost = self.scenario_service.get_diag_cost()
 
-        # instanced_thread = FringeThread(self, start, goal, map_data, map_slots, data_slots, diag_cost)
-        # instanced_thread.finished.connect(instanced_thread.deleteLater)
-        # instanced_thread.start()
+        instanced_thread = FringeThread(self, start, goal, map_data, map_slots, data_slots, diag_cost)
+        instanced_thread.finished.connect(instanced_thread.deleteLater)
+        instanced_thread.start()
 
     # A*
 
