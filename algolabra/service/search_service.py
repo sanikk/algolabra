@@ -1,3 +1,4 @@
+import logging
 from PyQt6.QtCore import pyqtSignal, QObject
 
 from algolabra.common_search_utils.result_utils import timered
@@ -19,6 +20,7 @@ class SearchService(QObject):
     def __init__(self, scenario_service=None):
         super().__init__()
         self.scenario_service = scenario_service
+        logging.basicConfig(filename='fringe.log', filemode='a', level=logging.INFO, format='%(asctime)s - %(message)s')
 
     # SEARCH ALGO METHODS
     # FRINGE

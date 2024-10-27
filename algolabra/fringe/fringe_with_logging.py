@@ -6,7 +6,7 @@ from algolabra.common_search_utils.children import children
 from algolabra.common_search_utils.heuristics import heuristics
 
 
-def fringe_search_with_logging(start: tuple[int, int], goal: tuple[int, int], citymap: list, diag_cost, bucket, scenario, logger=None, filename=None):
+def fringe_search_with_logging(start: tuple[int, int], goal: tuple[int, int], citymap: list, diag_cost, bucket, scenario, logger=None):
     """
     The deque version with logging.
 
@@ -17,12 +17,7 @@ def fringe_search_with_logging(start: tuple[int, int], goal: tuple[int, int], ci
     :return:
     """
     ###############
-    if logger:
-        logging.getLogger(logger)
-    else:
-        logging.basicConfig(filename=filename or 'fringe.log', level=logging.DEBUG,
-                        format='%(message)s')
-
+    logger = logger or logging.getLogger('fringe_logger')
     ##############
     map_size = len(citymap)
     diff = diag_cost - Decimal(2)
@@ -36,8 +31,8 @@ def fringe_search_with_logging(start: tuple[int, int], goal: tuple[int, int], ci
     cache = {start: (None, 0, flimit)}
 
     ############
-    logging.info(f"Running Fringe for scenario {bucket}{scenario}")
-    logging.info(f"starting with flimit {flimit}")
+    logger.info(f"Running Fringe for scenario {bucket}{scenario}")
+    logger.info(f"starting with flimit {flimit}")
     visited = 0
     visits = {}
     expanded = 0
@@ -48,7 +43,7 @@ def fringe_search_with_logging(start: tuple[int, int], goal: tuple[int, int], ci
         fmin = float('inf')
 
         while not found and now:
-            logging.info(f"fringe now: {len(list(now))}")
+            logger.info(f"fringe now: {len(list(now))}")
             current = now.popleft()
             ######
             visited += 1
@@ -65,7 +60,7 @@ def fringe_search_with_logging(start: tuple[int, int], goal: tuple[int, int], ci
                 fmin = min(data[2], fmin)
                 later.append(current)
                 ###
-                logging.info(f"visit {current}({visits[current]}): f:{data[2]} over flimit {flimit}")
+                logger.info(f"visit {current}({visits[current]}): f:{data[2]} over flimit {flimit}")
                 ###
                 continue
 
@@ -73,7 +68,7 @@ def fringe_search_with_logging(start: tuple[int, int], goal: tuple[int, int], ci
                 found = True
                 found_cost = data[1]
                 ###
-                logging.info(f"visit {current}({visits[current]}): found goal with cost {data[1]}")
+                logger.info(f"visit {current}({visits[current]}): found goal with cost {data[1]}")
                 ###
                 break
 
@@ -82,7 +77,7 @@ def fringe_search_with_logging(start: tuple[int, int], goal: tuple[int, int], ci
             if current not in expansions:
                 expansions[current] = 0
             expansions[current] += 1
-            logging.info(f"visit({visits[current]}) - expand({expansions[current]}) {current}: ")
+            logger.info(f"visit({visits[current]}) - expand({expansions[current]}) {current}: ")
             ############
 
             kids = children(*current, citymap, diag_cost, map_size)
@@ -93,19 +88,19 @@ def fringe_search_with_logging(start: tuple[int, int], goal: tuple[int, int], ci
                     cache[(kid[0], kid[1])] = current, gchild, None
                     now.appendleft((kid[0], kid[1]))
                     ###
-                    logging.info(f"    child {kid[0]},{kid[1]}: adding to F")
+                    logger.info(f"    child {kid[0]},{kid[1]}: adding to F")
                     ###
                 else:
                     ###
-                    logging.info(f"    child {kid[0]},{kid[1]}: previous {cache[kid[0], kid[1]][1]} was better than this {gchild}")
+                    logger.info(f"    child {kid[0]},{kid[1]}: previous {cache[kid[0], kid[1]][1]} was better than this {gchild}")
                     ###
         flimit = fmin
         ###
-        logging.info(f"setting flimit {flimit}")
+        logger.info(f"setting flimit {flimit}")
         ###
         if not later:
             ###
-            logging.info(f"path not found. exiting.")
+            logger.info(f"path not found. exiting.")
             ###
             break
         now, later = later, now
