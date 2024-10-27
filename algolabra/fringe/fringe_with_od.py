@@ -70,3 +70,7 @@ if __name__=='__main__':
     fringe_search((6, 409), (39, 388), le_map, diag_cost)
     # 10	Boston_0_512.map	512	512	2	448	21	482	41.87005768
     # 10	Boston_0_512.map	512	512	67	484	33	504	42.28427124
+    #
+    #
+    # KeyError: (185, 232) scen 367
+    # why is the key not there? it should be RIGHT. THERE. !!!. :D
