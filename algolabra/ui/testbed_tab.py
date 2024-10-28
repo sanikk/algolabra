@@ -15,20 +15,47 @@ class TestbedTab(QWidget):
         layout = QVBoxLayout()
         layout.addWidget(self.get_scenario_box())
         layout.addWidget(self.testbed_box())
-        layout.addWidget(self.fringe_box())
+        layout.addWidget(self.basecase_box())
         self.setLayout(layout)
 
         self.scenario_service.map_changed.connect(self.update_bucketbox)
         self.bucketbox.currentIndexChanged.connect(self.prepare_table)
 
     @pyqtSlot()
+    def update_bucketbox(self):
+        """
+        Slot() function that preps and fills table when bucketbox needs to be updated.
+
+        :return: None
+        """
+        self.prepare_table()
+        self.bucketbox.clear()
+        self.bucketbox.addItems(self.scenario_service.get_bucket_list())
+
+    @pyqtSlot()
     def prepare_table(self):
+        """
+        Gets data from SearchService and loads it into the table.
+
+        Unless it's changed
+        0-4 bucket 5-10 testcase 11-16 basecase
+
+        cost, perf_time, proc_time, thread_time, visired, expanded, Rounded, Inexact
+        last 2 are shown as green/red color. Logic is bad there(and!) but no time.
+        :return:
+        """
         self.table.clearContents()
         data = self.scenario_service.get_bucket_strings(self.bucketbox.currentIndex())
         if data:
             [[self.table.setItem(y, x, QTableWidgetItem(item)) for x, item in enumerate(line)] for y, line in enumerate(data)]
 
     def testbed_box(self):
+        """
+        makes and returns the box for testbed.
+        there's the button, and the updater. also label but not used.
+
+        :return:
+        """
         groupbox = QGroupBox("Testbed")
         layout = QVBoxLayout()
 
@@ -47,7 +74,13 @@ class TestbedTab(QWidget):
         groupbox.setLayout(layout)
         return groupbox
 
-    def fringe_box(self):
+    def basecase_box(self):
+        """
+        makes and returns the box for basecase
+        there's the button, and the updater. also label but not used.
+
+        :return:
+        """
         # TODO add a progress bar while running bucket, printing {id} done for now
         # https://doc.qt.io/qt-6/qprogressbar.html
         groupbox = QGroupBox("Basecase")
@@ -71,7 +104,10 @@ class TestbedTab(QWidget):
     def prep_data_for_table(self, data: list):
         """
         Preps data from search_service for your viewing pleasure. :)
-        There is a check if there are visited&expanded fields in data.
+        There are next to no checks. If last two values are bool they are used to color the result def:red or
+        green if both are False.
+
+        cost, perf_time, proc_time, thread_time, visited, expanded, Rounded, Inexact
 
         :param data: data from search_service (cost, timer1, timer2, timer3, [visited, expanded,] Rounded, Inexact)
 
@@ -82,27 +118,21 @@ class TestbedTab(QWidget):
         items = [[QTableWidgetItem("{:.8f}".format(item)) for item in line[:6]] for line in data]
         # color every cost green
         [item[0].setBackground(QBrush(QColor(163, 230, 181))) for item in items]
-        if len(data[0]) > 7:
+
             # paint result red/green only if there is data on Rounded, Inexact
+        if type(data[-2]) == bool:
             [item[0].setBackground(QBrush(QColor(163, 230, 181))) for item in items]
             [item[0].setBackground(QBrush(QColor(214, 148, 176))) for item, data in zip(items, data) if
-                not data[6] or not data[7]]
+                not data[-2] or not data[-1]]
         return items
 
-    @pyqtSlot()
-    def update_bucketbox(self):
-        """
-        Slot() function that preps and fills table when bucketbox needs to be updated.
 
-        :return: None
-        """
-        self.prepare_table()
-        self.bucketbox.clear()
-        self.bucketbox.addItems(self.scenario_service.get_bucket_list())
 
     def get_scenario_table(self) -> QTableWidget:
         """
         Builds and returns a scenario_table.
+
+        Columns are grouped.
 
         :return: QTableWidget
         """

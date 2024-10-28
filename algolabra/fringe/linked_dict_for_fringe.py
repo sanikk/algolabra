@@ -14,7 +14,20 @@ class Linknode:
 
 class LinkedDictForFringe(dict):
     """
+    WARNING!! DONT CONNECT THIS.
+
+    Context acting very weird after running tests with this. I think some of the dict changes might be
+    bleeding over. I tested so many different setups it's hard to be sure.
+
     Ok general cases can go in the other files.
+
+    This is so S-L-O-W compared to OrderedDict
+
+    That movetoend makes such a huge difference?
+
+    Obviously the dict.keys() uses a different underlying structure of list.
+    Not getting into this right now.
+
     """
     def __init__(self, head):
         """
@@ -26,7 +39,7 @@ class LinkedDictForFringe(dict):
 
         self.head = None
         self.tail = None
-        self[head] = head
+        self.add_tail(head)
 
     def _cut_links(self, linknode: Linknode):
         """
@@ -91,6 +104,9 @@ class LinkedDictForFringe(dict):
         linkedlist structs, both the one under dict.keys(), and the one used here, should give O(1) removals with access
         to the links.
 
+        yeah nah this works in ordereddict but not here. i should maybe read this stuff
+
+
         Some caution and testing adviced.
 
         :param key: whatever is used as key
@@ -107,7 +123,33 @@ class LinkedDictForFringe(dict):
         """
         return DelayedLinkedDictForFringeIterator(self)
 
-    def __setitem__(self, key, value):
+    def __bool__(self):
+        return bool(self.head)
+    # def __setitem__(self, key, value):
+    #     """
+    #     Slightly modified dict.__setitem__
+    #     Also makes the dict record. With a Linknode.
+    #
+    #     :param key:
+    #     :param value:
+    #     :return:
+    #     """
+    #     if key in self:
+    #         linknode = self[key]
+    #         self._cut_links(linknode)
+    #         linknode.left = self.tail
+    #         linknode.right = None
+    #         linknode.value = value or key
+    #     else:
+    #         linknode = Linknode(value or key, self.tail, None)
+    #     super().__setitem__(key, linknode)
+    #     if not self.head:
+    #         self.head = linknode
+    #     if self.tail:
+    #         self.tail.right = linknode
+    #     self.tail = linknode
+
+    def add_tail(self, key):
         """
         Slightly modified dict.__setitem__
         Also makes the dict record. With a Linknode.
@@ -121,10 +163,9 @@ class LinkedDictForFringe(dict):
             self._cut_links(linknode)
             linknode.left = self.tail
             linknode.right = None
-            linknode.value = value or key
         else:
-            linknode = Linknode(value or key, self.tail, None)
-        super().__setitem__(key, linknode)
+            linknode = Linknode(key, self.tail, None)
+            self[key] = linknode
         if not self.head:
             self.head = linknode
         if self.tail:
