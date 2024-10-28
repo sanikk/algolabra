@@ -12,9 +12,6 @@ class Linknode:
         self.right = right
         self.value = value
 
-    def __repr__(self):
-        return f"Linknode: {self.value}"
-
 class LinkedDictForFringe(dict):
     """
     Ok general cases can go in the other files.
@@ -152,22 +149,3 @@ class DelayedLinkedDictForFringeIterator:
         prev = self.current_key
         self.current_key = self.current_key.right
         return prev.value
-
-if __name__=='__main__':
-    t = LinkedDictForFringe((0,0))
-    t[(1,1)] = None
-    t[(2,2)] = None
-    t[(3, 3)] = None
-    for node in t:
-        print(node)
-    print("####")
-    t.remove((2,2))
-    print("####")
-    for node in t:
-        print(node)
-    print("####")
-    t[(1,1)] = None
-    print("####")
-    for node in t:
-        print(node)
-    # print("####")

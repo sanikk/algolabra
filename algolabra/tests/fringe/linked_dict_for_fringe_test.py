@@ -42,10 +42,12 @@ class TestBasicFunctionality(unittest.TestCase):
 
     def second_add_moves_first(self):
         self.d[(1, 1)] = None
+        linknode = self.d.get((1,1))
         self.d[(2, 2)] = None
         self.d[(3, 3)] = None
         self.d[(1, 1)] = None
         self.assertEqual(list(iter(self.d)), [(5, 5), (2, 2), (3, 3), (1, 1)])
+        self.assertIs(self.d[(1,1)], linknode)
 
 
     def third_add_still_works_with_the_tail(self):

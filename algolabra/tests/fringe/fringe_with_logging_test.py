@@ -2,7 +2,6 @@ import logging
 import unittest
 from decimal import Decimal
 from io import StringIO
-from pathlib import Path
 
 from algolabra.fileIO.read_files import read_map
 from algolabra.common_search_utils.check_solution import handle_path
