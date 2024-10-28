@@ -33,8 +33,12 @@ class LinkedDictForFringe(dict):
 
     def _cut_links(self, linknode: Linknode):
         """
-        If you change linknode.left,right to None iteration while this list
-        changes will cause problems. Here be dragons.
+        Don't mess with iteration + this.
+
+        Currently if the 'linknode' here is the current of an iterator, since this linknode's internal
+        refs are untouched the iterator SHOULD continue to the next from this one, so things go smoothly.
+
+        YMMV, Here be dragons, etc. And the current should never
 
         :param linknode:
         :return:
@@ -46,18 +50,15 @@ class LinkedDictForFringe(dict):
         if self.tail == linknode:
             self.tail = linknode.left
         if self.head == linknode:
-            self.head = linknode
+            self.head = linknode.right
 
-    def pop(self, key=None, tail=True) -> None:
+    def pop(self, key=None) -> None:
         """
         Removes key and value from dict and linkedlist.
-
-        Tail has no meaning if key is given.
 
         Should add a flag to supress exception here.
 
         :param key: if set removes key and linknode from dict
-        :param tail: boolean to know
         :return: value if values flag set, None otherwise
         """
         if key:
@@ -66,13 +67,9 @@ class LinkedDictForFringe(dict):
                 self._remove_linknode(linknode)
                 return linknode.value
             raise KeyError
-        if tail and self.tail:
+        if self.tail:
             value = self.tail.value
             self._remove_linknode(self.tail)
-            return value
-        if not tail and self.head:
-            value = self.head.value
-            self._remove_linknode(self.head)
             return value
         raise StopIteration
 
@@ -159,5 +156,18 @@ class DelayedLinkedDictForFringeIterator:
 if __name__=='__main__':
     t = LinkedDictForFringe((0,0))
     t[(1,1)] = None
+    t[(2,2)] = None
+    t[(3, 3)] = None
     for node in t:
         print(node)
+    print("####")
+    t.remove((2,2))
+    print("####")
+    for node in t:
+        print(node)
+    print("####")
+    t[(1,1)] = None
+    print("####")
+    for node in t:
+        print(node)
+    # print("####")
