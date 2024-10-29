@@ -1,80 +1,67 @@
 from collections import OrderedDict
 
-
-class Linknode:
-    def __init__(self, value, left, right):
-        self.value = value
+class Node:
+    def __init__(self, x, y, left, right):
+        self.x = x
+        self.y = y
         self.left = left
         self.right = right
 
-class LinkedMapForFringe(OrderedDict):
+class LinkedMap(OrderedDict):
     """
-    A Linked Map structure, implemented here for the needs of Fringe search.
+    A linked map data structure built on OrderedDict.
 
-    This version is it, because:
-    https://github.com/python/cpython/blob/main/Lib/collections/__init__.py#L83-L86
-
-    dict uses an array for the keys so I can't leverage that in the same way. Removing a key moves all the other
-    keys, and we end up with an O(n) operation with that.
-
-    Also that naming is why Linknode is Linknode and not Link.
+    Gives O(1) removals
     """
-    def __init__(self, start, *args, **kwargs):
+    def __init__(self, start, start_node, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self[start] = start_node
+        self.head = start_node or Node(None,None,None,right=start_node)
+        self.tail = start_node
 
-        linknode = Linknode(start, None, None)
-
-        self[start] = linknode
-        self.head = linknode
-        self.tail = linknode
-
-    def add_tail(self, value):
-        if value in self.keys():
-            linknode = self[value]
-            self._cut_linknode_links(linknode)
-            linknode.right = None
-
+    def add_tail(self, x, y):
+        if (x, y) in self.keys():
+            node = self[(x,y)]
+            self._cut_key_links(node)
+            self.move_to_end((x,y))
         else:
-            linknode = Linknode(value, None, None)
-            self[value] = linknode
-        if not self.head:
-            self.head = linknode
-        linknode.left = self.tail
-        self.tail.right = linknode
-        self.tail = linknode
+            self[(x,y)] = node = Node(x, y, None, None)
+
+        node.left = self.tail
+        self.tail.right = node
+        self.tail = node
 
 
-    def remove_pop(self, value):
+    def remove_by_node(self, node):
         """
-        This should throw an error
-        :param value:
-        :return:
+        ok this should be O(1) ?
+
+        OrderedDict should access this by key, then use the dll structure underneath to actually remove it.
+        My left,right things are just for iterator, they serve no purpose beyond that.
+
         """
-        self._cut_linknode_links(self.pop(value))
-
-    def remove_del(self, value):
-        self._cut_linknode_links(self[value])
-        del self[value]
+        self._cut_key_links(node)
+        del self[(node.x, node.y)]
 
 
-    def _cut_linknode_links(self, linknode):
-        if linknode.right:
-            linknode.right.left = linknode.left
-        if linknode.left:
-            linknode.left.right = linknode.right
+    def _cut_key_links(self, node):
+        if node.right:
+            node.right.left = node.left
+        if node.left:
+            node.left.right = node.right
 
-        if self.tail == linknode:
-            self.tail = linknode.left
-        if self.head == linknode:
-            self.head = linknode.right
+        if self.head == node:
+            self.head = node.right
+        if self.tail == node:
+            self.tail = node.left
 
     def __iter__(self):
-        return LinkedMapForFringeIterator(self)
+        return LinkedMapIterator(self)
 
-class LinkedMapForFringeIterator:
-    def __init__(self, lm: LinkedMapForFringe):
-        self.lm = lm
-        self.current_key = lm.head
+class LinkedMapIterator:
+    def __init__(self, od: LinkedMap):
+        self.od = od
+        self.current_key = od.head
 
     def __iter__(self):
         return self
@@ -82,6 +69,6 @@ class LinkedMapForFringeIterator:
     def __next__(self):
         if self.current_key is None:
             raise StopIteration
-        prev = self.current_key.value
+        prev = self.current_key
         self.current_key = self.current_key.right
         return prev

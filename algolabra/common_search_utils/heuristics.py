@@ -9,6 +9,7 @@ def old_heuristics(nx:int, ny: int, goalx: int, goaly: int, diff) -> Decimal:
     :param ny: int y of node
     :param goalx: int x of goal
     :param goaly: int y of goal
+    :param other_diff: replacement of sqrt(2) - 1, with the diagonal cost given by service.
 
 
     function heuristic(node) =
@@ -28,6 +29,8 @@ def old_heuristics(nx:int, ny: int, goalx: int, goaly: int, diff) -> Decimal:
 
 def heuristics(nx, ny, gx, gy, other_diff):
     """
+    Gives the octile distance from (nx, ny) to (gx, gy)
+
     function heuristic(node) =
         dx = abs(node.x - goal.x)
         dy = abs(node.y - goal.y)
@@ -40,7 +43,7 @@ def heuristics(nx, ny, gx, gy, other_diff):
     :param ny: node y
     :param gx: goal x
     :param gy: goal y
-    :param other_diff: our replacement of sqrt(2) - 2, with these movement costs
+    :param other_diff: replacement of sqrt(2) - 2, with the diagonal cost given by service.
     :return: very good estimate
     """
     abs_dx = abs(nx - gx)

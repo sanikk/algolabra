@@ -1,71 +1,56 @@
 from decimal import Decimal, getcontext, Rounded, Inexact
 
-# from algolabra.fringe.linked_dict_for_fringe import LinkedDictForFringe, Linknode
-from algolabra.fringe.linked_map import LinkedMapForFringe
-
-from algolabra.common_search_utils.children import children
+from algolabra.fringe.linked_map import LinkedMap, Node
 from algolabra.common_search_utils.heuristics import heuristics
+from algolabra.common_search_utils.children import children as children
 
-# from profilehooks import profile, coverage
 
-# @profile
-# @coverage
 def fringe_search(start: tuple[int, int], goal: tuple[int, int], citymap: list, diag_cost):
-    """
-    Ok this should be it.
-
-    :param start:
-    :param goal:
-    :param citymap:
-    :param diag_cost:
-    :return:
-    """
     map_size = len(citymap)
     diff = diag_cost - Decimal(2)
 
-    ###
-    fringe = LinkedMapForFringe((start))
-    ###
+    start_node = Node(*start, None, None)
+    fringe = LinkedMap(start, start_node)
 
     flimit = heuristics(*start, *goal, diff)
+    cache = {start: (0, None, flimit)}
+
     found = False
     found_cost = 0
-    cache = {start: (None, 0, flimit)}
 
-    while not found:
+    while not found and fringe:
         fmin = float('inf')
-
-        for current in fringe:
-            data = cache[current]
-            if not data[2]:
-                data = (data[0], data[1], data[1] + heuristics(*current, *goal, diff))
-                cache[current] = data
-
-            if data[2] > flimit:
-                fmin = min(data[2], fmin)
+        # node is a node here
+        fringe_iterator = iter(fringe)
+        for node in fringe_iterator:
+            g, parent, f = cache[(node.x, node.y)]
+            if not f:
+                f = g + heuristics(node.x, node.y, *goal, diff)
+                cache[(node.x, node.y)] = (g, parent, f)
+            if f > flimit:
+                fmin = min(f, fmin)
                 continue
-
-            if current == goal:
-                # print(f"found with cost {data[1]}")
+            if node.x == goal[0] and node.y == goal[1]:
                 found = True
-                found_cost = data[1]
+                found_cost = g
+                print(f"found {g}")
                 break
-
-            kids = children(*current, citymap, diag_cost, map_size)
-
-            for kid in kids:
-                gchild = kid[2] + data[1]
-                if kid[:2] not in cache or gchild < cache[kid[:2]][1]:
-                    cache[kid[:2]] = current, gchild, None
-                    # fringe[kid[:2]] = None
-                    fringe.add_tail(kid[:2])
-        if not found:
-            flimit = fmin
-
+            # time this reverse
+            for x, y, cost in reversed(children(node.x, node.y, citymap, diag_cost, map_size)):
+                child = (x, y)
+                g_child = g + cost
+                if child in cache:
+                    if g_child >= cache[child][0]:
+                        continue
+                fringe.add_tail(x,y)
+                cache[child] = g_child, (node.x, node.y), None
+            fringe.remove_by_node(node)
+        flimit = fmin
     if found:
         route = [goal]
         while route[-1] != start:
-            route.append(cache[route[-1]][0])
+            loc = route[-1]
+            route.append(cache[loc][1])
         rounded = getcontext().flags[Rounded]
         inexact = getcontext().flags[Inexact]
         return found_cost, route, rounded, inexact

@@ -9,8 +9,7 @@ from algolabra.astar.astar import astar
 from algolabra.fringe.fringe_thread import FringeThread
 from algolabra.fringe.fringe_with_logging import fringe_search_with_logging
 
-from algolabra.fringe.fringe_with_od import fringe_search as testbed_search
-# from algolabra.fringe.fringe_with_dll import fringe_search as testbed_search
+from algolabra.fringe.fringe_with_linked_map import fringe_search as testbed_search
 from algolabra.fringe.fringe_with_two_deques import fringe_search as basecase_search
 
 class SearchService(QObject):

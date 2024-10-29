@@ -2,17 +2,27 @@ from decimal import Decimal
 
 
 def children(node_x,node_y, citymap, diag_cost, map_size):
+    """
+    Gives children of given (x,y)
+
+
+    :param node_x: some kind of x
+    :param node_y: some kind of y
+    :param citymap: map as a list works
+    :param diag_cost: 1, 1.414, Decimal work here
+    :param map_size: made for square maps so far
+    """
     d1 = Decimal(1)
 
     masks = [
-        ( 0,-1, d1),    # N
-        (-1,-1, diag_cost),    # NW
-        (-1, 0, d1),    # W
-        (-1, 1, diag_cost),    # SW
-        ( 0, 1, d1),    # S
-        ( 1, 1, diag_cost),    # SE
-        ( 1, 0, d1),    # E
-        ( 1,-1, diag_cost)    # NE
+        ( 0,-1, d1),
+        (-1,-1, diag_cost),
+        (-1, 0, d1),
+        (-1, 1, diag_cost),
+        ( 0, 1, d1),
+        ( 1, 1, diag_cost),
+        ( 1, 0, d1),
+        ( 1,-1, diag_cost)
     ]
     returnable = []
     for i, (dx, dy, cost) in enumerate(masks):
