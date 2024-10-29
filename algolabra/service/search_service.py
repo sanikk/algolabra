@@ -1,4 +1,6 @@
 import logging
+from numbers import Number
+
 from PyQt6.QtCore import pyqtSignal, QObject
 
 from algolabra.common_search_utils.result_utils import timered
@@ -52,12 +54,12 @@ class SearchService(QObject):
             print(f"{scenario_id} done.")
         return results
 
-    def start_fringe_thread(self, bucket, index, map_slots, data_slots):
+    def start_fringe_thread(self, bucket, scenario_index, map_slots, data_slots):
         """
         Runs the fringe version made for the Fringe Tab. It just sends default non-blocking signals now
         from another thread. GUI keeps visited/expanded/status counts used in output.
         """
-        start, goal = self.scenario_service.get_scenario_start_and_goal(bucket, index)
+        start, goal = self.scenario_service.get_scenario_start_and_goal(bucket, scenario_index)
         map_data = self.scenario_service.get_map_data()
         diag_cost = self.scenario_service.get_diag_cost()
 
@@ -67,8 +69,17 @@ class SearchService(QObject):
 
     # A*
 
-    def start_astar_thread(self, bucket, index, map_slots, data_slots):
-        start, goal = self.scenario_service.get_scenario_start_and_goal(bucket, index)
+    def start_astar_thread(self, bucket: int, scenario_index: int, map_slots: list, data_slots: list) -> None:
+        """
+        Runs the A* version made for the AstarTab. It just sends default non-blocking signals now
+        from another thread. GUI keeps visited/expanded/status counts used in output.
+
+        :param bucket: index of bucket
+        :param scenario_index: index of scenario in bucket
+        :param map_slots: list of 3 Slots:
+        :param data_slots: list of 3 Slots:
+        """
+        start, goal = self.scenario_service.get_scenario_start_and_goal(bucket, scenario_index)
         map_data = self.scenario_service.get_map_data()
         diag_cost = self.scenario_service.get_diag_cost()
 
@@ -77,7 +88,17 @@ class SearchService(QObject):
         instanced_thread.start()
 
     @timered
-    def run_timed_astar(self, start, goal, citymap, diag_cost):
+    def run_timed_astar(self, start: tuple[Number, Number], goal: tuple[Number, Number], citymap: list, diag_cost: Number) -> tuple:
+        """
+        Small runner function user by run_astar_for_bucket
+
+        @param start: (x, y) of start
+        @param goal: (x,y) of goal
+        @param citymap: map as list, or equivalent
+        @param diag_cost: cost of diagonal movement as int/float/decimal
+
+        @return: tuple ()
+        """
         return astar(start, goal, citymap, diag_cost)
 
     def run_astar_for_bucket(self, bucket: int):
@@ -86,7 +107,6 @@ class SearchService(QObject):
         diag_cost = self.scenario_service.get_diag_cost()
 
         for scenario_id, start, goal in self.scenario_service.get_data_from_bucket(bucket):
-
             results.append(self.run_timed_astar(start, goal, map_data, diag_cost))
             print(f"{scenario_id} done.")
         return results
@@ -94,7 +114,6 @@ class SearchService(QObject):
     # TESTBED
     @timered
     def run_timed_testbed(self, start, goal, citymap, diag_cost):
-        # return testbed_search(start, goal, citymap, diag_cost)
         return testbed_search(*start, *goal, citymap, diag_cost)
 
 

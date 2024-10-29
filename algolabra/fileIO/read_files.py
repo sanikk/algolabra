@@ -18,6 +18,7 @@ def read_scenarios(filename):
         lista = f.read().split("\n")
     lines = [a.split("\t") for a in lista[1:] if a]
     map_title = lines[0][1]
+
     # bucket, map, (start), (goal), ideal_solution
     converted = [[int(a[0]), (int(a[4]), int(a[5])), (int(a[6]), int(a[7])),
                   Decimal(a[8])] for a in lines]
@@ -29,12 +30,3 @@ def read_scenarios(filename):
             product[scenario[0]] = [new_item]
 
     return map_title, product
-
-
-if __name__=='__main__':
-    pass
-    # height, width, lista = read_map("Boston_0_512.map")
-    # scenarios = read_scenarios("Boston_0_512.map.scen")
-
-
-

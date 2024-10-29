@@ -2,7 +2,10 @@ import time
 
 
 def get_timers():
-    return [time.perf_counter(), time.process_time(), time.thread_time()]
+    """
+    getter for perf_time, process_time, thread_time
+    """
+    return time.perf_counter(), time.process_time(), time.thread_time()
 
 def handle_return_values(ret, timers):
     if len(ret) == 6:
