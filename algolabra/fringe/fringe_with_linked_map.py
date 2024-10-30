@@ -1,6 +1,6 @@
 from decimal import Decimal, getcontext, Rounded, Inexact
 
-from algolabra.fringe.linked_map_with_values import LinkedMap, Node
+from algolabra.fringe.linked_map import LinkedMap, Node
 from algolabra.common_search_utils.heuristics import heuristics
 from algolabra.common_search_utils.children import children
 
