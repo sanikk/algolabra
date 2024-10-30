@@ -10,11 +10,27 @@ from algolabra.astar.astar import astar
 from algolabra.fringe.fringe_thread import FringeThread
 from algolabra.fringe.fringe_with_logging import fringe_search_with_logging
 
-from algolabra.fringe.fringe_with_linked_dict import fringe_search as testbed_search
+# I import different versions here.
 from algolabra.fringe.fringe_with_linked_map import fringe_search as basecase_search
-# from algolabra.fringe.fringe_with_two_deques import fringe_search as testbed_search
+from algolabra.fringe.fringe_with_two_deques import fringe_search as testbed_search
 
 class SearchService(QObject):
+    """
+    Service class that runs the searches and passes the results along.
+    Formatting etc should happen here but i wanted to keep this lightweight,
+    so it's easy to test many different kinds of internal setups. So put something at
+    end of search to output nicely.
+
+    in:
+    start, goal, citymap, diag_cost
+
+    out:
+    cost, route[, visited, expanded], Inexact, Rounded.
+
+    The handle_results function should be able to handle 4 or 6 fields.
+    Gui might interpret 0 visitors, 0 expanded as Inexact=False, Rounded=False.
+
+    """
 
     operate = pyqtSignal()
 
@@ -27,9 +43,24 @@ class SearchService(QObject):
     # FRINGE
     @timered
     def run_timed_fringe(self, start, goal, citymap, diag_cost):
+        """
+        Small runner for basecase fringe search.
+        The decorator should handle timing.
+
+        :param start: start in a valid format. If it works it works.
+        :param goal: goal. see above.
+        :param citymap: map to use.
+        :param diag_cost: cost of diagonal movement. int|Decimal|float have been tested to work. float causes some
+                        slowdowns with the heuristics function.
+        """
         return basecase_search(start, goal, citymap, diag_cost)
 
     def run_fringe_for_bucket(self, bucket: int):
+        """
+        Runs the scenarios in the chosen bucket.
+
+        Just passes the results through.
+        """
         results = []
         map_data = self.scenario_service.get_map_data()
         diag_cost = self.scenario_service.get_diag_cost()
@@ -42,10 +73,25 @@ class SearchService(QObject):
     # TESTBED
     @timered
     def run_timed_testbed(self, start, goal, citymap, diag_cost):
+        """
+        Small runner for testcase search.
+        The decorator should handle timing.
+
+        :param start: start in a valid format. If it works it works.
+        :param goal: goal. see above.
+        :param citymap: map to use.
+        :param diag_cost: cost of diagonal movement. int|Decimal|float have been tested to work. float causes some
+                slowdowns with the heuristics function.
+        """
         return testbed_search(start, goal, citymap, diag_cost)
 
 
     def run_testbed_for_bucket(self, bucket: int):
+        """
+        Runs the scenarios in the chosen bucket.
+
+        Just passes the results through.
+        """
         results = []
         map_data = self.scenario_service.get_map_data()
         diag_cost = self.scenario_service.get_diag_cost()
@@ -93,7 +139,8 @@ class SearchService(QObject):
     @timered
     def run_timed_astar(self, start: tuple[int, int], goal: tuple[int, int], citymap: list, diag_cost: int|float|Decimal) -> tuple:
         """
-        Small runner function user by run_astar_for_bucket
+        Small runner for A* search.
+        The decorator should handle timing.
 
         @param start: (x, y) of start
         @param goal: (x,y) of goal
@@ -105,6 +152,11 @@ class SearchService(QObject):
         return astar(start, goal, citymap, diag_cost)
 
     def run_astar_for_bucket(self, bucket: int):
+        """
+        Runs the scenarios in the chosen bucket.
+
+        Just passes the results through.
+        """
         results = []
         map_data = self.scenario_service.get_map_data()
         diag_cost = self.scenario_service.get_diag_cost()
@@ -117,7 +169,13 @@ class SearchService(QObject):
 
     # LOGGING
 
-    def run_fringe_with_logging(self, bucket, scenario, filename=None):
-        fringe_search_with_logging(*self.scenario_service.get_scenario_start_and_goal(bucket, scenario), self.scenario_service.get_map_data(), self.scenario_service.get_diag_cost(), bucket, scenario, filename)
+    def run_fringe_with_logging(self, bucket, scenario, logger=None):
+        """
+        runs fringe with logging enabled.
+
+        There will be messages for visited, expanded, over flimit, found, etc.
+
+        """
+        fringe_search_with_logging(*self.scenario_service.get_scenario_start_and_goal(bucket, scenario), self.scenario_service.get_map_data(), self.scenario_service.get_diag_cost(), bucket, scenario, logger)
 
 

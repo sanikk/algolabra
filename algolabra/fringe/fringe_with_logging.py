@@ -8,7 +8,7 @@ from algolabra.common_search_utils.heuristics import heuristics
 
 def fringe_search_with_logging(start: tuple[int, int], goal: tuple[int, int], citymap: list, diag_cost, bucket, scenario, logger=None):
     """
-    The deque version with logging.
+    The double deque version with logging.
 
     :param start:
     :param goal:

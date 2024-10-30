@@ -1,9 +1,9 @@
 import unittest
-from algolabra.fringe.linked_dict import LinkedDict
+from algolabra.fringe.linked_map import LinkedMap
 
-class TestBasicFunctionality(unittest.TestCase):
+class TestLinkedMap(unittest.TestCase):
     def setUp(self):
-        self.d = LinkedDict((5,5))
+        self.d = LinkedMap((5,5))
 
     def test_constructor_worked(self):
         self.assertIsNotNone(self.d)
@@ -91,10 +91,6 @@ class TestBasicFunctionality(unittest.TestCase):
 
         self.assertEqual(list(iter(self.d)), [(5, 5), (1, 1), (2, 2)])
         self.assertEqual(self.d.tail.value, (2, 2))
-
-
-    # iterate
-
 
     # exceptions
     def test_empty_raises_stop_iteration(self):
