@@ -1,16 +1,15 @@
 from decimal import Decimal, getcontext, Rounded, Inexact
 
-from algolabra.fringe.linked_map import LinkedMap, Node
+from algolabra.fringe.linked_map_with_values import LinkedMap, Node
 from algolabra.common_search_utils.heuristics import heuristics
-from algolabra.common_search_utils.children import children as children
-
+from algolabra.common_search_utils.children import children
 
 def fringe_search(start: tuple[int, int], goal: tuple[int, int], citymap: list, diag_cost):
     map_size = len(citymap)
-    diff = diag_cost - Decimal(2)
+    diff = diag_cost - Decimal('2')
 
-    start_node = Node(*start, None, None)
-    fringe = LinkedMap(start, start_node)
+
+    fringe = LinkedMap(start)
 
     flimit = heuristics(*start, *goal, diff)
     cache = {start: (0, None, flimit)}
@@ -20,31 +19,27 @@ def fringe_search(start: tuple[int, int], goal: tuple[int, int], citymap: list, 
 
     while not found and fringe:
         fmin = float('inf')
-        # node is a node here
-        fringe_iterator = iter(fringe)
-        for node in fringe_iterator:
-            g, parent, f = cache[(node.x, node.y)]
+
+        for node in fringe:
+            g, parent, f = cache[node]
             if not f:
-                f = g + heuristics(node.x, node.y, *goal, diff)
-                cache[(node.x, node.y)] = (g, parent, f)
+                f = g + heuristics(*node, *goal, diff)
+                cache[node] = (g, parent, f)
             if f > flimit:
                 fmin = min(f, fmin)
                 continue
-            if node.x == goal[0] and node.y == goal[1]:
+            if node == goal:
                 found = True
                 found_cost = g
-                print(f"found {g}")
                 break
-            # time this reverse
-            for x, y, cost in reversed(children(node.x, node.y, citymap, diag_cost, map_size)):
-                child = (x, y)
+            for x,y, cost in children(*node, citymap, diag_cost, map_size):
                 g_child = g + cost
-                if child in cache:
-                    if g_child >= cache[child][0]:
+                if (x,y) in cache:
+                    if g_child >= cache[(x,y)][0]:
                         continue
-                fringe.add_tail(x,y)
-                cache[child] = g_child, (node.x, node.y), None
-            fringe.remove_by_node(node)
+                fringe.add_tail((x,y))
+                cache[x,y] = g_child, node, None
+            fringe.remove(node)
         flimit = fmin
     if found:
         route = [goal]

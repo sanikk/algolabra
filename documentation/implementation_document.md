@@ -10,14 +10,16 @@ seems to be nothing in the standard modules that would be better, right now. Let
 to play with.
 - heuristics function for grid, should be usable in both
 - went with qt6 front, since it looks neat
+- the ordered dict version can match A* on larger maps.
 
 There are basic tools for wiring up a search funtion with logging, visuals, timings.
 View is tabbed and new tabs are easy to add.
 
 ## Achieved space and time complexities
 
-With non-consistent heuristics some nodes will be expanded multiple times. Octile distance is
-used as heuristic.
+Octile distance is used as heuristic.
+
+There are no huge inefficiencies in either. So we are down 
 
 ## Performance and O-analysis comparisons
 
