@@ -19,7 +19,7 @@ View is tabbed and new tabs are easy to add.
 
 Octile distance is used as heuristic.
 
-There are no huge inefficiencies in either. So we are down 
+There are no huge inefficiencies in either.
 
 ## Performance and O-analysis comparisons
 
@@ -29,35 +29,49 @@ be slight deviations from the ideal solutions of [movingai](https://www.movingai
 
 ---
 
-Implementation with python standard modules proved somewhat problematic. As the map
-and paths grow the fringe grows as well. The solutions to this are usually multiple lists, especially on larger maps.
+Implementation with python standard modules proved somewhat problematic. 
 
 There are fast solutions using deques, but as the map, path length and fringe size grow
-these require more and more upkeep and bucket list managing. The deque in python is implemented
-as a doublelinked list of lists [(source)](https://github.com/python/cpython/blob/main/Modules/_collectionsmodule.c#L81-L94).
-Replicating the speed of this structure within python is currently impossible.
+these require more and more upkeep.
 
 OrderedDict would have hashes, movetoend, and it's also a doublelinked list underneath. Currently there
-is no easy way to access the links.
----
+is no easy way to access the links[(source)](https://github.com/python/cpython/blob/main/Modules/_collectionsmodule.c#L81-L94).
+Replicating the speed of this structure within python is currently impossible. OrderedDict would need a different
+iterator, one that resolves current.next on \_\_next\_\_, not before, to maintain correct order.
 
-Update: Ok I think I got it now. I try this out.
+Current best effort, LinkedMap, is built on a dict, not OrderedDict, since maintaining
+two linkedlists where the other is not used for anything meaningful is just wasteful. 
 
 ---
 
 Initially there were some "drifts", flimits kept being spread out with 0.0000000000001 differences, which
 required either passing through the fringe multiple times, or doing a good enough approximation with the limit. 
 
-There are no practical reasons for the kind of precision used here that I can think of, but just in case we
-our future nano-scale robot overlords build even smaller overlords, this might help them navigate.
+There are no practical reasons for the kind of precision used here that I can think of, but just in case our 
+future nano-scale robot overlords build even smaller over-overlords, this might help them navigate.
 Also the drift seems to be eliminatable at almost any scale.
 
 ## Possible shortcomings and suggestions for improvement
 
-~~Heuristics seem awful at the moment, I need to look into this.~~
-
 Octile distance should give the distance between two points on a grid if there are no obstructions. 
 Seems to work so far.
+
+Fringe suffers from bad ordering of children nodes due to the order of the masks. It seems there are computationally 
+trivial solutions for this.
+If the children function works, and the rest of the algorithms work, there seems to
+be no real difference in the amount of calls to children between fringe and A*, only a few percent difference there.
+If the children function returns wrong nodes fringe will suffer
+more from this since there is no reordering of nodes. In A* the reordering from priority queue can 
+correct small mistakes. This is an area of this project where it needs improvement.
+
+Fringe seems to call heuristics (or cache if f is there) often 5+ times more than
+A*. This causes considerable differences in the load, and requires some care in the
+implementation of the heuristics function. I think this version was the best of the 3
+to account for the wild variation in the number of calls to heuristics between the
+searches. Also caching heuristics results for fringe is a huge speed boost as nodes
+start to get revisited.
+
+
 
 ## Usage of LLMs
 
