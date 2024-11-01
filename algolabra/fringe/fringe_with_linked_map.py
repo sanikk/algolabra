@@ -2,7 +2,7 @@ from decimal import Decimal, getcontext, Rounded, Inexact
 
 from algolabra.fringe.linked_map import LinkedMap
 from algolabra.common_search_utils.heuristics import heuristics
-from algolabra.common_search_utils.children import children
+from algolabra.common_search_utils.children import children, children_reordered
 
 def fringe_search(start: tuple[int, int], goal: tuple[int, int], citymap: list, diag_cost):
     map_size = len(citymap)
@@ -32,6 +32,9 @@ def fringe_search(start: tuple[int, int], goal: tuple[int, int], citymap: list, 
                 found = True
                 found_cost = g
                 break
+            kids = children(*node, citymap, diag_cost, map_size)
+            if node[0] < goal[0]:
+                kids = reversed(kids)
             for x,y, cost in children(*node, citymap, diag_cost, map_size):
                 g_child = g + cost
                 if (x,y) in cache:
