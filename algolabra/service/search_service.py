@@ -14,6 +14,7 @@ from algolabra.fringe.fringe_with_logging import fringe_search_with_logging
 from algolabra.fringe.fringe_with_linked_map import fringe_search as basecase_search
 from algolabra.fringe.fringe_with_two_deques import fringe_search as testbed_search
 
+
 class SearchService(QObject):
     """
     Service class that runs the searches and passes the results along.

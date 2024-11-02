@@ -39,6 +39,8 @@ def heuristics(nx, ny, gx, gy, other_diff):
     where D = 1, D2 = sqrt(2) => diff = diag_cost - 2
     from http://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html#diagonal-distance
 
+    min proved pretty costly compared to if comparison & else.
+
     :param nx: node x
     :param ny: node y
     :param gx: goal x
@@ -48,4 +50,6 @@ def heuristics(nx, ny, gx, gy, other_diff):
     """
     abs_dx = abs(nx - gx)
     abs_dy = abs(ny - gy)
-    return abs_dx + abs_dy + other_diff * min(abs_dx, abs_dy)
+    if abs_dx < abs_dy:
+        return abs_dx + abs_dy + other_diff * abs_dx
+    return abs_dx + abs_dy + other_diff * abs_dy
