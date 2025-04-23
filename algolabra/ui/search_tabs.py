@@ -1,4 +1,5 @@
-from PyQt6.QtWidgets import QWidget, QGroupBox, QHBoxLayout, QPushButton, QVBoxLayout, QGraphicsView, QComboBox, QLabel
+from PyQt6.QtWidgets import (QWidget, QGroupBox, QHBoxLayout, QPushButton,
+                             QGraphicsView, QLabel, QVBoxLayout)
 from PyQt6.QtCore import pyqtSlot, QRectF
 
 from algolabra.ui.map_scene import MapScene
@@ -6,7 +7,8 @@ from algolabra.ui.bucket_box import get_common, connect_scenario_change
 
 
 class SearchTab(QWidget):
-    def __init__(self, parent=None, scenario_service=None, search_service=None):
+    def __init__(self, parent=None, scenario_service=None,
+                 search_service=None):
         super().__init__(parent=parent)
         self.scenario_service = scenario_service
         self.search_service = search_service
@@ -19,7 +21,8 @@ class SearchTab(QWidget):
         self.expanded_value_label = None
         self.flimit_value_label = None
 
-        self.scene = MapScene(scenario_service=scenario_service, search_service=search_service)
+        self.scene = MapScene(scenario_service=scenario_service,
+                              search_service=search_service)
         self.view = QGraphicsView(self.scene)
         self.view.scale(10, 10)
 
@@ -30,17 +33,18 @@ class SearchTab(QWidget):
         layout.addWidget(get_common(self))
         connect_scenario_change(self)
 
-
     def set_view(self, bucket, index, extra_view=20):
         """
         Sets the area of the MapScene that is scrollable in this view.
         Uses the start and goal of scenario. Get scenario with (bucket, index).
         Leaves extra_view extra tiles in view in every direction.
         """
-        start, goal = self.scenario_service.get_scenario_start_and_goal(bucket, index)
+        start, goal = self.scenario_service.get_scenario_start_and_goal(bucket,
+                                                                        index)
         delta_x = max(start[0], goal[0]) - min(start[0], goal[0])
         delta_y = max(start[1], goal[1]) - min(start[1], goal[1])
-        viewsize = min(self.scenario_service.get_map_size() - 1, max(delta_x, delta_y) + 2 * extra_view)
+        viewsize = min(self.scenario_service.get_map_size() - 1,
+                       max(delta_x, delta_y) + 2 * extra_view)
         qr = QRectF(
             max(min(start[0], goal[0]) - extra_view, 0),
             max(min(start[1], goal[1]) - extra_view, 0),
@@ -51,16 +55,25 @@ class SearchTab(QWidget):
 
     @pyqtSlot(int, int)
     def visit(self):
+        """
+        Counter slot for visited nodes
+        """
         self.visited += 1
         self.visited_value_label.setText(str(self.visited))
 
     @pyqtSlot(int, int)
     def expand(self):
+        """
+        Counter slot for expanded nodes
+        """
         self.expanded += 1
         self.expanded_value_label.setText(str(self.expanded))
 
     @pyqtSlot(str)
     def flimit_changed(self, new_flimit: str):
+        """
+        Slot for flimit changes.
+        """
         self.flimit = new_flimit
         self.flimit_value_label.setText(new_flimit)
 
@@ -76,8 +89,15 @@ class SearchTab(QWidget):
 
 
 class AstarTab(SearchTab):
-    def __init__(self, parent=None, scenario_service=None, search_service=None):
-        super().__init__(parent=parent, scenario_service=scenario_service, search_service=search_service)
+    """
+    Tab for running A*.
+    There's a control box with run button,
+    """
+
+    def __init__(self, parent=None, scenario_service=None,
+                 search_service=None):
+        super().__init__(parent=parent, scenario_service=scenario_service,
+                         search_service=search_service)
 
         run_button, control_area = self.get_control_area("A*")
         self.layout.addWidget(control_area)
@@ -89,8 +109,10 @@ class AstarTab(SearchTab):
         self.setLayout(self.layout)
 
     def run_astar(self):
-        self.search_service.start_astar_thread(self.bucket_box.currentIndex(), self.scenario_box.currentIndex(),
-                self.scene.get_slots(), (self.visit, self.expand, self.flimit_changed))
+        self.search_service.start_astar_thread(
+            self.bucket_box.currentIndex(), self.scenario_box.currentIndex(),
+            self.scene.get_slots(),
+            (self.visit, self.expand, self.flimit_changed))
 
     def get_astar_info_box(self):
         container = QWidget()

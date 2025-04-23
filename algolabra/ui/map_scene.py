@@ -14,9 +14,11 @@ class MapScene(QGraphicsScene):
         scenario_service.map_changed.connect(self.map_changed)
 
     def get_image_from_map(self, map_data: list):
-        image = QImage(len(map_data[0]), len(map_data), QImage.Format.Format_RGB32)
+        image = QImage(len(map_data[0]), len(map_data),
+                       QImage.Format.Format_RGB32)
         image.fill(QColor(0, 0, 0))
-        [[image.setPixelColor(x, y, QColor(255, 255, 255)) for x, cell in enumerate(row) if cell=="."] for y, row in enumerate(map_data)]
+        [[image.setPixelColor(x, y, QColor(255, 255, 255)) for x, cell in
+            enumerate(row) if cell == "."] for y, row in enumerate(map_data)]
         return image
 
     @pyqtSlot()
@@ -35,12 +37,15 @@ class MapScene(QGraphicsScene):
             self.addPixmap(self.pixmap)
         if bucket is None or index is None or index == -1:
             return
-        start, goal = self.scenario_service.get_scenario_start_and_goal(bucket, index)
-        self.paintable_layer = PaintableLayer(size=self.pixmap.width(), start=start, goal=goal)
+        start, goal = self.scenario_service.get_scenario_start_and_goal(
+            bucket, index)
+        self.paintable_layer = PaintableLayer(size=self.pixmap.width(),
+                                              start=start, goal=goal)
         self.addItem(self.paintable_layer)
 
     def paint_tile_color(self, x, y, red, blue, green):
-        self.addRect(x, y, 1, 1, pen=QPen(Qt.PenStyle.NoPen), brush=QBrush(QColor(red, blue, green)))
+        self.addRect(x, y, 1, 1, pen=QPen(Qt.PenStyle.NoPen),
+                     brush=QBrush(QColor(red, blue, green)))
 
     @pyqtSlot(int, int)
     def node_visit(self, x, y):
@@ -64,7 +69,8 @@ class MapScene(QGraphicsScene):
 
 
 class PaintableLayer(QGraphicsItem):
-    def __init__(self, parent=None, size=0, visited=None, expanded=None, start=None, goal=None):
+    def __init__(self, parent=None, size=0, visited=None, expanded=None,
+                 start=None, goal=None):
         super().__init__(parent=parent)
         self.visited = visited or []
         self.expanded = expanded or []
@@ -74,9 +80,9 @@ class PaintableLayer(QGraphicsItem):
         # self.setAcceptHoverEvents(True)
 
     def boundingRect(self):
-        return QRectF(0,0,self.size, self.size)
+        return QRectF(0, 0, self.size, self.size)
 
-    def paint(self, painter, option, widget = None):
+    def paint(self, painter, option, widget=None):
         """
         When update() is called this method handles the actual painting.
         I try to paint visited first and expanded on top of that.
@@ -107,7 +113,7 @@ class PaintableLayer(QGraphicsItem):
 
     def node_expand(self, x, y):
         self.expanded.append((x, y))
-        self.update(x,y,1,1)
+        self.update(x, y, 1, 1)
 
     def fill_start_goal(self, start, goal):
         # these are stylized so they can still be seen later
@@ -119,11 +125,3 @@ class PaintableLayer(QGraphicsItem):
         self.visited = []
         self.expanded = []
         self.update()
-
-    # def hoverMoveEvent(self, event):
-    #     QToolTip.showText(event.screenPos(), f"({int(event.pos().x())}, {int(event.pos().y())})", None)
-    #     super().hoverMoveEvent(event)
-
-
-if __name__=='__main__':
-    pass

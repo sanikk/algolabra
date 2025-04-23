@@ -1,9 +1,12 @@
 from PyQt6.QtWidgets import QWidget, QHBoxLayout, QLabel
 from algolabra.ui.search_tabs import SearchTab
 
+
 class FringeTab(SearchTab):
-    def __init__(self, parent=None, scenario_service=None, search_service=None):
-        super().__init__(parent=parent, scenario_service=scenario_service, search_service=search_service)
+    def __init__(self, parent=None, scenario_service=None,
+                 search_service=None):
+        super().__init__(parent=parent, scenario_service=scenario_service,
+                         search_service=search_service)
 
         run_button, control_area = self.get_control_area("Fringe Live")
         self.layout.addWidget(control_area)
@@ -15,9 +18,11 @@ class FringeTab(SearchTab):
         self.setLayout(self.layout)
 
     def run_fringe(self):
-        self.search_service.start_fringe_thread(self.bucket_box.currentIndex(), self.scenario_box.currentIndex(),
-                                                self.scene.get_slots(), (self.visit, self.expand, self.flimit_changed))
-
+        self.search_service.start_fringe_thread(
+            self.bucket_box.currentIndex(),
+            self.scenario_box.currentIndex(),
+            self.scene.get_slots(),
+            (self.visit, self.expand, self.flimit_changed))
 
     def get_fringe_info_box(self):
         container = QWidget()
@@ -40,3 +45,4 @@ class FringeTab(SearchTab):
 
         container.setLayout(layout)
         return container
+

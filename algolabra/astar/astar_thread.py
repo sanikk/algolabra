@@ -10,7 +10,10 @@ class AstarThread(SearchThread):
     """
     A QThread using implementation of A* with QtSignals.
     """
-    def __init__(self, parent, start, goal, citymap, scene_slots, data_slots, diag_cost):
+
+    def __init__(self, parent, start: tuple[int, int], goal: tuple[int, int],
+                 citymap: list, scene_slots: tuple, data_slots: tuple,
+                 diag_cost):
         """
 
         :param parent:
@@ -29,9 +32,11 @@ class AstarThread(SearchThread):
 
         :return: None
         """
-        cost, route, rounded, inexact = astar(self.start_node, self.goal_node, self.citymap, self.diag_cost,  self.signals)
+        cost, route, rounded, inexact = astar(
+            self.start_node, self.goal_node, self.citymap, self.diag_cost,  self.signals)
         print(f"{cost=}, {route=}, {rounded=}, {inexact=}")
         self.finished.emit()
+
 
 def reconstruct_path(start, goal, came_from):
     """
@@ -68,7 +73,7 @@ def astar(start: tuple[int, int], goal: tuple[int, int], citymap: list, diag_cos
         signals.flimit_set.emit(str(heap[0]))
     #
     came_from = {start: 0}
-    g_scores = {start:0}
+    g_scores = {start: 0}
 
     while heap:
         estimate, current = heappop(heap)

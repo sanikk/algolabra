@@ -4,6 +4,7 @@ from decimal import Decimal
 from algolabra.astar.astar import astar
 from algolabra.fileIO.read_files import read_map
 
+
 class TestChildren(unittest.TestCase):
     def setUp(self):
         self.city_map = read_map("algolabra/bostonmaps/Boston_0_512.map")
@@ -19,8 +20,8 @@ class TestChildren(unittest.TestCase):
 
     def test_alley_minimap(self):
         m = [[".", ".", "."], [".", "#", "."], [".", "#", "."]]
-        start = 0,2
-        goal = 2,2
+        start = 0, 2
+        goal = 2, 2
         ret = astar(start, goal, m, self.diag_cost)
         self.assertEqual(len(ret), 4)
         self.assertEqual(ret[0], Decimal(6))
@@ -46,8 +47,9 @@ class TestChildren(unittest.TestCase):
         self.assertEqual(ret[3], False)
 
     def test_no_path(self):
-        start = 0,0
-        goal = 2,2
+        start = 0, 0
+        goal = 2, 2
         m = [[".", "#", "."], [".", "#", "."], [".", "#", "."]]
         ret = astar(start, goal, m, self.diag_cost)
         self.assertIsNone(ret)
+

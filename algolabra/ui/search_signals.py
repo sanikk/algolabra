@@ -1,5 +1,6 @@
 from PyQt6.QtCore import QObject, pyqtSignal
 
+
 class SearchSignals(QObject):
     """
     flimit_set(str)

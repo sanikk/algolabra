@@ -1,0 +1,320 @@
+1880 done.
+1881 done.
+1882 done.
+1883 done.
+1884 done.
+1885 done.
+1886 done.
+1887 done.
+1888 done.
+1889 done.
+
+*** PROFILER RESULTS ***
+fringe_search (/home/karpo/kurssit/algolabra/algolabra/fringe/fringe_with_linked_map.py:10)
+function called 10 times
+
+         81 385 230 function calls in 61.271 seconds
+
+   Ordered by: cumulative time, internal time, call count
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+       10   29.708    2.971   61.270    6.127 fringe_with_linked_map.py:10(fringe_search)
+ 34641403   12.733    0.000   12.733    0.000 {built-in method builtins.min}
+   648582    6.104    0.000    7.277    0.000 children.py:4(children)
+ 34432033    6.976    0.000    6.990    0.000 linked_map.py:73(__iter__)
+   918457    1.302    0.000    1.910    0.000 heuristics.py:30(heuristics)
+   950815    1.510    0.000    1.809    0.000 linked_map.py:35(add_tail)
+  4999900    1.174    0.000    1.174    0.000 {method 'append' of 'list' objects}
+   648582    0.563    0.000    1.174    0.000 linked_map.py:51(remove)
+   936823    0.529    0.000    0.529    0.000 linked_map.py:58(_cut_links)
+  1836914    0.277    0.000    0.277    0.000 {built-in method builtins.abs}
+   648582    0.248    0.000    0.248    0.000 {method 'pop' of 'dict' objects}
+   723079    0.147    0.000    0.147    0.000 linked_map.py:2(__init__)
+       10    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
+       10    0.000    0.000    0.000    0.000 linked_map.py:26(__init__)
+       20    0.000    0.000    0.000    0.000 {built-in method decimal.getcontext}
+       10    0.000    0.000    0.000    0.000 {built-in method builtins.len}
+        0    0.000             0.000          profile:0(profiler)
+
+
+1880 done.
+1881 done.
+1882 done.
+1883 done.
+1884 done.
+1885 done.
+1886 done.
+1887 done.
+1888 done.
+1889 done.
+
+*** PROFILER RESULTS ***
+fringe_search (/home/karpo/kurssit/algolabra/algolabra/fringe/fringe_with_linked_map.py:10)
+function called 10 times
+
+         47662284 function calls in 40.993 seconds
+
+   Ordered by: cumulative time, internal time, call count
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+       10   22.780    2.278   40.992    4.099 fringe_with_linked_map.py:10(fringe_search)
+   648582    5.989    0.000    7.136    0.000 children.py:4(children)
+ 34432033    6.238    0.000    6.251    0.000 linked_map.py:73(__iter__)
+   918457    1.291    0.000    1.911    0.000 heuristics.py:30(heuristics)
+   950815    1.475    0.000    1.767    0.000 linked_map.py:35(add_tail)
+  4999900    1.148    0.000    1.148    0.000 {method 'append' of 'list' objects}
+   648582    0.548    0.000    1.146    0.000 linked_map.py:51(remove)
+   936823    0.516    0.000    0.516    0.000 linked_map.py:58(_cut_links)
+   918457    0.349    0.000    0.349    0.000 {built-in method builtins.min}
+  1836914    0.272    0.000    0.272    0.000 {built-in method builtins.abs}
+   648582    0.245    0.000    0.245    0.000 {method 'pop' of 'dict' objects}
+   723079    0.142    0.000    0.142    0.000 linked_map.py:2(__init__)
+       10    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
+       10    0.000    0.000    0.000    0.000 linked_map.py:26(__init__)
+       20    0.000    0.000    0.000    0.000 {built-in method decimal.getcontext}
+       10    0.000    0.000    0.000    0.000 {built-in method builtins.len}
+        0    0.000             0.000          profile:0(profiler)
+
+
+1880 done.
+1881 done.
+1882 done.
+1883 done.
+1884 done.
+1885 done.
+1886 done.
+1887 done.
+1888 done.
+1889 done.
+
+*** PROFILER RESULTS ***
+fringe_search (/home/karpo/kurssit/algolabra/algolabra/fringe/fringe_with_linked_map.py:10)
+function called 10 times
+
+         47662284 function calls in 43.473 seconds
+
+   Ordered by: cumulative time, internal time, call count
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+       10   23.589    2.359   43.473    4.347 fringe_with_linked_map.py:10(fringe_search)
+   648582    6.615    0.000    7.887    0.000 children.py:47(children_version)
+ 34432033    6.719    0.000    6.732    0.000 linked_map.py:73(__iter__)
+   918457    1.448    0.000    2.128    0.000 heuristics.py:30(heuristics)
+   950815    1.601    0.000    1.918    0.000 linked_map.py:35(add_tail)
+  4999900    1.273    0.000    1.273    0.000 {method 'append' of 'list' objects}
+   648582    0.578    0.000    1.218    0.000 linked_map.py:51(remove)
+   936823    0.555    0.000    0.555    0.000 linked_map.py:58(_cut_links)
+   918457    0.374    0.000    0.374    0.000 {built-in method builtins.min}
+  1836914    0.306    0.000    0.306    0.000 {built-in method builtins.abs}
+   648582    0.260    0.000    0.260    0.000 {method 'pop' of 'dict' objects}
+   723079    0.156    0.000    0.156    0.000 linked_map.py:2(__init__)
+       10    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
+       10    0.000    0.000    0.000    0.000 linked_map.py:26(__init__)
+       20    0.000    0.000    0.000    0.000 {built-in method decimal.getcontext}
+       10    0.000    0.000    0.000    0.000 {built-in method builtins.len}
+        0    0.000             0.000          profile:0(profiler)
+
+
+1880 done.
+1881 done.
+1882 done.
+1883 done.
+1884 done.
+1885 done.
+1886 done.
+1887 done.
+1888 done.
+1889 done.
+
+*** PROFILER RESULTS ***
+fringe_search (/home/karpo/kurssit/algolabra/algolabra/fringe/fringe_with_linked_map.py:10)
+function called 10 times
+
+         47662284 function calls in 41.040 seconds
+
+   Ordered by: cumulative time, internal time, call count
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+       10   22.430    2.243   41.040    4.104 fringe_with_linked_map.py:10(fringe_search)
+   648582    6.060    0.000    7.262    0.000 children.py:47(children_version)
+ 34432033    6.400    0.000    6.414    0.000 linked_map.py:73(__iter__)
+   918457    1.374    0.000    1.996    0.000 heuristics.py:30(heuristics)
+   950815    1.482    0.000    1.780    0.000 linked_map.py:35(add_tail)
+  4999900    1.203    0.000    1.203    0.000 {method 'append' of 'list' objects}
+   648582    0.555    0.000    1.157    0.000 linked_map.py:51(remove)
+   936823    0.524    0.000    0.524    0.000 linked_map.py:58(_cut_links)
+   918457    0.348    0.000    0.348    0.000 {built-in method builtins.min}
+  1836914    0.274    0.000    0.274    0.000 {built-in method builtins.abs}
+   648582    0.242    0.000    0.242    0.000 {method 'pop' of 'dict' objects}
+   723079    0.146    0.000    0.146    0.000 linked_map.py:2(__init__)
+       10    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
+       10    0.000    0.000    0.000    0.000 linked_map.py:26(__init__)
+       20    0.000    0.000    0.000    0.000 {built-in method decimal.getcontext}
+       10    0.000    0.000    0.000    0.000 {built-in method builtins.len}
+        0    0.000             0.000          profile:0(profiler)
+
+
+1880 done.
+1881 done.
+1882 done.
+1883 done.
+1884 done.
+1885 done.
+1886 done.
+1887 done.
+1888 done.
+1889 done.
+
+*** PROFILER RESULTS ***
+fringe_search (/home/karpo/kurssit/algolabra/algolabra/fringe/fringe_with_linked_map.py:10)
+function called 10 times
+
+         47662284 function calls in 39.024 seconds
+
+   Ordered by: cumulative time, internal time, call count
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+       10   20.960    2.096   39.024    3.902 fringe_with_linked_map.py:10(fringe_search)
+   648582    5.969    0.000    7.151    0.000 children.py:47(children_version)
+ 34432033    6.097    0.000    6.110    0.000 linked_map.py:73(__iter__)
+   918457    1.267    0.000    1.870    0.000 heuristics.py:30(heuristics)
+   950815    1.482    0.000    1.780    0.000 linked_map.py:35(add_tail)
+  4999900    1.183    0.000    1.183    0.000 {method 'append' of 'list' objects}
+   648582    0.545    0.000    1.151    0.000 linked_map.py:51(remove)
+   936823    0.530    0.000    0.530    0.000 linked_map.py:58(_cut_links)
+   918457    0.340    0.000    0.340    0.000 {built-in method builtins.min}
+  1836914    0.264    0.000    0.264    0.000 {built-in method builtins.abs}
+   648582    0.244    0.000    0.244    0.000 {method 'pop' of 'dict' objects}
+   723079    0.144    0.000    0.144    0.000 linked_map.py:2(__init__)
+       10    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
+       10    0.000    0.000    0.000    0.000 linked_map.py:26(__init__)
+       20    0.000    0.000    0.000    0.000 {built-in method decimal.getcontext}
+       10    0.000    0.000    0.000    0.000 {built-in method builtins.len}
+        0    0.000             0.000          profile:0(profiler)
+
+
+1880 done.
+1881 done.
+1882 done.
+1883 done.
+1884 done.
+1885 done.
+1886 done.
+1887 done.
+1888 done.
+1889 done.
+
+*** PROFILER RESULTS ***
+fringe_search (/home/karpo/kurssit/algolabra/algolabra/fringe/fringe_with_linked_map.py:10)
+function called 10 times
+
+         47662284 function calls in 39.385 seconds
+
+   Ordered by: cumulative time, internal time, call count
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+       10   21.248    2.125   39.385    3.938 fringe_with_linked_map.py:10(fringe_search)
+   648582    5.946    0.000    7.124    0.000 children.py:4(children)
+ 34432033    6.260    0.000    6.273    0.000 linked_map.py:73(__iter__)
+   918457    1.254    0.000    1.863    0.000 heuristics.py:30(heuristics)
+   950815    1.448    0.000    1.735    0.000 linked_map.py:35(add_tail)
+  4999900    1.179    0.000    1.179    0.000 {method 'append' of 'list' objects}
+   648582    0.549    0.000    1.141    0.000 linked_map.py:51(remove)
+   936823    0.515    0.000    0.515    0.000 linked_map.py:58(_cut_links)
+   918457    0.332    0.000    0.332    0.000 {built-in method builtins.min}
+  1836914    0.277    0.000    0.277    0.000 {built-in method builtins.abs}
+   648582    0.237    0.000    0.237    0.000 {method 'pop' of 'dict' objects}
+   723079    0.140    0.000    0.140    0.000 linked_map.py:2(__init__)
+       10    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
+       10    0.000    0.000    0.000    0.000 linked_map.py:26(__init__)
+       20    0.000    0.000    0.000    0.000 {built-in method decimal.getcontext}
+       10    0.000    0.000    0.000    0.000 {built-in method builtins.len}
+        0    0.000             0.000          profile:0(profiler)
+
+
+1880 done.
+1881 done.
+1882 done.
+1883 done.
+1884 done.
+1885 done.
+1886 done.
+1887 done.
+1888 done.
+1889 done.
+1880 done.
+1881 done.
+1882 done.
+1883 done.
+1884 done.
+1885 done.
+1886 done.
+1887 done.
+1888 done.
+1889 done.
+
+*** PROFILER RESULTS ***
+fringe_search (/home/karpo/kurssit/algolabra/algolabra/fringe/fringe_with_linked_map.py:8)
+function called 10 times
+
+         46743827 function calls in 38.340 seconds
+
+   Ordered by: cumulative time, internal time, call count
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+       10   20.835    2.083   38.340    3.834 fringe_with_linked_map.py:8(fringe_search)
+   648582    5.931    0.000    7.114    0.000 children.py:4(children)
+ 34432033    6.116    0.000    6.128    0.000 linked_map.py:73(__iter__)
+   950815    1.453    0.000    1.739    0.000 linked_map.py:35(add_tail)
+   918457    1.101    0.000    1.369    0.000 heuristics.py:30(heuristics)
+  4999900    1.185    0.000    1.185    0.000 {method 'append' of 'list' objects}
+   648582    0.573    0.000    1.154    0.000 linked_map.py:51(remove)
+   936823    0.502    0.000    0.502    0.000 linked_map.py:58(_cut_links)
+  1836914    0.268    0.000    0.268    0.000 {built-in method builtins.abs}
+   648582    0.236    0.000    0.236    0.000 {method 'pop' of 'dict' objects}
+   723079    0.142    0.000    0.142    0.000 linked_map.py:2(__init__)
+       10    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
+       10    0.000    0.000    0.000    0.000 linked_map.py:26(__init__)
+       20    0.000    0.000    0.000    0.000 {built-in method decimal.getcontext}
+       10    0.000    0.000    0.000    0.000 {built-in method builtins.len}
+        0    0.000             0.000          profile:0(profiler)
+
+
+1880 done.
+1881 done.
+1882 done.
+1883 done.
+1884 done.
+1885 done.
+1886 done.
+1887 done.
+1888 done.
+1889 done.
+
+*** PROFILER RESULTS ***
+fringe_search (/home/karpo/kurssit/algolabra/algolabra/fringe/fringe_with_linked_map.py:8)
+function called 10 times
+
+         46743827 function calls in 38.702 seconds
+
+   Ordered by: cumulative time, internal time, call count
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+       10   20.999    2.100   38.702    3.870 fringe_with_linked_map.py:8(fringe_search)
+   648582    6.114    0.000    7.315    0.000 children.py:4(children)
+ 34432033    6.015    0.000    6.028    0.000 linked_map.py:73(__iter__)
+   950815    1.507    0.000    1.810    0.000 linked_map.py:35(add_tail)
+   918457    1.099    0.000    1.368    0.000 heuristics.py:30(heuristics)
+  4999900    1.202    0.000    1.202    0.000 {method 'append' of 'list' objects}
+   648582    0.555    0.000    1.180    0.000 linked_map.py:51(remove)
+   936823    0.531    0.000    0.531    0.000 linked_map.py:58(_cut_links)
+  1836914    0.268    0.000    0.268    0.000 {built-in method builtins.abs}
+   648582    0.262    0.000    0.262    0.000 {method 'pop' of 'dict' objects}
+   723079    0.150    0.000    0.150    0.000 linked_map.py:2(__init__)
+       10    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
+       10    0.000    0.000    0.000    0.000 linked_map.py:26(__init__)
+       20    0.000    0.000    0.000    0.000 {built-in method decimal.getcontext}
+       10    0.000    0.000    0.000    0.000 {built-in method builtins.len}
+        0    0.000             0.000          profile:0(profiler)
+
+

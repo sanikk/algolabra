@@ -4,6 +4,7 @@ from PyQt6.QtCore import pyqtSignal, QObject
 
 from algolabra.fileIO.read_files import read_map, read_scenarios
 
+
 class ScenarioService(QObject):
 
     map_changed = pyqtSignal()
@@ -55,13 +56,16 @@ class ScenarioService(QObject):
         """
         bucket = self.scenarios.get(bucket, [])
         if bucket:
-            return [[str(a[0]), str(a[1]), f"({a[2][0]}, {a[2][1]})", f"({a[3][0]}, {a[3][1]})", str(a[4])] for a in bucket]
+            return [[str(a[0]), str(a[1]), f"({a[2][0]}, {a[2][1]})",
+                     f"({a[3][0]}, {a[3][1]})", str(a[4])] for a in bucket]
         return bucket
 
     def get_full_strings(self, bucket: int):
         bucket = self.scenarios.get(bucket, [])
         if bucket:
-            return [f"id: {a[0]}, start: ({a[2][0]},{a[2][1]}), goal: ({a[3][0]},{a[3][1]}), ideal: {a[4]}" for a in bucket]
+            return
+            [f"id: {a[0]}, start: ({a[2][0]},{a[2][1]}), goal: ({a[3][0]},{
+                a[3][1]}), ideal: {a[4]}" for a in bucket]
         return bucket
 
     def get_bucket_list(self):
@@ -91,3 +95,4 @@ class ScenarioService(QObject):
 
     def get_diag_cost(self):
         return self.diag_cost
+

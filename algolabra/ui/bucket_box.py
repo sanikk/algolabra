@@ -25,7 +25,8 @@ def get_common(parent_tab):
     @pyqtSlot()
     def update_scenario_box():
         scenario_box.clear()
-        scenario_box.addItems(parent_tab.scenario_service.get_full_strings(bucket_box.currentIndex()))
+        scenario_box.addItems(parent_tab.scenario_service.get_full_strings(
+            bucket_box.currentIndex()))
 
     parent_tab.scenario_service.map_changed.connect(update_bucket_box)
     parent_tab.scenario_service.map_changed.connect(update_scenario_box)
@@ -33,10 +34,10 @@ def get_common(parent_tab):
     return container
 
 
-
 def connect_scenario_change(p):
     def scenario_changer():
-        p.scene.scenario_changed(p.bucket_box.currentIndex(), p.scenario_box.currentIndex())
+        p.scene.scenario_changed(p.bucket_box.currentIndex(),
+                                 p.scenario_box.currentIndex())
         p.set_view(p.bucket_box.currentIndex(), p.scenario_box.currentIndex())
 
     p.bucket_box.currentIndexChanged.connect(scenario_changer)

@@ -7,6 +7,7 @@ from algolabra.ui.search_signals import SearchSignals
 from algolabra.astar.astar_thread import astar, reconstruct_path
 from algolabra.fileIO.read_files import read_map
 
+
 class TestAstarThread(unittest.TestCase):
     def setUp(self):
         self.citymap = read_map("algolabra/bostonmaps/Boston_0_512.map")
@@ -22,8 +23,8 @@ class TestAstarThread(unittest.TestCase):
 
     def test_alley_minimap(self):
         m = [[".", ".", "."], [".", "#", "."], [".", "#", "."]]
-        start = 0,2
-        goal = 2,2
+        start = 0, 2
+        goal = 2, 2
         ret = astar(start, goal, m, self.diag_cost)
         self.assertEqual(len(ret), 4)
         self.assertEqual(ret[0], Decimal(6))
@@ -49,16 +50,16 @@ class TestAstarThread(unittest.TestCase):
         self.assertEqual(ret[3], False)
 
     def test_no_path(self):
-        start = 0,0
-        goal = 2,2
+        start = 0, 0
+        goal = 2, 2
         m = [[".", "#", "."], [".", "#", "."], [".", "#", "."]]
         ret = astar(start, goal, m, self.diag_cost)
         self.assertIsNone(ret)
 
     def test_reconstruct_path_function(self):
-        camefrom = {(344,85): (343,85)}
-        start = 343,85
-        goal = 344,85
+        camefrom = {(344, 85): (343, 85)}
+        start = 343, 85
+        goal = 344, 85
         ret = reconstruct_path(start, goal, camefrom)
         self.assertEqual(ret, [(344, 85), (343, 85)])
 
@@ -73,12 +74,13 @@ class TestAstarThread(unittest.TestCase):
         goal = 343, 85
         astar(start, goal, self.citymap, self.diag_cost, signals=obj)
 
-        QCoreApplication.processEvents(QEventLoop.ProcessEventsFlag.AllEvents, 50)
+        QCoreApplication.processEvents(QEventLoop.ProcessEventsFlag.AllEvents,
+                                       50)
 
         self.assertEqual(handler.visited, 8)
         self.assertEqual(handler.expanded, 2)
         self.assertGreater(handler.flimit_change_count, 0)
-        self.assertEqual(handler.elist, [start,goal])
+        self.assertEqual(handler.elist, [start, goal])
         self.assertTrue(goal in handler.vlist)
 
 
@@ -95,15 +97,14 @@ class Mock(QObject):
     @pyqtSlot(int, int)
     def node_visited(self, x, y):
         self.visited += 1
-        self.vlist.append((x,y))
+        self.vlist.append((x, y))
 
     @pyqtSlot(int, int)
     def node_expanded(self, x, y):
         self.expanded += 1
-        self.elist.append((x,y))
+        self.elist.append((x, y))
 
     @pyqtSlot(str)
     def flimit_change(self, new_flimit: str):
         self.flimit_change_count += 1
         self.flist.append(new_flimit)
-

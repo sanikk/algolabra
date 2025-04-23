@@ -1,5 +1,5 @@
-from PyQt6.QtWidgets import QWidget, QGroupBox, QHBoxLayout, QPushButton, QVBoxLayout
-
+from PyQt6.QtWidgets import (QWidget, QGroupBox, QHBoxLayout, QPushButton,
+                             QVBoxLayout)
 from algolabra.ui.bucket_box import get_common
 
 
@@ -7,7 +7,9 @@ class LogTab(QWidget):
     """
     Tab that lets you choose bucket and scenario for a logged run.
     """
-    def __init__(self, parent=None, scenario_service=None, search_service=None):
+
+    def __init__(self, parent=None, scenario_service=None,
+                 search_service=None):
         """
 
         :param parent: parent of this Widget.
@@ -26,7 +28,7 @@ class LogTab(QWidget):
         control_group = QGroupBox()
         control_layout = QHBoxLayout()
 
-        run_search_button = QPushButton(f"run Fringe with Logging")
+        run_search_button = QPushButton("run Fringe with Logging")
         control_layout.addWidget(run_search_button)
         control_group.setLayout(control_layout)
 
@@ -40,4 +42,5 @@ class LogTab(QWidget):
 
         :rtype: None
         """
-        self.search_service.run_fringe_with_logging(self.bucket_box.currentIndex(), self.scenario_box.currentIndex())
+        self.search_service.run_fringe_with_logging(
+            self.bucket_box.currentIndex(), self.scenario_box.currentIndex())

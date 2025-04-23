@@ -1,10 +1,13 @@
 from PyQt6.QtCore import pyqtSlot
 from PyQt6.QtGui import QBrush, QColor
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QGroupBox, QPushButton, QComboBox, QTableWidget, QTableWidgetItem
+from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QLabel, QGroupBox,
+                             QPushButton, QComboBox, QTableWidget,
+                             QTableWidgetItem)
 
 
 class TestbedTab(QWidget):
-    def __init__(self, parent=None, scenario_service=None, search_service=None):
+    def __init__(self, parent=None, scenario_service=None,
+                 search_service=None):
         super().__init__(parent=parent)
         self.scenario_service = scenario_service
         self.search_service = search_service
@@ -24,7 +27,8 @@ class TestbedTab(QWidget):
     @pyqtSlot()
     def update_bucketbox(self):
         """
-        Slot() function that preps and fills table when bucketbox needs to be updated.
+        Slot() function that preps and fills table when bucketbox
+        needs to be updated.
 
         :return: None
         """
@@ -40,14 +44,17 @@ class TestbedTab(QWidget):
         Unless it's changed
         0-4 bucket 5-10 testcase 11-16 basecase
 
-        cost, perf_time, proc_time, thread_time, visired, expanded, Rounded, Inexact
-        last 2 are shown as green/red color. Logic is bad there(and!) but no time.
+        cost, perf_time, proc_time, thread_time, visired, expanded,
+                unded, Inexact
+        last 2 are shown as green/red color.
         :return:
         """
         self.table.clearContents()
-        data = self.scenario_service.get_bucket_strings(self.bucketbox.currentIndex())
+        data = self.scenario_service.get_bucket_strings(
+            self.bucketbox.currentIndex())
         if data:
-            [[self.table.setItem(y, x, QTableWidgetItem(item)) for x, item in enumerate(line)] for y, line in enumerate(data)]
+            [[self.table.setItem(y, x, QTableWidgetItem(item)) for x, item in
+                enumerate(line)] for y, line in enumerate(data)]
 
     def testbed_box(self):
         """
@@ -63,10 +70,13 @@ class TestbedTab(QWidget):
         layout.addWidget(result_label)
 
         def testbed_updater():
-            data = self.search_service.run_testbed_for_bucket(bucket=self.bucketbox.currentIndex())
+            data = self.search_service.run_testbed_for_bucket(
+                bucket=self.bucketbox.currentIndex())
             if data:
                 items = self.prep_data_for_table(data)
-                [[self.table.setItem(i, j + 5, item) for j, item in enumerate(line)] for i, line in enumerate(items)]
+                [[self.table.setItem(i, j + 5, item) for j, item in
+                    enumerate(line)]
+                 for i, line in enumerate(items)]
         button = QPushButton("Run Testbed")
         button.clicked.connect(testbed_updater)
         layout.addWidget(button)
@@ -81,7 +91,7 @@ class TestbedTab(QWidget):
 
         :return:
         """
-        # TODO add a progress bar while running bucket, printing {id} done for now
+        # TODO add a progress bar while running bucket, printing {id} done now
         # https://doc.qt.io/qt-6/qprogressbar.html
         groupbox = QGroupBox("Basecase")
         layout = QVBoxLayout()
@@ -90,11 +100,15 @@ class TestbedTab(QWidget):
         layout.addWidget(result_label)
 
         button = QPushButton("Run Basecase")
+
         def basecase_updater():
-            data = self.search_service.run_fringe_for_bucket(bucket=self.bucketbox.currentIndex())
+            data = self.search_service.run_fringe_for_bucket(
+                bucket=self.bucketbox.currentIndex())
             if data:
                 items = self.prep_data_for_table(data)
-                [[self.table.setItem(i, j + 11, item) for j, item in enumerate(line)] for i, line in enumerate(items)]
+                [[self.table.setItem(i, j + 11, item) for j, item in
+                    enumerate(line)]
+                 for i, line in enumerate(items)]
         button.clicked.connect(basecase_updater)
         layout.addWidget(button)
 
@@ -104,29 +118,33 @@ class TestbedTab(QWidget):
     def prep_data_for_table(self, data: list):
         """
         Preps data from search_service for your viewing pleasure. :)
-        There are next to no checks. If last two values are bool they are used to color the result def:red or
-        green if both are False.
+        There are next to no checks. If last two values are bool they are used
+        to color the result def:red or green if both are False.
 
-        cost, perf_time, proc_time, thread_time, visited, expanded, Rounded, Inexact
+        cost, perf_time, proc_time, thread_time, visited, expanded,
+        Rounded, Inexact
 
-        :param data: data from search_service (cost, timer1, timer2, timer3, [visited, expanded,] Rounded, Inexact)
+        :param data: data from search_service
+        (cost, timer1, timer2, timer3, [visited, expanded,] Rounded, Inexact)
 
         :return: QTableWidgetItems prepped for scenario_table
         """
         if not data:
             return []
-        items = [[QTableWidgetItem("{:.8f}".format(item)) for item in line[:6]] for line in data]
+        items = [[QTableWidgetItem("{:.8f}".format(item))
+                  for item in line[:6]] for line in data]
         # color every cost green
-        [item[0].setBackground(QBrush(QColor(163, 230, 181))) for item in items]
+        [item[0].setBackground(QBrush(QColor(163, 230, 181)))
+         for item in items]
 
-            # paint result red/green only if there is data on Rounded, Inexact
-        if type(data[-2]) == bool:
-            [item[0].setBackground(QBrush(QColor(163, 230, 181))) for item in items]
-            [item[0].setBackground(QBrush(QColor(214, 148, 176))) for item, data in zip(items, data) if
-                not data[-2] or not data[-1]]
+        # paint result red/green only if there is data on Rounded, Inexact
+        if isinstance(data[2], bool):
+            [item[0].setBackground(QBrush(QColor(163, 230, 181)))
+             for item in items]
+            [item[0].setBackground(QBrush(QColor(214, 148, 176)))
+                for item, data in zip(items, data)
+                if not data[-2] or not data[-1]]
         return items
-
-
 
     def get_scenario_table(self) -> QTableWidget:
         """
@@ -140,10 +158,15 @@ class TestbedTab(QWidget):
         table.setRowCount(10)
 
         scenario_columns = ["id", "bucket", "start", "goal", "cost",]
-        testbed_columns = ["Testbed cost", "perf_time", "proc_time", "thread_time",
-            "nodes_visited", "nodes_expanded",]
-        basecase_columns = ["Basecase cost", "perf_time", "proc_time", "thread_time",
-            "nodes_visited", "nodes_expanded",]
+
+        testbed_columns = ["Testbed cost",
+                           "perf_time", "proc_time", "thread_time",
+                           "nodes_visited", "nodes_expanded",]
+
+        basecase_columns = ["Basecase cost",
+                            "perf_time", "proc_time", "thread_time",
+                            "nodes_visited", "nodes_expanded",]
+
         labels = [*scenario_columns, *testbed_columns, *basecase_columns]
 
         table.setColumnCount(len(labels))
@@ -152,7 +175,8 @@ class TestbedTab(QWidget):
 
     def get_scenario_box(self) -> QGroupBox:
         """
-        Builds and returns the scenario_box that holds bucket_box and scenario_table.
+        Builds and returns the scenario_box that holds bucket_box
+        and scenario_table.
         Also sets self.bucketbox, self.table.
 
         :return: QGroupBox with a bucketbox
